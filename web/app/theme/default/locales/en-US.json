@@ -1,0 +1,8 @@
+{
+  "test": "this is a test page",
+  "site": "site",
+  "title": "model data list nested",
+  "empty": "there are no data here",
+  "pager": "total pages: %s, curret page: %s, %s data pre page",
+  "article": "article detail"
+}

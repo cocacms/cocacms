@@ -1,0 +1,49 @@
+{
+  "name": "cocacms-web",
+  "version": "1.0.0",
+  "description": "a easy cms",
+  "private": true,
+  "dependencies": {
+    "humanize-bytes": "^1.0.1",
+    "jsonwebtoken": "^8.2.1",
+    "moment": "^2.22.1",
+    "path-to-regexp": "^2.2.1"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.0.0",
+    "egg-bin": "^4.3.5",
+    "egg-ci": "^1.8.0",
+    "egg-mock": "^3.14.0",
+    "eslint": "^4.11.0",
+    "eslint-config-egg": "^6.0.0",
+    "webstorm-disable-index": "^1.2.0"
+  },
+  "egg": {
+    "framework": "cocacms"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "scripts": {
+    "start": "egg-scripts start --daemon --title=CocaCms",
+    "stop": "egg-scripts stop --title=CocaCms",
+    "dev": "egg-bin dev",
+    "debug": "egg-bin debug",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "npm run lint && npm run cov",
+    "autod": "autod"
+  },
+  "ci": {
+    "version": "8"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "rojer",
+  "license": "MIT"
+}

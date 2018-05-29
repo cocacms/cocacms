@@ -1,0 +1,48 @@
+Arguments: 
+  D:\Program Files\nodejs\node.exe D:\Program Files (x86)\Yarn\bin\yarn.js add antd
+
+PATH: 
+  D:\program files\cmder_mini\bin;D:\program files\cmder_mini\vendor\conemu-maximus5\ConEmu\Scripts;D:\program files\cmder_mini\vendor\conemu-maximus5;D:\program files\cmder_mini\vendor\conemu-maximus5\ConEmu;C:\Program Files\Docker\Docker\Resources\bin;D:\Program Files\ImageMagick-7.0.1-Q16;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\ProgramData\ComposerSetup\bin;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;D:\program files\cmder_mini;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\Users\win\AppData\Roaming\Composer\vendor\bin;D:\program files\Git\bin;D:\Program Files\nodejs\;D:\Program Files (x86)\Yarn\bin\;D:\program files\MongoDB\Server\3.6\bin;D:\phpStudy\PHPTutorial\php\php-7.2.1-nts;D:\Redis-x64-3.0.504;C:\Program Files (x86)\Microsoft Emulator Manager\1.0\;C:\Users\win\AppData\Local\Microsoft\WindowsApps;C:\Users\win\AppData\Roaming\Composer\vendor\bin;d:\Program Files\Microsoft VS Code\bin;D:\Program Files\Microsoft VS Code\bin;C:\Users\win\AppData\Roaming\npm;C:\Users\win\AppData\Local\Yarn\bin;D:\program files\Git\usr\bin;D:\program files\Git\usr\share\vim\vim74;D:\program files\cmder_mini\
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  8.10.0
+
+Platform: 
+  win32 x64
+
+npm manifest: 
+  {
+    "private": true,
+    "scripts": {
+      "start": "umi dev",
+      "build": "umi build",
+      "lint": "eslint --ext .js src test",
+      "precommit": "npm run lint"
+    },
+    "dependencies": {
+      "dva": "^2.2.3",
+      "umi": "^1.0.0",
+      "umi-plugin-dva": "^0.7.1"
+    },
+    "devDependencies": {
+      "eslint": "^4.14.0",
+      "eslint-config-umi": "^0.1.1",
+      "eslint-plugin-flowtype": "^2.34.1",
+      "eslint-plugin-import": "^2.6.0",
+      "eslint-plugin-jsx-a11y": "^5.1.1",
+      "eslint-plugin-react": "^7.1.0",
+      "husky": "^0.12.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: ENOENT: no such file or directory, copyfile 'C:\Users\win\AppData\Local\Yarn\Cache\v1\npm-is-extendable-1.0.1-a7470f9e426733d81bd81e1155264e3a3507cab4\LICENSE' -> 'D:\work\CocaCms\manage_front\node_modules\split-string\node_modules\is-extendable\LICENSE'

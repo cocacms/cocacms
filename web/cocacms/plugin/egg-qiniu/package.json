@@ -1,0 +1,13 @@
+{
+  "name": "egg-qiniu",
+  "version": "1.0.0",
+  "eggPlugin": {
+    "name": "qiniu"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "dependencies": {
+    "qiniu": "^7.1.7"
+  }
+}
