@@ -48,6 +48,11 @@ $ cd cocacms/manage_front
 $ yarn start
 ```
 
+* 开始使用
+> 后台：`http://localhost:8000`  
+> 账户：`admin@admin.com`  
+> 密码 `admin123456`  
+
 ## TODO
 - [ ] 扩展模板标签
 - [ ] 完善文档
