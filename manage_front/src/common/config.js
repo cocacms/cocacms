@@ -10,6 +10,6 @@ export default host;
  */
 export const config = {
   logo: require('../assets/logo.png'),
-  name: 'CocaCms',
+  name: 'Enzoani管理后台',
   copy: 'CocaCms ©2018 Created by Amoy FreeSailing Technology Co., Ltd.'
 }
