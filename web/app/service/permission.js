@@ -124,9 +124,10 @@ class PermissionService extends Service {
       const method = apiDatas[0];
       const uri = apiDatas[1];
       for (const permission of permissions) {
-        const re = pathToRegexp(permission.uri);
-        const match = re.exec(uri);
-        if (permission.method.toLowerCase() === method && match) {
+        if (
+          permission.method.toLowerCase() === method.toLowerCase() &&
+          permission.uri.toLowerCase() === uri.toLowerCase()
+        ) {
           return true;
         }
       }
@@ -150,9 +151,10 @@ class PermissionService extends Service {
       const method = apiDatas[0];
       const uri = apiDatas[1];
       for (const permission of permissions) {
-        const re = pathToRegexp(permission.uri);
-        const match = re.exec(uri);
-        if (permission.method.toLowerCase() === method && match) {
+        if (
+          permission.method.toLowerCase() === method.toLowerCase() &&
+          permission.uri.toLowerCase() === uri.toLowerCase()
+        ) {
           return true;
         }
       }

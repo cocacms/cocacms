@@ -113,10 +113,13 @@ module.exports = appInfo => {
     public: [ // 无需权限验证可访问的路由
       'POST@/api/admin/login',
       'GET@/api/permission/my',
-      'GET@/api/site',
       'GET@/api/admin/:id',
+      'GET@/api/site',
       'GET@/api/site/new',
-      // 'GET@/api/site/:id(\\d+)',
+      'GET@/api/form',
+      'GET@/api/model',
+      'GET@/api/modelAttr/:model',
+      'GET@/api/modelAttr/:model/indexs',
       'GET@/public/(.*)',
     ],
   };
