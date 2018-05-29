@@ -105,7 +105,7 @@ class PermissionEdit extends Component {
         let key = paths[2];
         // /api/f/:model/:id or /api/g/:model/:id
         if (key === 'f' || key === 'g') {
-          key = `_auto_${paths[3]}` // model name
+          key = `_auto_${key}_${paths[3]}` // model name
         }
         const selected = permissions.filter(i => {
           return `${i.method}@${i.uri}`.toLowerCase() === iterator.path.toLowerCase();

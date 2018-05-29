@@ -84,7 +84,7 @@ class PermissionService extends Service {
           for (const target of _[`${tag}s`]) {
             apis.push({
               path: iterator.path.replace(`:${tag}`, target.key),
-              name: iterator.name.replace(`{${tag}}`, ` [${target.name}] `),
+              name: iterator.name.replace(`{${tag}}`, ` [${target.name}]${tag === 'model' ? '模型' : '表单'} `),
             });
           }
         }
