@@ -31,8 +31,16 @@ $ yarn install
 $ cd ../manage_front
 $ yarn install
 ```
+* 链接依赖的CocoaCms子框架
 
-* 配置
+```
+$ cd cocacms/web/cocacms
+$ yarn link
+$ cd cocacms/web
+$ yarn link cocacms
+```
+
+* 修改配置
 > 在`web/config/jwt`目录下生成RSA私钥与公钥
 > 修改`web/config/config.default.js`的mysql配置
 
@@ -56,4 +64,12 @@ $ yarn start
 ## TODO
 - [ ] 扩展模板标签
 - [ ] 完善文档
+  - [ ] 目录结构说明
+  - [ ] 模板相关说明
+    - [ ] 创建主题
+    - [ ] 模板标签使用说明
+    - [ ] 内置数据
+    - [ ] 扩展模板标签
+    - [ ] 语言包
+  - [ ] 待补充...
 - [ ] 模板Demo
