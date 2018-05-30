@@ -2,6 +2,6 @@
 
 module.exports = {
   package: 'rojer@default',
-  name: 'Enzoani',
+  name: '默认模板',
   author: 'rojer',
 };
