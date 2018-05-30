@@ -25,11 +25,6 @@ module.exports = app => {
     themes = themes.split(',');
   }
 
-  console.log('====================================');
-  console.log('Coca CMS: Loading Theme Lauguage to App');
-  console.log(`Path: ${themes.join(', ')}`);
-  console.log('====================================');
-
   for (const themeRootPath of themes) {
     const dirs = fs.readdirSync(themeRootPath, 'utf8');
     for (const filename of dirs) {
@@ -43,19 +38,20 @@ module.exports = app => {
     }
   }
 
+  console.log('====================================');
+  console.log('Coca CMS: Loading Theme Lauguage to App');
+  console.log(`Path: ${app.config.i18n.dirs.join(', ')}`);
+  console.log('====================================');
+
   debug('app.config.i18n.dirs:', app.config.i18n.dirs);
   locales(app, app.config.i18n);
 
-  // 注册自定义模板标签
-  const tagMap = [ 'list', 'single' ];
-  console.log('====================================');
-  console.log('Coca CMS: Loading Nunjucks Tag to App');
-  console.log(`Tags: ${tagMap.join(', ')}`);
-  console.log('====================================');
-  for (const tag of tagMap) {
-    const targetPath = `./app/tag/${tag}`;
-    const tagInstance = require(targetPath);
-    app.nunjucks.addExtension(`${tag}Extension`, new tagInstance());
+  // 注册主题静态资源解析
+  const index = app.config.coreMiddleware.indexOf('bodyParser');
+  if (index === -1) {
+    app.config.coreMiddleware.push('themestatic');
+  } else {
+    app.config.coreMiddleware.splice(index, 0, 'themestatic');
   }
 
 };

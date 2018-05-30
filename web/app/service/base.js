@@ -1,6 +1,6 @@
 'use strict';
 
-const Service = require('egg').Service;
+const Service = require('cocacms').Service;
 const moment = require('moment');
 
 const TABLE = Symbol('Service#table');

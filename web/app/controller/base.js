@@ -1,6 +1,6 @@
 'use strict';
 
-const Controller = require('egg').Controller;
+const Controller = require('cocacms').Controller;
 /**
  * 基础控制器
  *
@@ -31,7 +31,12 @@ class BaseController extends Controller {
     if (theme !== null) {
       themeDir = `${theme.dirname}/`;
     }
-    await this.ctx.render(`${themeDir}${path}.nj`, data);
+
+    const config = await this.service.config.get();
+    await this.ctx.render(`${themeDir}${path}.nj`, {
+      config,
+      ...data,
+    });
   }
 }
 

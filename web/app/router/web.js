@@ -6,6 +6,6 @@
 module.exports = app => {
   const { router, controller, middleware } = app;
   const subRouter = router.namespace('', middleware.front());
-  subRouter.get('/test', controller.home.index);
+  subRouter.get('/', controller.home.index);
 
 };

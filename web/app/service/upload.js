@@ -1,6 +1,6 @@
 'use strict';
 
-const Service = require('cocacms').BaseService;
+const Service = require('./base');
 const fs = require('fs');
 const path = require('path');
 const bytes = require('humanize-bytes');

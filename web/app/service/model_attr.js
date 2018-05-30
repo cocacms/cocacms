@@ -1,6 +1,6 @@
 'use strict';
 
-const Service = require('cocacms').BaseService;
+const Service = require('./base');
 const momnet = require('moment');
 
 class ModelAttrService extends Service {

@@ -1,6 +1,6 @@
 'use strict';
 
-const Controller = require('cocacms').BaseController;
+const Controller = require('./base');
 
 /**
  * 导航
@@ -43,7 +43,8 @@ class MenuController extends Controller {
    * @memberof MenuController
    */
   async index() {
-    this.ctx.body = await this.service.menu.index(-1, this.ctx.query.flat === '1', this.ctx.query.root === '1');
+    const result = await this.service.menu.index(-1, this.ctx.query.flat === '1', this.ctx.query.root === '1');
+    this.ctx.body = this.service.category.toTree(result);
   }
 
   /**

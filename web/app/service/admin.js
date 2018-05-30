@@ -1,6 +1,6 @@
 'use strict';
 
-const Service = require('cocacms').BaseService;
+const Service = require('./base');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 

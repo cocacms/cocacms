@@ -1,6 +1,6 @@
 'use strict';
 const pathToRegexp = require('path-to-regexp');
-const Service = require('cocacms').BaseService;
+const Service = require('./base');
 
 class PermissionService extends Service {
 

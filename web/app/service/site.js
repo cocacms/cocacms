@@ -1,6 +1,6 @@
 'use strict';
 
-const Service = require('cocacms').BaseService;
+const Service = require('./base');
 
 class SiteService extends Service {
   constructor(ctx) {

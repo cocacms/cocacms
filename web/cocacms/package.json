@@ -8,7 +8,6 @@
     "egg-mysql": "^3.0.0",
     "egg-router-plus": "^1.2.0",
     "egg-scripts": "^2.5.0",
-    "egg-view-nunjucks": "^2.2.0",
     "koa-locales": "^1.8.0"
   },
   "devDependencies": {

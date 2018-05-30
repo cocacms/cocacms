@@ -25,14 +25,6 @@ exports.routerPlus = {
   package: 'egg-router-plus',
 };
 
-
-// 模板解析
-exports.nunjucks = {
-  enable: true,
-  package: 'egg-view-nunjucks',
-};
-
-
 // 七牛插件
 exports.qiniu = {
   enable: true,

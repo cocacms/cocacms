@@ -1,6 +1,6 @@
 'use strict';
 
-const Controller = require('cocacms').BaseController;
+const Controller = require('./base');
 
 /**
  * 通用控制器，用于操作模型

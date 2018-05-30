@@ -1,6 +1,6 @@
 'use strict';
 
-const Service = require('cocacms').BaseNode;
+const Service = require('./node');
 
 class CategoryService extends Service {
   constructor(ctx) {

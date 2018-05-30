@@ -3,7 +3,7 @@ const path = require('path');
 // const fs = require('fs');
 
 module.exports = appInfo => {
-  const config = exports = {};
+  const config = {};
 
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + ''; // 密码加密用到

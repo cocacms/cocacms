@@ -1,6 +1,6 @@
 'use strict';
 const { asyncBuilder } = require('./util');
-const nunjucks = require('nunjucks');
+const nunjucks = require('egg-view-nunjucks/node_modules/nunjucks');
 
 class ModelsExtension {
   constructor() {
