@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import {
-  Table, Form, Row, Col, Button, Input, Modal, Icon, Rate, TreeSelect
+  Table, Form, Row, Col, Button, Input, Modal, TreeSelect
 } from 'antd';
-import Action from 'components/action';
 import Can from 'components/can/index';
 
 import { connect } from 'dva';
-import moment from 'moment';
-import { renderFormComponent, renderForm, buildWhere } from 'components/formItem';
+import { renderFormComponent, renderForm, buildWhere, getColumns } from 'components/formItem';
 
 const formItemLayout = {
   labelCol: { span: 5 },
@@ -268,6 +266,16 @@ class TablePage extends Component {
     })
   }
 
+  switchChange = (id, key, value) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'general/switchChange',
+      payload: {
+        id, key, value
+      },
+    })
+  }
+
   /**
    * 获取搜索字段DOM
    *
@@ -303,11 +311,15 @@ class TablePage extends Component {
 
     for (const attr of attrs) {
       if (indexs.map(i => i.key).includes(attr.key)) {
+        const options = {};
+        if (attr.type === 'switch') {
+          options.valuePropName = 'checked';
+        }
+
         children.push(
           <Col sm={12} xs={24} lg={{ span: 8 }} key={attr.key}>
             <Form.Item label={attr.name} labelCol={labelCol} wrapperCol={wrapperCol}>
-              {getFieldDecorator(attr.key, {
-              })(
+              {getFieldDecorator(attr.key, options)(
                 renderFormComponent(attr.type, attr.optionsArray, attr.len, 0)
               )}
             </Form.Item>
@@ -388,121 +400,6 @@ class TablePage extends Component {
     this.setState({ edit: { ...this.state.edit, opened: false }})
   }
 
-  /**
-   * 字段定义
-   *
-   * @memberof TablePage
-   */
-  getColumns = () => {
-    const { attrs, current = {} } = this.props;
-
-    const columns = [
-      {
-        dataIndex: 'id',
-        width: 80,
-        sorter: true,
-        title: 'ID',
-        sortOrder: this.state.sortedInfo.columnKey === 'id' && this.state.sortedInfo.order,
-      },
-      {
-        dataIndex: 'category.name',
-        title: '栏目',
-      }
-    ];
-
-    for (const attr of attrs) {
-      if (attr.tableable === 1) {
-        columns.push({
-          title: attr.name,
-          sorter: attr.sortable === 1,
-          sortOrder: this.state.sortedInfo.columnKey === attr.key && this.state.sortedInfo.order,
-          dataIndex: attr.key,
-          align: 'center',
-          render: (text, record) => {
-            // 单选，选择框 数据显示转换
-            if (['radio', 'select'].includes(attr.type)) {
-              for (const option of attr.optionsArray) {
-                if (option.value === String(text)) {
-                  return option.label;
-                }
-              }
-
-              return '-';
-            }
-
-            // 多选 数据显示转换
-            if (['checkbox'].includes(attr.type) && Array.isArray(text)) {
-              const strs = [];
-              for (const option of attr.optionsArray) {
-                if (text.includes(option.value)) {
-                  strs.push(option.label);
-                }
-              }
-
-              return strs.length === 0 ? '-' : strs.join(', ');
-            }
-
-            // 图片 数据显示转换
-            if (['img'].includes(attr.type) && Array.isArray(text)) {
-              return text.map(i => (<img key={i} src={i} alt="" style={{ maxWidth: 40, maxHeight: 40, marginRight: 5 }} />))
-            }
-
-            // 文件 数据显示转换
-            if (['file'].includes(attr.type) && Array.isArray(text)) {
-              return text.map(i => (
-                <p>
-                  <a href={i} target="black"><Icon type="file" /> {i.split('/')[i.split('/').length - 1]}</a>
-                </p>
-              ))
-            }
-
-            // 时间
-            if (['time', 'date', 'datetime'].includes(attr.type)) {
-              const formats = {
-                time: 'HH:mm:ss',
-                date: 'YYYY-MM-DD',
-                datetime: 'YYYY-MM-DD HH:mm:ss',
-              };
-              return moment(text, ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']).format(formats[attr.type])
-            }
-
-
-            // rate
-            if (['rate'].includes(attr.type)) {
-              return <Rate allowHalf value={text} disabled/>;
-            }
-
-            // richtext
-            if (['richtext'].includes(attr.type)) {
-              return <div dangerouslySetInnerHTML={{__html: text}}></div>;
-            }
-
-            return text;
-          }
-
-        })
-      }
-    }
-
-    columns.push({
-      title: '操作',
-      width: 180,
-      align: 'center',
-      render: (text, record) => {
-        return (
-          <Action
-            can={{ edit: `PUT@/api/g/${current.model.key}/:id`, delete: `DELETE@/api/g/${current.model.key}/:id`}}
-            delete={() => { this.delete(record.id) }}
-            edit={() => { this.openModel('edit', record) }}
-          >
-          </Action>
-        )
-
-      }
-    });
-
-    return columns;
-  }
 
   render() {
     const { loading, general: { list: { data = [], page: current = 1, total = 0, pageSize = 20} }, attrs = [], rules = {}, current: currentCategory = {} } = this.props;
@@ -512,7 +409,16 @@ class TablePage extends Component {
 
         <Table
           title={this.renderFilter}
-          columns={this.getColumns()}
+          columns={getColumns(
+            attrs,
+            {
+              can: { edit: `PUT@/api/g/${currentCategory.model.key}/:id`, delete: `DELETE@/api/g/${currentCategory.model.key}/:id`},
+              delete: (id) => { this.delete(id) },
+              edit: (record) => { this.openModel('edit', record)},
+            },
+            this.state.sortedInfo,
+            this.switchChange
+          )}
           loading={loading}
           rowKey='id'
           dataSource={data}

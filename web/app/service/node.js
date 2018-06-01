@@ -235,7 +235,7 @@ class NodeService extends BaseService {
     }
 
     // 如果修改了父id，进行移动
-    if (this.ctx.helper.hasOwnPro(data, 'pid') && data.pid !== currentNode.pid) {
+    if (this.ctx.helper.hasOwnPro(data, 'pid') && Number(data.pid) !== Number(currentNode.pid)) {
       const pid = data.pid;
       await this.move(id, pid);
     }

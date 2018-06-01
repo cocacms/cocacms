@@ -77,6 +77,7 @@ class ModelAttrService extends Service {
      * 文件 file
      * 富文本 richtext
      * 评分 rate
+     * 开关 switch
      */
 
     switch (type) {
@@ -90,6 +91,7 @@ class ModelAttrService extends Service {
       case 'richtext':
         return 'LONGTEXT';
       case 'rate':
+      case 'switch':
         return `TINYINT(${len})`;
       default:
         return `VARCHAR(${len})`;

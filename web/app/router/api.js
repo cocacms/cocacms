@@ -87,6 +87,7 @@ module.exports = app => {
   subRouter.get('获取{model}详情', '/g/:model/:id', controller.general.show);
   subRouter.post('创建{model}', '/g/:model', controller.general.create);
   subRouter.put('编辑{model}列表', '/g/:model/:id', controller.general.update);
+  subRouter.put('编辑{model}列表[单]', '/g/:model/:id/one', controller.general.updateOne);
   subRouter.delete('删除{model}', '/g/:model/:id', controller.general.destroy);
 
   /**
@@ -98,6 +99,7 @@ module.exports = app => {
   subRouter.get('获取{form}详情', '/f/:form/:id', controller.general.show);
   subRouter.post('创建{form}', '/f/:form', controller.general.create);
   subRouter.put('编辑{form}列表', '/f/:form/:id', controller.general.update);
+  subRouter.put('编辑{form}列表[单]', '/f/:form/:id/one', controller.general.updateOne);
   subRouter.delete('删除{form}', '/f/:form/:id', controller.general.destroy);
 
   /**

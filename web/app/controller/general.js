@@ -169,6 +169,24 @@ class GeneralController extends Controller {
   }
 
   /**
+   * 更新数据[单]
+   *
+   * @memberof GeneralController
+   */
+  async updateOne() {
+    await this.init();
+    const body = await this.ctx.validate({
+      key: [{ required: true, message: '请设置key' }],
+      value: [{ required: true, message: '请设置value' }],
+    });
+
+    const data = {};
+    data[body.key] = body.value;
+
+    this.ctx.body = await this.app.mysql.update(this.service.base._table, data, { where: { id: this.ctx.params.id } });
+  }
+
+  /**
    * 删除数据
    *
    * @memberof GeneralController

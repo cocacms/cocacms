@@ -97,6 +97,7 @@ class Edit extends Component {
                 <Select.Option value="file">文件</Select.Option>
                 <Select.Option value="richtext">富文本</Select.Option>
                 <Select.Option value="rate">评分</Select.Option>
+                <Select.Option value="switch">开关</Select.Option>
               </Select>
             )}
           </Form.Item>
@@ -338,7 +339,7 @@ class KeyEdit extends Component {
                 value={this.state.fulltexts}
               >
                 { data.map(i => {
-                  if (!['radio', 'select', 'time', 'date', 'datetime', 'rate', 'img', 'file'].includes(i.type)) {
+                  if (!['radio', 'select', 'time', 'date', 'datetime', 'rate', 'img', 'file', 'switch'].includes(i.type)) {
                     return <Select.Option value={i.key} key={i.key}> {i.name} </Select.Option>
                   }
                   return null;

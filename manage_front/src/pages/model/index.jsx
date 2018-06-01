@@ -71,6 +71,20 @@ class Edit extends Component {
             )}
           </Form.Item>
 
+          <Form.Item
+            labelCol={labelCol}
+            wrapperCol={wrapperCol}
+            label="编辑框宽度"
+            extra="默认50%"
+          >
+            {getFieldDecorator('width', {
+              initialValue: data.width
+            })(
+              <Input/>
+            )}
+          </Form.Item>
+
+
         </Form>
 
       </Modal>

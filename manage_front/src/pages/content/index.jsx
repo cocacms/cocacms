@@ -11,6 +11,8 @@ import FormPage from './components/form';
 import TablePage from './components/table';
 
 const TreeNode = Tree.TreeNode;
+
+let isMount = true;
 @name('内容管理')
 @connect(({ content }) => ({ content }))
 class ContentList extends Component {
@@ -19,6 +21,7 @@ class ContentList extends Component {
   }
 
   componentDidMount() {
+    isMount = true;
     const { dispatch } = this.props;
     dispatch({
       type: 'content/fetchCategory'
@@ -26,6 +29,7 @@ class ContentList extends Component {
   }
 
   componentWillUnmount() {
+    isMount = false;
     const { dispatch } = this.props;
     dispatch({
       type: 'content/save',
@@ -42,6 +46,9 @@ class ContentList extends Component {
   }
 
   static getDerivedStateFromProps(props) {
+    if (!isMount) {
+      return null;
+    }
 
     const renderTreeNodes = (data) => {
       return data.map((item) => {

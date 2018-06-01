@@ -68,8 +68,8 @@ export default class PicturesWall extends React.Component {
   }
 
   render() {
-    const { previewVisible, previewImage, fileList, _fileList, accept = 'image/*' } = this.state;
-    const { max } = this.props;
+    const { previewVisible, previewImage, fileList, _fileList } = this.state;
+    const { max, accept = 'image/*' } = this.props;
 
     const list = fileList === null ? _fileList : fileList;
 

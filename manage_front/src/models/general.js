@@ -1,4 +1,4 @@
-import { index, create, update, destory, show } from '../services/general';
+import { index, create, update, destory, show, switchChange } from '../services/general';
 
 
 export default {
@@ -89,6 +89,18 @@ export default {
         cb()
       }
       yield put({ type: 'reload' })
+    },
+
+    *switchChange({ payload, cb, reload = true }, { call, put, select }) {
+      const modelKey = yield select(state => state.general.modelKey);
+      const type = yield select(state => state.general.type);
+      const { data } = yield call(switchChange, payload.id, payload, modelKey, type);
+      if (cb) {
+        cb(data)
+      }
+      if (reload) {
+        yield put({ type: 'reload' })
+      }
     },
 
 

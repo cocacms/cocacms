@@ -108,7 +108,8 @@ class Edit extends Component {
               <Select placeholder="请选择">
                 <Select.Option value={1}>列表页</Select.Option>
                 <Select.Option value={2}>单页</Select.Option>
-                <Select.Option value={3}>表单页</Select.Option>
+                {/* <Select.Option value={3}>表单页</Select.Option> */}
+                <Select.Option value={4}>外链</Select.Option>
               </Select>
             )}
           </Form.Item>
@@ -133,6 +134,19 @@ class Edit extends Component {
           <Form.Item
             labelCol={labelCol}
             wrapperCol={wrapperCol}
+            label="外链"
+          >
+            {getFieldDecorator('url', {
+              initialValue: data.url,
+            })(
+              <Input/>
+            )}
+          </Form.Item>
+
+
+          <Form.Item
+            labelCol={labelCol}
+            wrapperCol={wrapperCol}
             label="图片"
           >
             {getFieldDecorator('pic', {
@@ -145,10 +159,34 @@ class Edit extends Component {
           <Form.Item
             labelCol={labelCol}
             wrapperCol={wrapperCol}
-            label="描述"
+            label="SEO 关键字"
+          >
+            {getFieldDecorator('keyword', {
+              initialValue: data.keyword,
+            })(
+              <Input/>
+            )}
+          </Form.Item>
+
+          <Form.Item
+            labelCol={labelCol}
+            wrapperCol={wrapperCol}
+            label="SEO 描述"
           >
             {getFieldDecorator('description', {
               initialValue: data.description,
+            })(
+              <Input.TextArea/>
+            )}
+          </Form.Item>
+
+          <Form.Item
+            labelCol={labelCol}
+            wrapperCol={wrapperCol}
+            label="内容"
+          >
+            {getFieldDecorator('content', {
+              initialValue: data.content,
             })(
               <RichEditor id={data.id}/>
             )}
@@ -173,18 +211,6 @@ class Edit extends Component {
           >
             {getFieldDecorator('template_detail', {
               initialValue: data.template_detail,
-            })(
-              <Input/>
-            )}
-          </Form.Item>
-
-          <Form.Item
-            labelCol={labelCol}
-            wrapperCol={wrapperCol}
-            label="表单模板"
-          >
-            {getFieldDecorator('template_form', {
-              initialValue: data.template_form,
             })(
               <Input/>
             )}
@@ -390,6 +416,8 @@ class CategoryPage extends Component {
             return '单页';
           case 3:
             return '表单页';
+          case 4:
+            return '外链';
           default:
             return '-';
         }

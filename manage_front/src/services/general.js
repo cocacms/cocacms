@@ -41,6 +41,13 @@ export async function update(id, data, modelKey, type = 'g') {
   });
 }
 
+export async function switchChange(id, data, modelKey, type = 'g') {
+  return request(`${host}/api/${type}/${modelKey}/${id}/one`, {
+    method: 'PUT',
+    body: data,
+  });
+}
+
 export async function destory(id, modelKey, type = 'g') {
   return request(`${host}/api/${type}/${modelKey}/${id}`, {
     method: 'DELETE',

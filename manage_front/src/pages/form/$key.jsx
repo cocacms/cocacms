@@ -4,6 +4,8 @@ import TablePage from './components/table';
 import { connect } from 'dva';
 import name from 'components/name';
 
+let isMount = true;
+
 @connect(({ form }) => ({ form }))
 @name('数据汇总')
 class Page extends Component {
@@ -11,7 +13,9 @@ class Page extends Component {
     reload: false,
     key: '',
    }
+
   componentDidMount() {
+    isMount = true;
     const { match: { params }} = this.props;
     this.init(params.key);
   }
@@ -21,7 +25,7 @@ class Page extends Component {
     const { match: { params } } = nextProps;
     const { key } = prevState;
     if (params.key) {
-      if (key !== params.key) {
+      if (key !== params.key && isMount) {
         return {
           key: params.key,
           reload: true,
@@ -34,7 +38,7 @@ class Page extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.reload) {
       this.init()
-      this.setState({ reload: false });
+      isMount && this.setState({ reload: false });
     }
   }
 
@@ -47,6 +51,7 @@ class Page extends Component {
   }
 
   componentWillUnmount() {
+    isMount = false;
     const { dispatch } = this.props;
     dispatch({
       type: 'form/save',

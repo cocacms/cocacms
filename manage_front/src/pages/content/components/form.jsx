@@ -91,7 +91,7 @@ class DefaultSetting extends Component {
           cb: () => {
             dispatch({
               type: 'general/show',
-              payload: this.state.current.bind
+              payload: fieldsValue.id
             })
           }
         })
@@ -109,6 +109,8 @@ class DefaultSetting extends Component {
                 bind: data.insertId,
               },
               cb: () => {
+                console.log('reload data', data.insertId);
+
                 dispatch({
                   type: 'general/show',
                   payload: data.insertId,

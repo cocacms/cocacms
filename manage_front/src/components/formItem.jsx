@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-  Input, Rate, Radio, Select, Checkbox, TimePicker, DatePicker, Form
+  Input, Rate, Radio, Select, Checkbox, TimePicker, DatePicker, Form, Switch, Icon
 } from 'antd';
 import Upload from 'components/upload';
 import RichEditor from 'components/richeditor';
 import moment from 'moment';
+import Action from 'components/action';
 
 import re from '../common/re';
 
@@ -23,6 +24,7 @@ export const renderFormComponent = (type, optionsArray = [], len, id, isFilter =
    * 文件 file
    * 富文本 richtext
    * 评分 rate
+   * 开关 switch
    */
   switch (type) {
     case 'text':
@@ -51,6 +53,8 @@ export const renderFormComponent = (type, optionsArray = [], len, id, isFilter =
       return <RichEditor id={id}/>
     case 'rate':
       return <Rate allowHalf />;
+    case 'switch':
+      return <Switch />;
     default:
       return <Input />
   }
@@ -83,6 +87,11 @@ export const renderForm = (attrs, rules, data, getFieldDecorator, formItemLayout
 
     if (['time', 'date', 'datetime'].includes(attr.type)) {
       option.initialValue = moment(data[attr.key], ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']).isValid() ? moment(data[attr.key], ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']) : null
+    }
+
+    if (['switch'].includes(attr.type)) {
+      option.initialValue = data[attr.key] === 1;
+      option.valuePropName = 'checked'
     }
 
     if (rules[attr.key]) {
@@ -148,3 +157,122 @@ export const buildWhere = (values, indexs) => {
 
     return wheres;
   }
+
+
+/**
+* 字段定义
+*
+* @memberof TablePage
+*/
+export const getColumns = (attrs, actionProps, sortedInfo, switchChange = false) => {
+   const columns = [
+     {
+       dataIndex: 'id',
+       width: 80,
+       sorter: true,
+       title: 'ID',
+       sortOrder: sortedInfo.columnKey === 'id' && sortedInfo.order,
+     },
+     {
+       dataIndex: 'category.name',
+       title: '栏目',
+     }
+   ];
+
+   for (const attr of attrs) {
+     if (attr.tableable === 1) {
+       columns.push({
+         title: attr.name,
+         sorter: attr.sortable === 1,
+         sortOrder: sortedInfo.columnKey === attr.key && sortedInfo.order,
+         dataIndex: attr.key,
+         align: 'center',
+         render: (text, record) => {
+           // 单选，选择框 数据显示转换
+           if (['radio', 'select'].includes(attr.type)) {
+             for (const option of attr.optionsArray) {
+               if (option.value === String(text)) {
+                 return option.label;
+               }
+             }
+
+             return '-';
+           }
+
+           // 多选 数据显示转换
+           if (['checkbox'].includes(attr.type) && Array.isArray(text)) {
+             const strs = [];
+             for (const option of attr.optionsArray) {
+               if (text.includes(option.value)) {
+                 strs.push(option.label);
+               }
+             }
+
+             return strs.length === 0 ? '-' : strs.join(', ');
+           }
+
+           // 图片 数据显示转换
+           if (['img'].includes(attr.type) && Array.isArray(text)) {
+             return text.map(i => (<img key={i} src={i} alt="" style={{ maxWidth: 40, maxHeight: 40, marginRight: 5 }} />))
+           }
+
+           // 文件 数据显示转换
+           if (['file'].includes(attr.type) && Array.isArray(text)) {
+             return text.map(i => (
+               <p>
+                 <a href={i} target="black"><Icon type="file" /> {i.split('/')[i.split('/').length - 1]}</a>
+               </p>
+             ))
+           }
+
+           // 时间
+           if (['time', 'date', 'datetime'].includes(attr.type)) {
+             const formats = {
+               time: 'HH:mm:ss',
+               date: 'YYYY-MM-DD',
+               datetime: 'YYYY-MM-DD HH:mm:ss',
+             };
+             return moment(text, ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']).format(formats[attr.type])
+           }
+
+
+           // rate
+           if (['rate'].includes(attr.type)) {
+             return <Rate allowHalf value={text} disabled/>;
+           }
+
+           // richtext
+           if (['richtext'].includes(attr.type)) {
+             return <div dangerouslySetInnerHTML={{__html: text}}></div>;
+           }
+
+           if (['switch'].includes(attr.type)) {
+            return <Switch onChange={(is) => {switchChange && switchChange(record.id, attr.key ,is ? 1 : 0)}} checked={text === 1} />;
+          }
+
+           return text;
+         }
+
+       })
+     }
+   }
+
+   columns.push({
+     title: '操作',
+     width: 180,
+     align: 'center',
+     render: (text, record) => {
+       return (
+         <Action
+          {...actionProps}
+           delete= { () => { actionProps.delete(record.id) } }
+           edit={() => { actionProps.edit(record) }}
+         >
+         </Action>
+       )
+
+     }
+   });
+
+   return columns;
+ }

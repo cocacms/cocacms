@@ -7,7 +7,7 @@ import Can from 'components/can/index';
 
 import { connect } from 'dva';
 import moment from 'moment';
-import { renderFormComponent, buildWhere } from 'components/formItem';
+import { renderFormComponent, buildWhere, getColumns } from 'components/formItem';
 
 
 
@@ -149,6 +149,17 @@ class TablePage extends Component {
     })
   }
 
+  switchChange = (id, key, value) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'general/switchChange',
+      payload: {
+        id, key, value
+      },
+    })
+  }
+
+
   /**
    * 获取搜索字段DOM
    *
@@ -253,127 +264,25 @@ class TablePage extends Component {
     this.setState({ edit: { ...this.state.edit, opened: false }})
   }
 
-  /**
-   * 字段定义
-   *
-   * @memberof TablePage
-   */
-  getColumns = () => {
-    const { attrs, current = {} } = this.props;
-
-    const columns = [
-      {
-        dataIndex: 'id',
-        width: 80,
-        sorter: true,
-        title: 'ID',
-        sortOrder: this.state.sortedInfo.columnKey === 'id' && this.state.sortedInfo.order,
-      }
-    ];
-
-    for (const attr of attrs) {
-      if (attr.tableable === 1) {
-        columns.push({
-          title: attr.name,
-          sorter: attr.sortable === 1,
-          sortOrder: this.state.sortedInfo.columnKey === attr.key && this.state.sortedInfo.order,
-          dataIndex: attr.key,
-          align: 'center',
-          render: (text, record) => {
-            // 单选，选择框 数据显示转换
-            if (['radio', 'select'].includes(attr.type)) {
-              for (const option of attr.optionsArray) {
-                if (option.value === String(text)) {
-                  return option.label;
-                }
-              }
-
-              return '-';
-            }
-
-            // 多选 数据显示转换
-            if (['checkbox'].includes(attr.type) && Array.isArray(text)) {
-              const strs = [];
-              for (const option of attr.optionsArray) {
-                if (text.includes(option.value)) {
-                  strs.push(option.label);
-                }
-              }
-
-              return strs.length === 0 ? '-' : strs.join(', ');
-            }
-
-            // 图片 数据显示转换
-            if (['img'].includes(attr.type) && Array.isArray(text)) {
-              return text.map(i => (<img key={i} src={i} alt="" style={{ maxWidth: 40, maxHeight: 40, marginRight: 5 }} />))
-            }
-
-            // 文件 数据显示转换
-            if (['file'].includes(attr.type) && Array.isArray(text)) {
-              return text.map(i => (
-                <p>
-                  <a href={i} target="black"><Icon type="file" /> {i.split('/')[i.split('/').length - 1]}</a>
-                </p>
-              ))
-            }
-
-            // 时间
-            if (['time', 'date', 'datetime'].includes(attr.type)) {
-              const formats = {
-                time: 'HH:mm:ss',
-                date: 'YYYY-MM-DD',
-                datetime: 'YYYY-MM-DD HH:mm:ss',
-              };
-              return moment(text, ['YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']).format(formats[attr.type])
-            }
-
-
-            // rate
-            if (['rate'].includes(attr.type)) {
-              return <Rate allowHalf value={text} disabled/>;
-            }
-
-            // richtext
-            if (['richtext'].includes(attr.type)) {
-              return <div dangerouslySetInnerHTML={{__html: text}}></div>;
-            }
-
-            return text;
-          }
-
-        })
-      }
-    }
-
-    columns.push({
-      title: '操作',
-      width: 180,
-      align: 'center',
-      render: (text, record) => {
-        return (
-          <Action
-            editable={false}
-            can={{ delete: `DELETE@/api/f/${current.key}/:id`}}
-            delete={() => { this.delete(record.id) }}
-          >
-          </Action>
-        )
-
-      }
-    });
-
-    return columns;
-  }
 
   render() {
-    const { loading, general: { list: { data = [], page: current = 1, total = 0, pageSize = 20} } } = this.props;
+    const { loading, general: { list: { data = [], page: current = 1, total = 0, pageSize = 20} }, attrs } = this.props;
 
     return (
       <Can api={`GET@/api/f/${this.state.current.key}`} cannot={null}>
 
         <Table
           title={this.renderFilter}
-          columns={this.getColumns()}
+          columns={getColumns(
+            attrs,
+            {
+              editable: false,
+              can: { delete: `DELETE@/api/f/${this.state.current.key}/:id`},
+              delete: (id) => { this.delete(id) },
+            },
+            this.state.sortedInfo,
+            this.switchChange
+          )}
           loading={loading}
           rowKey='id'
           dataSource={data}

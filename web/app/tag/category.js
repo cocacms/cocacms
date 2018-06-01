@@ -5,7 +5,7 @@ const nunjucks = require('egg-view-nunjucks/node_modules/nunjucks');
 
 class ListExtension {
   constructor() {
-    this.tags = [ 'menu' ];
+    this.tags = [ 'category' ];
     this.lineno = 0;
   }
 
@@ -18,7 +18,7 @@ class ListExtension {
 
     parser.advanceAfterBlockEnd(tok.value);
 
-    const body = parser.parseUntilBlocks('endmenu');
+    const body = parser.parseUntilBlocks('endcategory');
 
     parser.advanceAfterBlockEnd();
 
@@ -30,39 +30,50 @@ class ListExtension {
     callback = arguments[arguments.length - 1];
 
     if (arguments.length !== 4) {
-      return callback(new Error(`menu标签_缺少参数 [行${this.lineno}]`), null);
+      return callback(new Error(`category标签_缺少参数 [行${this.lineno}]`), null);
     }
 
     const ctx = context.ctx.ctx;
 
+    if (!Object.prototype.hasOwnProperty.call(args, 'key') || !args.key) {
+      args.key = false;
+    }
+
     if (!Object.prototype.hasOwnProperty.call(args, 'id') || !args.id) {
-      args.id = -1;
+      args.id = false;
     }
 
     if (!Object.prototype.hasOwnProperty.call(args, '_res') || !args._res) {
       args._res = '_res';
     }
 
+    if (!args.key && !args.id) {
+      return callback(new Error(`category标签_key与id中至少有一个 [行${this.lineno}]`), null);
+    }
+
     try {
       const ret = [];
-      let menus = await ctx.service.menu.index(args.id, false, args.withMe);
+      let result = [];
+      if (args.id) {
+        result = await ctx.service.category.index(args.id, false, args.withMe);
+      } else if (args.key) {
+        result = await ctx.service.category.key(args.key, false, args.withMe);
+      }
 
-      for (const menu of menus) {
-        if (menu.type === 2) {
-          menu.jump = menu.url;
-        } else if (menu.category_id) {
-          const category = await ctx.service.category.show(menu.category_id);
-          if (category.type !== 4) {
-            menu.jump = ctx.helper.urlFor('web-category', { key: category.key });
-          } else {
-            menu.jump = category.url;
-          }
+      for (const category of result) {
+        // 栏目类型：1列表页 2单页 3表单页 4调整链接
+        if (category.type !== 4) {
+          category.jump = ctx.helper.urlFor('web-category', { key: category.key });
+        } else {
+          category.jump = category.url;
         }
       }
-      if (args.buildTree) {
-        menus = ctx.service.menu.toTree(menus);
+
+      if (args.buildTree === true) {
+        result = ctx.service.category.toTree(result);
       }
-      context.setVariable(args._res, menus);
+
+      context.setVariable(args._res, result);
       ret.push(await asyncBuilder(body));
       const val = new nunjucks.runtime.SafeString(ret.join(''));
       return callback(null, val);
