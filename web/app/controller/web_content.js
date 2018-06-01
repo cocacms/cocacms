@@ -15,7 +15,7 @@ class WebContentController extends Controller {
    * @memberof WebContentController
    */
   async index() {
-    await this.render('index');
+    await this.render('home');
   }
 
   async category() {
