@@ -177,7 +177,7 @@ class ModelAttrService extends Service {
     const tableColumAddSql = [];
     tableColumAddSql.push(`ADD COLUMN \`${data.key}\``); // 列名称
     tableColumAddSql.push(this.translateType(data.type, data.len)); // 列类型
-    tableColumAddSql.push(data.required === 1 ? 'NOT NULL' : 'NULL'); // 必填
+    tableColumAddSql.push(data.required ? 'NOT NULL' : 'NULL'); // 必填
     tableColumAddSql.push(this.translateDefault(data.type, data.default, values)); // 默认值
     tableColumAddSql.push('COMMENT ?'); // 备注
     values.push(data.name);
@@ -217,7 +217,7 @@ class ModelAttrService extends Service {
     const tableColumAddSql = [];
     tableColumAddSql.push(`CHANGE COLUMN \`${clonum.key}\` \`${data.key}\``); // 列名称
     tableColumAddSql.push(this.translateType(data.type, data.len)); // 列类型
-    tableColumAddSql.push(data.required === 1 ? 'NOT NULL' : 'NULL'); // 必填
+    tableColumAddSql.push(data.required ? 'NOT NULL' : 'NULL'); // 必填
     tableColumAddSql.push(this.translateDefault(data.type, data.default, values)); // 默认值
     tableColumAddSql.push('COMMENT ?'); // 备注
     values.push(data.name);

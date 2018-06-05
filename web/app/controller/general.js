@@ -51,17 +51,29 @@ class GeneralController extends Controller {
   async validate() {
     await this.init();
     const rules = await this.service.base.getValidateRules();
-    let body = this.ctx.query.body;
-    if (Object.keys(rules).length > 0) {
-      body = await this.ctx.validate(rules);
+    let body = this.ctx.request.body;
+
+    for (const key in body) {
+      if (body.hasOwnProperty(key)) {
+        if (body[key] === null || body[key] === undefined) {
+          delete body[key];
+        }
+
+      }
     }
+
+    if (Object.keys(rules).length > 0) {
+      // remove null value
+      body = await this.ctx.validate(rules, body);
+    }
+
     // 自动加上site
     body.site_id = this.ctx.site.id;
 
 
     // transform
     for (const key in rules) {
-      if (rules.hasOwnProperty(key)) {
+      if (rules.hasOwnProperty(key) && body.hasOwnProperty(key)) {
         const rule = rules[key];
         for (const item of rule) {
           if (item.transform && typeof item.transform === 'function') {

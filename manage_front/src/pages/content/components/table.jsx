@@ -417,7 +417,8 @@ class TablePage extends Component {
               edit: (record) => { this.openModel('edit', record)},
             },
             this.state.sortedInfo,
-            this.switchChange
+            this.switchChange,
+            true
           )}
           loading={loading}
           rowKey='id'

@@ -176,7 +176,7 @@ class Edit extends Component {
             {getFieldDecorator('description', {
               initialValue: data.description,
             })(
-              <Input.TextArea/>
+              <Input.TextArea autosize={{ minRows: 8 }}/>
             )}
           </Form.Item>
 

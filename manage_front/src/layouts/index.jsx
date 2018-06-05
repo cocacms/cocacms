@@ -14,9 +14,6 @@ import menusData from '../common/menu';
 import LoginLayout from './login';
 import 'rc-drawer-menu/assets/index.css';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-moment.locale('zh-cn');
 
 const { Header, Content, Footer, Sider } = Layout;
 @connect(({ admin, form }) => ({ admin, mform: form }))

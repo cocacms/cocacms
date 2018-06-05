@@ -42,8 +42,8 @@ class ModelsExtension {
       return callback(new Error(`single 标签_缺少name参数 [行${this.lineno}]`), null);
     }
 
-    if (!Object.prototype.hasOwnProperty.call(args, 'item') || !args.item) {
-      args.item = 'item';
+    if (!Object.prototype.hasOwnProperty.call(args, '_res') || !args._res) {
+      args._res = '_res';
     }
 
     try {
@@ -54,7 +54,7 @@ class ModelsExtension {
       if (result === null && nodataBody) {
         ret.push(await asyncBuilder(nodataBody));
       } else {
-        context.setVariable(args.item, result);
+        context.setVariable(args._res, result);
         ret.push(await asyncBuilder(body));
       }
 

@@ -180,7 +180,7 @@ class Edit extends Component {
             {getFieldDecorator('options', {
               initialValue: data.options,
             })(
-              <Input.TextArea />
+              <Input.TextArea autosize={{ minRows: 8 }}/>
             )}
           </Form.Item>
 
@@ -207,7 +207,7 @@ class Edit extends Component {
                 required: false,
               }]
             })(
-              <Input.TextArea />
+              <Input.TextArea autosize={{ minRows: 8 }}/>
             )}
           </Form.Item>
 

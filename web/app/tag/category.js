@@ -67,6 +67,14 @@ class ListExtension {
         } else {
           category.jump = category.url;
         }
+        try {
+          category.pic = JSON.parse(category.pic);
+        } catch (error) {
+          category.pic = null;
+        }
+        if (!category.pic) {
+          category.pic = [];
+        }
       }
 
       if (args.buildTree === true) {

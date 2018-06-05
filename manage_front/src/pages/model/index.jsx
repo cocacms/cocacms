@@ -129,7 +129,11 @@ class ModelPage extends Component {
     dispatch({
       type: 'model/add',
       payload: data,
-      cb: () => { this.closeModel(); reset(); }
+      cb: () => {
+        this.closeModel();
+        reset();
+        dispatch({ type: 'admin/fetch'});
+      }
     })
   }
 
@@ -138,7 +142,11 @@ class ModelPage extends Component {
     dispatch({
       type: 'model/edit',
       payload: data,
-      cb: () => { this.closeModel(); reset(); }
+      cb: () => {
+        this.closeModel();
+        reset();
+        dispatch({ type: 'admin/fetch'});
+       }
     })
   }
 
@@ -147,6 +155,9 @@ class ModelPage extends Component {
     dispatch({
       type: 'model/del',
       payload: id,
+      cb: () => {
+        dispatch({ type: 'admin/fetch'});
+      }
     })
   }
 

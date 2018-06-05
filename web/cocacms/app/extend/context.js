@@ -128,13 +128,14 @@ module.exports = {
             search.condition === 'match' &&
             Object.prototype.hasOwnProperty.call(search, 'key') &&
             Object.prototype.hasOwnProperty.call(search, 'value') &&
-            typeof search.value === 'string'
+            typeof search.value === 'string' &&
+            search.value
           ) {
             let keys = search.key.split(',');
             keys = keys.filter(i => this.re.name.test(i.trim())); // 正则防止sql注入
             if (keys.length > 0) {
-              keys = keys.map(i => `\`${i}\``);
-              wheres.push(`MATCH (${keys.join(',')}) AGAINST (? IN BOOLEAN MODE)`);
+              keys = keys.map(i => `\`${i.trim()}\``);
+              wheres.push(`MATCH (${keys.join(', ')}) AGAINST (? IN BOOLEAN MODE)`);
               values.push(search.value);
               continue;
             }

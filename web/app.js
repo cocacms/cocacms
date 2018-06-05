@@ -1,6 +1,14 @@
 'use strict';
+const path = require('path');
 
 module.exports = app => {
+
+  const directory = path.join(__dirname, 'app/hook');
+  console.log('====================================');
+  console.log('Coca CMS: Loading Hook Extend to App');
+  console.log(`Path: ${directory}`);
+  console.log('====================================');
+  app.loader.loadToApp(directory, 'hooks');
 
   // 注册自定义模板标签
   const tagMap = [ 'list', 'single', 'menu', 'category' ];

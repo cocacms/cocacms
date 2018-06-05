@@ -1,6 +1,7 @@
 'use strict';
 const uuidv4 = require('uuid/v4');
 const crypto = require('crypto');
+const moment = require('moment');
 
 
 /**
@@ -54,4 +55,9 @@ exports.pager = (data, page, pageSize, total) => {
     pre: page - 1 < 1 ? null : page - 1,
     next: page + 1 > pageCount ? null : page + 1,
   };
+};
+
+
+exports.date = (date, format = 'YYYY-MM-DD HH:mm:ss') => {
+  return moment(date, [ moment.ISO_8601, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss' ]).format(format);
 };

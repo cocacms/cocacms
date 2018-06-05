@@ -72,6 +72,13 @@ class BaseService extends Service {
       orders.push('`id` ASC'); // 默认按id
     }
 
+    if (this.app.config.env === 'local') {
+      console.log('=============DEBUG SQL==============');
+      console.log(`SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} ORDER BY ${orders.join(', ')} ${withPage ? 'LIMIT ?,?' : ''}`);
+      console.log(values);
+      console.log('====================================');
+    }
+
     let data = await this.app.mysql.query(
       `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} ORDER BY ${orders.join(', ')} ${withPage ? 'LIMIT ?,?' : ''}`,
       [ ...values, (page - 1) * pageSize, pageSize ]
@@ -107,12 +114,14 @@ class BaseService extends Service {
    *
    * @param {any} [searchs=[]] 搜索条件
    * @param {string} [fields='*'] 字段
+   * @param {string} [order=[]] 获取排序
    * @return {object} 数据
    * @memberof BaseService
    */
-  async single(searchs = [], fields = '*') {
+  async single(searchs = [], fields = '*', order = []) {
     let wheres = [ '1 = 1' ];
     let values = [];
+    let orders = [];
 
     if (!/^[a-zA-Z0-9_\*,]*$/.test(fields)) {
       this.error('非法字段fields');
@@ -129,10 +138,14 @@ class BaseService extends Service {
       values.push(this.ctx.site.id);
     }
 
-    ({ wheres, values } = this.ctx.whereBuilder(searchs, [], wheres, values));
+    if (orders.length === 0) {
+      orders.push('`id` ASC'); // 默认按id
+    }
+
+    ({ wheres, values, orders } = this.ctx.whereBuilder(searchs, order, wheres, values, orders));
 
     const data = await this.app.mysql.query(
-      `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} LIMIT 1`,
+      `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} ORDER BY ${orders.join(', ')} LIMIT 1`,
       values
     );
 
@@ -264,13 +277,12 @@ class BaseService extends Service {
         for (const key in toValidateTime) {
           if (toValidateTime.hasOwnProperty(key)) {
             const format = toValidateTime[key];
-
             if (column.type === key) {
               rule.push({
                 required: column.required === 1,
                 validator(rule, value, callback) {
                   const errors = [];
-                  if (!moment(value, format).isValid()) {
+                  if (value && !moment(value, [ moment.ISO_8601, format ]).isValid()) {
                     errors.push(`${column.name}的时间格式不正确`);
                   }
                   callback(errors);
@@ -297,6 +309,16 @@ class BaseService extends Service {
           rule.push({
             transform(value) { // 数据 格式化
               return value.join(',');
+            },
+          });
+        }
+
+        // 时间
+        if ([ 'date', 'datetime', 'time' ].includes(column.type)) {
+          const format = toValidateTime[column.type];
+          rule.push({
+            transform(value) { // 数据 格式化
+              return moment(value, [ moment.ISO_8601, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss' ]).format(format);
             },
           });
         }

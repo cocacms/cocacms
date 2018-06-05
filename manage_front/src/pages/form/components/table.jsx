@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import {
-  Table, Form, Row, Col, Button, Icon, Rate
+  Table, Form, Row, Col, Button, Modal, Icon, Rate, Switch
 } from 'antd';
-import Action from 'components/action';
 import Can from 'components/can/index';
 
 import { connect } from 'dva';
-import moment from 'moment';
 import { renderFormComponent, buildWhere, getColumns } from 'components/formItem';
 
-
+import  moment from 'moment';
 
 
 @connect(({ general, loading }) => ({ general, loading: loading.models.general }))
@@ -23,6 +21,10 @@ class TablePage extends Component {
     sortedInfo: {
       columnKey: '',
       order: '',
+    },
+    show: {
+      opened: false,
+      data: {}
     }
   }
 
@@ -264,6 +266,10 @@ class TablePage extends Component {
     this.setState({ edit: { ...this.state.edit, opened: false }})
   }
 
+  show = (data) => {
+    this.setState({ show: { opened: true, data }})
+  }
+
 
   render() {
     const { loading, general: { list: { data = [], page: current = 1, total = 0, pageSize = 20} }, attrs } = this.props;
@@ -281,7 +287,13 @@ class TablePage extends Component {
               delete: (id) => { this.delete(id) },
             },
             this.state.sortedInfo,
-            this.switchChange
+            this.switchChange,
+            false,
+            (record) => {
+              return (
+                <a onClick={() => { this.show(record) }}>查看详情</a>
+              )
+            }
           )}
           loading={loading}
           rowKey='id'
@@ -296,7 +308,77 @@ class TablePage extends Component {
           onChange={this.handleTableChange}
         >
         </Table>
+        <Modal
+          footer={null}
+          title="查看详情"
+          visible={this.state.show.opened}
+          onCancel={ () => { this.setState({ show: { opened: false, data: {}}})}}
+        >
+        {
+          attrs.map(att => {
+            if (['radio', 'select'].includes(att.type)) {
+              for (const option of att.optionsArray) {
+                if (option.value === String(this.state.show.data[att.key])) {
+                  return <p key={att.key}>{att.name}：{option.label}</p>;
+                }
+              }
+            }
 
+            if (['checkbox'].includes(att.type)) {
+              const strs = [];
+              for (const option of att.optionsArray) {
+                if (Array.isArray(this.state.show.data[att.key]) && this.state.show.data[att.key].includes(option.value)) {
+                  strs.push(option.label);
+                }
+              }
+              return <p key={att.key}>{att.name}：{strs.length === 0 ? '-' : strs.join(', ')}</p>;
+            }
+
+            if (['img'].includes(att.type) && Array.isArray(this.state.show.data[att.key])) {
+              return <p key={att.key}>{att.name}：{
+                this.state.show.data[att.key].map(i => (<img key={`${att.key}-${i}`} src={i} alt="" style={{ maxWidth: 400, maxHeight: 400, marginRight: 5 }} />))
+              }</p>;
+            }
+
+            if (['file'].includes(att.type) && Array.isArray(this.state.show.data[att.key])) {
+              return this.state.show.data[att.key].map(i => (
+                <p key={`${att.key}-${i}`}>
+                  <a href={i} target="black"><Icon type="file" /> {i.split('/')[i.split('/').length - 1]}</a>
+                </p>
+              ))
+            }
+
+            if (['time', 'date', 'datetime'].includes(att.type)) {
+              const formats = {
+                time: 'HH:mm:ss',
+                date: 'YYYY-MM-DD',
+                datetime: 'YYYY-MM-DD HH:mm:ss',
+              };
+              return <p key={att.key}>{att.name}：{
+                moment(this.state.show.data[att.key], [moment.ISO_8601, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']).format(formats[att.type])
+              }</p>;
+
+            }
+
+
+            // rate
+            if (['rate'].includes(att.type)) {
+              return <p key={att.key}>{att.name}：<Rate allowHalf value={this.state.show.data[att.key]} disabled /></p>;
+            }
+
+            // richtext
+            if (['richtext'].includes(att.type)) {
+              return <p key={att.key}>{att.name}：<div key={att.key} dangerouslySetInnerHTML={{ __html: this.state.show.data[att.key] }}></div></p>;
+            }
+
+            if (['switch'].includes(att.type)) {
+              return <p key={att.key}>{att.name}：<Switch key={att.key} checked={this.state.show.data[att.key] === 1} /></p>;
+            }
+
+            return <p key={att.key}>{att.name}：{this.state.show.data[att.key]}</p>;
+          })
+        }
+        </Modal>
       </Can>
 
     );

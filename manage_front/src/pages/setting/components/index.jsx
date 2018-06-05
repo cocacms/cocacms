@@ -49,6 +49,16 @@ class DefaultSetting extends Component {
 
         </Form.Item>
 
+        <Form.Item {...formItemLayout} label="页脚LOGO">
+          {getFieldDecorator('footerlogo', {
+            initialValue: defaults.footerlogo,
+            rules: [{ required: true, message: '请输入' }]
+          })(
+            <Upload max={1} />
+          )}
+
+        </Form.Item>
+
         <Form.Item {...formItemLayout} label="网站关键字">
           {getFieldDecorator('keyword', {
             initialValue: defaults.keyword,
@@ -73,7 +83,7 @@ class DefaultSetting extends Component {
 
         <Form.Item {...formItemLayout} label="ICP备案">
           {getFieldDecorator('icp', {
-            initialValue: defaults.description,
+            initialValue: defaults.icp,
             rules: [{ required: true, message: '请输入' }]
           })(
             <Input placeholder="请输入" />
