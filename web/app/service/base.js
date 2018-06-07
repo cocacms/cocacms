@@ -308,6 +308,9 @@ class BaseService extends Service {
         if (column.type === 'checkbox') {
           rule.push({
             transform(value) { // 数据 格式化
+              if (!Array.isArray(value)) {
+                value = [ value ];
+              }
               return value.join(',');
             },
           });

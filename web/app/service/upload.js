@@ -44,7 +44,7 @@ class UploadService extends Service {
     const stream = await parts();
     // stream not exists, treat as an exception
     if (!stream || !stream.filename) {
-      this.throw(400, '找不到上传的文件');
+      this.error('找不到上传的文件');
     }
     stream.fields = parts.field;
     stream.once('limit', () => {

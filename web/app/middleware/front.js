@@ -21,6 +21,10 @@ module.exports = () => {
     }
 
 
+    if (ctx.session.uid) {
+      ctx.uid = ctx.session.uid;
+    }
+
     ctx.site = site;
 
     ctx.query = {

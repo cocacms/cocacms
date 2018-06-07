@@ -169,7 +169,7 @@ class WebContentController extends Controller {
    */
   async validate() {
     const rules = await this.service.base.getValidateRules();
-    let body = this.ctx.query.body;
+    let body = this.ctx.request.body;
 
     for (const key in body) {
       if (body.hasOwnProperty(key)) {
@@ -244,15 +244,14 @@ class WebContentController extends Controller {
 
     const body = await this.validate();
 
-    if (this.ctx.session.captcha !== body.captcha) {
-      this.error('验证码错误！');
-    }
-
     delete body.captcha;
     delete body._csrf;
     this.ctx.session.captcha = Math.random();
-
-    this.ctx.body = await this.service.base.create(body);
+    if (body.id) {
+      this.ctx.body = await this.service.base.update(body);
+    } else {
+      this.ctx.body = await this.service.base.create(body);
+    }
   }
 }
 

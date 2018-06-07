@@ -33,8 +33,15 @@ class BaseController extends Controller {
     }
 
     const config = await this.service.config.get();
+
+    let hookData = {};
+    if (this.app.hooks.render) {
+      hookData = await this.app.hooks.render(this.ctx);
+    }
+
     await this.ctx.render(`${themeDir}${path}.nj`, {
       config,
+      ...hookData,
       ...data,
     });
   }

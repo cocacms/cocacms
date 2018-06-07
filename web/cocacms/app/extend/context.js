@@ -51,6 +51,12 @@ module.exports = {
     this[SITE] = value;
   },
 
+  isLogin() {
+    if (!this[UID]) {
+      return false;
+    }
+    return true;
+  },
   /**
    * 构建where
    *

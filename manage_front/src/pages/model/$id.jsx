@@ -549,6 +549,8 @@ class ModelPage extends Component {
             return '富文本';
           case 'rate':
             return '评分';
+          case 'switch':
+            return '开关';
           default:
             return '-';
         }
