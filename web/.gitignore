@@ -13,3 +13,4 @@ run/
 
 config/config.local.js
 config/jwt/*.pem
+app/public/*
