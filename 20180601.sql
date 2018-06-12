@@ -12,9 +12,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 
--- 导出 enzoani 的数据库结构
-CREATE DATABASE IF NOT EXISTS `enzoani` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE `enzoani`;
 
 -- 导出  表 enzoani.admin 结构
 CREATE TABLE IF NOT EXISTS `admin` (
