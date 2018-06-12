@@ -1,0 +1,28 @@
+{
+  "name": "@cocacms/cocacms",
+  "version": "1.0.0",
+  "dependencies": {
+    "@cocacms/egg-qiniu": "^1.0.0",
+    "egg": "^2.2.1",
+    "egg-async-validate": "^1.0.1",
+    "egg-cors": "^2.0.0",
+    "egg-mysql": "^3.0.0",
+    "egg-router-plus": "^1.2.0",
+    "egg-scripts": "^2.5.0",
+    "koa-locales": "^1.8.0"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.0.0",
+    "egg-bin": "^4.4.0",
+    "egg-ci": "^1.8.0",
+    "egg-mock": "^3.14.0",
+    "eslint": "^4.18.0",
+    "eslint-config-egg": "^7.0.0",
+    "webstorm-disable-index": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "license": "MIT"
+}
