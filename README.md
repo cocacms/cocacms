@@ -26,18 +26,12 @@ $ git clone https://github.com/rojer95/cocacms.git
 * 安装依赖
 
 ```
-$ cd cocacms/web
+$ cd cocacms/web/cocacms
+$ yarn install
+$ cd ../
 $ yarn install
 $ cd ../manage_front
 $ yarn install
-```
-* 链接依赖的CocoaCms子框架
-
-```
-$ cd cocacms/web/cocacms
-$ yarn link
-$ cd cocacms/web
-$ yarn link cocacms
 ```
 
 * 修改配置
@@ -62,7 +56,7 @@ $ yarn start
 > 密码 `admin123456`  
 
 ## TODO
-- [ ] 扩展模板标签
+- [x] 扩展模板标签
 - [ ] 完善文档
   - [ ] 目录结构说明
   - [ ] 模板相关说明

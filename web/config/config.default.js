@@ -68,9 +68,6 @@ module.exports = appInfo => {
 
     if (!(err instanceof ctx.app.exception.runnerExection)) {
       ctx.logger.warn(err);
-      if (ctx.app.config.env.trim() === 'prod') {
-        return '未知错误';
-      }
     }
 
     return message;
