@@ -125,7 +125,7 @@ class Edit extends Component {
             })(
               <Select placeholder="请选择">
                 { models.map(i => (
-                  <Select.Option key={i.id} value={i.id}>{i.name}</Select.Option>
+                  <Select.Option key={`model_id_${i.id}`} value={i.id}>{i.name}</Select.Option>
                 ))}
               </Select>
             )}
@@ -485,7 +485,7 @@ class CategoryPage extends Component {
       <Can api="GET@/api/category" cannot={null}>
 
         <Table
-          key={list.length}
+          key={`categoye-table-${list.length}`}
           childrenColumnName="children"
           title={this.renderFilter}
           defaultExpandAllRows

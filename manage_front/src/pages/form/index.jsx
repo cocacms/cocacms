@@ -68,7 +68,7 @@ class Edit extends Component {
             })(
               <Select placeholder="请选择">
                 {
-                  models.map(i => (<Select.Option key={i.id} value={i.id}>{i.name}</Select.Option>))
+                  models.map(i => (<Select.Option key={`model_id_${i.id}`} value={i.id}>{i.name}</Select.Option>))
                 }
               </Select>
             )}

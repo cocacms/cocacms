@@ -398,7 +398,7 @@ class menuPage extends Component {
       <Can api="GET@/api/menu" cannot={null}>
 
         <Table
-          key={list.length}
+          key={`menu-table-${list.length}`}
           childrenColumnName="children"
           title={this.renderFilter}
           defaultExpandAllRows

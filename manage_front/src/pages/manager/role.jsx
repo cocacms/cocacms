@@ -185,13 +185,13 @@ class PermissionEdit extends Component {
         <Spin spinning={loading}>
             {
               Object.keys(this.state.map).map((i, index) => (
-                <Row key={i}>
+                <Row key={`permisson_${i}`}>
                   {index === 0 ? null : <Divider /> }
                   {
                     this.state.map[i].map(ii => (
-                      <Col span={6} key={ii.key}>
+                      <Col span={6} key={`permisson_ii_${ii.key}`}>
                         <Checkbox
-                          key={`${ii.key}-${ii.selected}`}
+                          key={`permisson_ii_${ii.key}-${ii.selected}`}
                           value={ii.value}
                           onChange={this.onOk}
                           defaultChecked={ii.selected}

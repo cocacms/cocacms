@@ -34,11 +34,11 @@ export const renderFormComponent = (type, optionsArray = [], len, id, isFilter =
       return <Input.TextArea autosize={{ minRows: 8 }} />
     case 'radio':
       return <Radio.Group>
-        {optionsArray.map(i => <Radio key={i.value} value={i.value}>{i.label}</Radio>)}
+        {optionsArray.map(i => <Radio key={`rd_${i.label}_${i.value}`} value={i.value}>{i.label}</Radio>)}
       </Radio.Group>
     case 'select':
       return <Select placeholder='请选择'>
-        {optionsArray.map(i => <Select.Option key={i.value} value={i.value}>{i.label}</Select.Option>)}
+        {optionsArray.map(i => <Select.Option key={`rd_${i.label}_${i.value}`} value={i.value}>{i.label}</Select.Option>)}
       </Select>
     case 'checkbox':
       return <Checkbox.Group options={optionsArray} />

@@ -201,7 +201,7 @@ class MainLayout extends Component {
 
                 <Select value={admin.currentSite.id} onChange={this.changeSite} className={styles.item} dropdownMatchSelectWidth={false}>
                   { admin.site.map(i => (
-                    <Select.Option key={i.id} value={i.id}>
+                    <Select.Option key={`site_${i.id}`} value={i.id}>
                       { i.name }
                     </Select.Option>
                   ))}
