@@ -10,7 +10,6 @@ const path = require('path');
 
 module.exports = (options, app) => {
   options = app.config.static;
-  options.prefix = '/static/';
 
   const staticDirs = [];
   if (options.dynamic && !options.files) {
@@ -42,7 +41,7 @@ module.exports = (options, app) => {
           // ensure the safety of objects
           const newOptions = Object.assign({}, options);
           newOptions.dir = localesDir;
-          newOptions.prefix += `${filename}/`;
+          newOptions.prefix = `/static/${filename}/`;
 
           // ensure directory exists
           mkdirp.sync(newOptions.dir);
