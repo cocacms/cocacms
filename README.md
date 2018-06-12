@@ -26,9 +26,7 @@ $ git clone https://github.com/rojer95/cocacms.git
 * 安装依赖
 
 ```
-$ cd cocacms/web/cocacms
-$ yarn install
-$ cd ../
+$ cd cocacms/web
 $ yarn install
 $ cd ../manage_front
 $ yarn install
