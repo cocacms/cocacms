@@ -1,6 +1,6 @@
 'use strict';
 
-const Controller = require('cocacms@cocacms').Controller;
+const Controller = require('@cocacms/cocacms').Controller;
 /**
  * 基础控制器
  *
