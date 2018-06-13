@@ -8,12 +8,14 @@ import { check } from 'components/can/index';
 import Menu from 'components/menu';
 import router from 'umi/router';
 import { connect } from 'dva';
+import { Helmet } from "react-helmet";
+import 'rc-drawer-menu/assets/index.css';
+import zh_CN from 'antd/lib/locale-provider/zh_CN';
+
 import styles from './index.less';
 import { config } from '../common/config';
 import menusData from '../common/menu';
 import LoginLayout from './login';
-import 'rc-drawer-menu/assets/index.css';
-import zh_CN from 'antd/lib/locale-provider/zh_CN';
 
 const { Header, Content, Footer, Sider } = Layout;
 @connect(({ admin, form }) => ({ admin, mform: form }))
@@ -149,6 +151,9 @@ class MainLayout extends Component {
     return (
       <LocaleProvider locale={zh_CN}>
         <Layout className={styles.main}>
+          <Helmet>
+            <title>{config.name}</title>
+          </Helmet>
           {this.state.isMobile ?
             <DrawerMenu
               parent={null}
