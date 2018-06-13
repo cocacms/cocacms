@@ -69,7 +69,7 @@ export default class PicturesWall extends React.Component {
 
   render() {
     const { previewVisible, previewImage, fileList, _fileList } = this.state;
-    const { max, accept = 'image/*' } = this.props;
+    const { max, accept = 'image/*', disabled = false } = this.props;
 
     const list = fileList === null ? _fileList : fileList;
 
@@ -82,6 +82,7 @@ export default class PicturesWall extends React.Component {
     return (
       <div className="clearfix">
         <Upload
+          disabled={disabled}
           accept={accept}
           action={`${host}/api/upload`}
           listType="picture-card"

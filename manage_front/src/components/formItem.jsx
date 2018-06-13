@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Input, Rate, Radio, Select, Checkbox, TimePicker, DatePicker, Form, Switch, Icon
+  Input, Rate, Radio, Select, Checkbox, TimePicker, DatePicker, Form, Switch, Icon, InputNumber
 } from 'antd';
 import Upload from 'components/upload';
 import RichEditor from 'components/richeditor';
@@ -13,9 +13,16 @@ import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 
 
-export const renderFormComponent = (type, optionsArray = [], len, id, isFilter = false) => {
+export const renderFormComponent = (type, optionsArray = [], len, id, isFilter = false, onlyread = false) => {
+  // 搜索不禁用
+  if (isFilter) {
+    onlyread = false;
+  }
+
   /**
    * 单行文本 varchar
+   * 整数 int
+   * 小数 decimal
    * 多行文本 text
    * 单选 radio
    * 选择框 select
@@ -31,35 +38,39 @@ export const renderFormComponent = (type, optionsArray = [], len, id, isFilter =
    */
   switch (type) {
     case 'text':
-      return <Input.TextArea autosize={{ minRows: 8 }} />
+      return <Input.TextArea autosize={{ minRows: 8 }} disabled={onlyread}/>
+    case 'int':
+      return <InputNumber style={{ width: '100%' }} precision={0} disabled={onlyread}/>
+    case 'decimal':
+      return <InputNumber style={{ width: '100%' }} precision={Number(len.split(',',2)[1])} disabled={onlyread}/>
     case 'radio':
-      return <Radio.Group>
+      return <Radio.Group disabled={onlyread}>
         {optionsArray.map(i => <Radio key={`rd_${i.label}_${i.value}`} value={i.value}>{i.label}</Radio>)}
       </Radio.Group>
     case 'select':
-      return <Select placeholder='请选择'>
+      return <Select placeholder='请选择' disabled={onlyread}>
         {optionsArray.map(i => <Select.Option key={`rd_${i.label}_${i.value}`} value={i.value}>{i.label}</Select.Option>)}
       </Select>
     case 'checkbox':
-      return <Checkbox.Group options={optionsArray} />
+      return <Checkbox.Group options={optionsArray} disabled={onlyread}/>
     case 'time':
-      return <TimePicker style={{ width: '100%' }} />
+      return <TimePicker disabled={onlyread} style={{ width: '100%' }} />
     case 'date':
-      return isFilter ? <DatePicker.RangePicker style={{ width: '100%' }} /> : <DatePicker style={{ width: '100%' }} />
+      return isFilter ? <DatePicker.RangePicker style={{ width: '100%' }} /> : <DatePicker disabled={onlyread} style={{ width: '100%' }} />
     case 'datetime':
-      return isFilter ? <DatePicker.RangePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} /> : <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />
+      return isFilter ? <DatePicker.RangePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} /> : <DatePicker disabled={onlyread} showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />
     case 'img':
-      return <Upload max={len} />
+      return <Upload disabled={onlyread} max={len} />
     case 'file':
-      return <Upload accept="" max={len} />
+      return <Upload disabled={onlyread} accept="" max={len} />
     case 'richtext':
-      return <RichEditor id={id} />
+      return <RichEditor disabled={onlyread} id={id} />
     case 'rate':
-      return <Rate allowHalf />;
+      return <Rate disabled={onlyread} allowHalf />;
     case 'switch':
-      return <Switch />;
+      return <Switch disabled={onlyread} />;
     default:
-      return <Input />
+      return <Input disabled={onlyread} />
   }
 
 
@@ -84,9 +95,12 @@ export const fillRule = (rules) => {
 export const renderForm = (attrs, rules, data, getFieldDecorator, formItemLayout) => {
   const result = [];
   for (const attr of attrs) {
-    const option = {
-      initialValue: data[attr.key],
-    };
+    const option = {};
+    if (Object.prototype.hasOwnProperty.call(data, attr.key)) {
+      option.initialValue = data[attr.key];
+    } else if (attr.onlyread === 1 && attr.default) {
+      option.initialValue = attr.default;
+    }
 
     if (['time', 'date', 'datetime'].includes(attr.type)) {
       option.initialValue = moment(data[attr.key], [moment.ISO_8601, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']).isValid() ? moment(data[attr.key], [moment.ISO_8601, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']) : null
@@ -108,7 +122,7 @@ export const renderForm = (attrs, rules, data, getFieldDecorator, formItemLayout
         label={attr.name}
       >
         {getFieldDecorator(attr.key, option)(
-          renderFormComponent(attr.type, attr.optionsArray, attr.len, data.id)
+          renderFormComponent(attr.type, attr.optionsArray, attr.len, data.id, false, attr.onlyread === 1)
         )}
       </Form.Item>
     )

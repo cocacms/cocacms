@@ -18,10 +18,7 @@ class TablePage extends Component {
       model: {},
     },
     reload: false,
-    sortedInfo: {
-      columnKey: '',
-      order: '',
-    },
+    sortedInfo: {},
     show: {
       opened: false,
       data: {}
@@ -94,10 +91,10 @@ class TablePage extends Component {
    */
   handleTableChange = (pagination, filters, sorter) => {
     const order = [];
+    this.setState({
+      sortedInfo: sorter,
+    })
     if (sorter.columnKey) {
-      this.setState({
-        sortedInfo: sorter,
-      })
       order.push([ sorter.columnKey, sorter.order === 'ascend' ? 'asc' : 'desc'])
     }
     this.handleSearch(null, pagination.current, pagination.pageSize, order);
@@ -126,10 +123,7 @@ class TablePage extends Component {
     })
     form.resetFields();
     this.setState({
-      sortedInfo: {
-        columnKey: '',
-        order: '',
-      }
+      sortedInfo: {}
     })
 
     dispatch({

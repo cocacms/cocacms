@@ -24,9 +24,10 @@ class RichEditor extends Component {
     uploadFn: this.uploadFn,
   };
   render() {
+    const { disabled = false, height = 450, id = Math.random() } = this.props;
     return (
       <BraftEditor
-        height={450} contentFormat="html" initialContent={this.props['data-__meta'].initialValue} contentId={this.props.id} language="zh"
+        height={height} contentFormat="html" disabled={disabled} initialContent={this.props['data-__meta'] ? this.props['data-__meta'].initialValue : ''} contentId={id} language="zh"
         { ...this.props }
         media={this.media}
       />

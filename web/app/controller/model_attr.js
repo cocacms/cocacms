@@ -21,7 +21,7 @@ class ModelAttrController extends Controller {
       required: [{ required: true, message: '请设置是否必填 ' }],
       tableable: [{ required: true, message: '请设置是否显示在列表 ' }],
       type: [{ required: true, message: '请设置字段类型' }],
-      len: [{ required: true, message: '请设置字段长度' }, { type: 'integer', message: '字段长度必须为数字' }],
+      len: [{ required: true, message: '请设置字段长度' }, { pattern: /^(([1-9][0-9]*)|(([1-9][0-9]*),([1-9][0-9]*)))$/, message: '请设置为%d或%d,%d格式' }],
       rules: [{ required: false, type: 'array', message: '验证规则必须为数组' }],
       sort: [{ required: false, type: 'integer', message: '排序必须为数字' }],
     });

@@ -175,3 +175,12 @@ CREATE TABLE IF NOT EXISTS `theme` (
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+
+INSERT INTO `admin` (`id`, `account`, `password`, `nickname`, `is_super`) VALUES
+	(1, 'admin@admin.com', '71f74b8d19266f28f8c713d99899c259', '超级管理员', 1);
+
+INSERT INTO `site` (`id`, `name`, `locale`, `config`) VALUES
+	(1, '中文站', 'zh-CN', '{"upload": {"type": "local", "fileSize": "5mb", "extension": ".jpg|.jpeg|.png|.gif|.mp3|.mp4"}, "defaults": {"icp": "CocaCMS", "title": "CocaCMS", "keyword": "CocaCMS", "description": "CocaCMS"}}');
+
+INSERT INTO `theme` (`id`, `package`, `name`, `dirname`, `author`, `use`) VALUES
+	(1, 'rojer@default', '默认模板', 'default', 'rojer', 1);

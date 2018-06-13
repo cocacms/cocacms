@@ -66,6 +66,8 @@ class ModelAttrService extends Service {
 
     /**
      * 单行文本 varchar
+     * 整数 int
+     * 小数 decimal
      * 多行文本 text
      * 单选 radio
      * 选择框 select
@@ -79,7 +81,6 @@ class ModelAttrService extends Service {
      * 评分 rate
      * 开关 switch
      */
-
     switch (type) {
       case 'text':
       case 'time':
@@ -92,8 +93,24 @@ class ModelAttrService extends Service {
         return 'LONGTEXT';
       case 'rate':
       case 'switch':
+        if (!/^([1-9][0-9]*)$/.test(len)) {
+          this.error('小数的长度必须为%d格式');
+        }
         return `TINYINT(${len})`;
+      case 'int':
+        if (!/^([1-9][0-9]*)$/.test(len)) {
+          this.error('小数的长度必须为%d格式');
+        }
+        return `INT(${len})`;
+      case 'decimal':
+        if (!/^(([1-9][0-9]*),([1-9][0-9]*))$/.test(len)) {
+          this.error('小数的长度必须为%d,%d格式');
+        }
+        return `DECIMAL(${len})`;
       default:
+        if (!/^([1-9][0-9]*)$/.test(len)) {
+          this.error('小数的长度必须为%d格式');
+        }
         return `VARCHAR(${len})`;
     }
 
@@ -129,6 +146,10 @@ class ModelAttrService extends Service {
         }
 
         values.push(value);
+        return 'DEFAULT ?';
+      case 'int':
+      case 'decimal':
+        values.push(isNaN(Number(value)) ? 0 : Number(value));
         return 'DEFAULT ?';
       default:
         values.push(value);

@@ -86,6 +86,8 @@ class Edit extends Component {
             })(
               <Select placeholder="请选择">
                 <Select.Option value="varchar">单行文本</Select.Option>
+                <Select.Option value="int">整数</Select.Option>
+                <Select.Option value="decimal">小数</Select.Option>
                 <Select.Option value="text">多行文本</Select.Option>
                 <Select.Option value="radio">单选</Select.Option>
                 <Select.Option value="select">选择框</Select.Option>
@@ -109,9 +111,9 @@ class Edit extends Component {
           >
             {getFieldDecorator('len', {
               initialValue: data.len,
-              rules: [{ required: true, message: '请设置字段长度' }],
+              rules: [{ required: true, message: '请设置字段长度' }, { pattern: /^(([1-9][0-9]*)|(([1-9][0-9]*),([1-9][0-9]*)))$/, message: '请设置为%d或%d,%d格式' }],
             })(
-              <InputNumber />
+              <Input />
             )}
           </Form.Item>
 
@@ -122,6 +124,19 @@ class Edit extends Component {
           >
             {getFieldDecorator('required', {
               initialValue: data.required === 1,
+              valuePropName: 'checked',
+            })(
+              <Checkbox />
+            )}
+          </Form.Item>
+
+          <Form.Item
+            labelCol={labelCol}
+            wrapperCol={wrapperCol}
+            label="只读"
+          >
+            {getFieldDecorator('onlyread', {
+              initialValue: data.onlyread === 1,
               valuePropName: 'checked',
             })(
               <Checkbox />
@@ -339,7 +354,7 @@ class KeyEdit extends Component {
                 value={this.state.fulltexts}
               >
                 { data.map(i => {
-                  if (!['radio', 'select', 'time', 'date', 'datetime', 'rate', 'img', 'file', 'switch'].includes(i.type)) {
+                  if (!['radio', 'select', 'time', 'date', 'datetime', 'rate', 'img', 'file', 'switch', 'int', 'decimal'].includes(i.type)) {
                     return <Select.Option value={i.key} key={i.key}> {i.name} </Select.Option>
                   }
                   return null;
@@ -527,6 +542,10 @@ class ModelPage extends Component {
         switch (text) {
           case 'varchar':
             return '单行文本';
+          case 'int':
+            return '整数';
+          case 'decimal':
+            return '小数';
           case 'text':
             return '多行文本';
           case 'radio':
@@ -559,6 +578,13 @@ class ModelPage extends Component {
     {
       dataIndex: 'required',
       title: '是否必填',
+      render: text => {
+        return text === 1 ? '是' : '否';
+      }
+    },
+    {
+      dataIndex: 'onlyread',
+      title: '只读',
       render: text => {
         return text === 1 ? '是' : '否';
       }
