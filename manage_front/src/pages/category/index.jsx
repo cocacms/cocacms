@@ -40,8 +40,8 @@ class Edit extends Component {
         onCancel={close}
         onOk={this.onOk}
         width="90%"
-        style={{ top: '10vh' }}
-        bodyStyle={{ maxHeight: '68vh', overflowY: 'auto'}}
+        style={{ top: '5vh' }}
+        bodyStyle={{ maxHeight: '80vh', overflowY: 'auto'}}
       >
         <Form>
           {getFieldDecorator('id', {
