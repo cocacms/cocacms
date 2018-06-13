@@ -37,23 +37,32 @@ class Menus extends Component {
   state = {
     selected: [],
     opened: [],
+    currentPath: '',
   }
 
   static getDerivedStateFromProps(nextProps, prevState){
-    let opened = [];
-    const current = getCurrent(nextProps.location.pathname, nextProps.permission, nextProps.menudata); // 回去当前选择的菜单扁平树结构
-    if (current.length === 0) { // 没有找到，不变化
-      return null;
-    }
-    opened = current.filter(i => i.indexOf('_sub_') === 0); // 取出展开项
+    let opened = prevState.opened;
+    let currentPath = prevState.currentPath;
+    let selected = prevState.selected;
+    if (prevState.currentPath !== nextProps.location.pathname) { // 路由变化，重新计算展开项
+      currentPath = nextProps.location.pathname;
+      const current = getCurrent(nextProps.location.pathname, nextProps.permission, nextProps.menudata); // 回去当前选择的菜单扁平树结构
+      if (current.length === 0) { // 没有找到，不变化
+        return null;
+      }
 
-    if (nextProps.small === true) { // 缩小状态下，默认不展开
-      opened = [];
-    }
+      opened = current.filter(i => i.indexOf('_sub_') === 0); // 取出展开项
 
+      if (nextProps.small === true) { // 缩小状态下，默认不展开
+        opened = [];
+      }
+
+      selected = current.filter(i => i.indexOf('_sub_') === -1); // 取出非展开项 即选择的菜单
+    }
     return {
       opened,
-      selected: current.filter(i => i.indexOf('_sub_') === -1), // 取出非展开项 即选择的菜单
+      selected,
+      currentPath,
     };
   }
 
