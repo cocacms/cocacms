@@ -3,31 +3,36 @@ import { connect } from 'dva';
 import { Form, Input, Button, Select } from 'antd';
 import Can from 'components/can/index';
 import PropTypes from 'prop-types';
+import { renderForm } from 'components/formItem';
 
 import { formItemLayout, tailFormItemLayout } from '../../../common/formCol';
 
 const Option = Select.Option;
-@connect(({ config }) => ({ config }))
+@connect(({ config, plugin }) => ({ config, plugin }))
 @Form.create()
 class DefaultSetting extends Component {
   state = {
-    type: null,
+    formId: 'upload_config_0',
   }
 
   static contextTypes = {
     isMobile: PropTypes.bool,
   }
 
-  static getDerivedStateFromProps(nextProps, prevState){
-    if (nextProps.config && nextProps.config.config && nextProps.config.config.upload && nextProps.config.config.upload.type) {
-      return { _type: nextProps.config.config.upload.type }
-    }
-    return null;
+  componentDidMount() {
+    this.init();
+  }
+
+  init = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'plugin/list',
+    })
   }
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields((err, fieldsValue) => {
+    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
@@ -37,88 +42,22 @@ class DefaultSetting extends Component {
 
 
 
-  renderqiniu() {
-    const { form: { getFieldDecorator }, config: { config: { upload = {} } } } = this.props;
-    return (
-      <div>
+  renderConfig() {
+    const { form: { getFieldValue, getFieldDecorator }, config: { config: { upload = {} } }, plugin: { list = []} } = this.props;
+    const type = getFieldValue('type');
+    const hasPlugin = list.filter(i => (i.enable === 1 && i.dirname === type));
+    if (hasPlugin.length === 0) return null;
+    const plugin = hasPlugin[0];
+    if (!plugin.config) return null;
+    const attrs = JSON.parse(plugin.config);
+    const rules = {};
+    const data = upload;
 
-      <Form.Item {...formItemLayout} label="机房">
-        {getFieldDecorator('zone', {
-          initialValue: upload.zone,
-          rules: [{ required: true, message: '请输入' }]
-        })(
-          <Select placeholder="请选择">
-            <Option value="Zone_z0">华东</Option>
-            <Option value="Zone_z1">华北</Option>
-            <Option value="Zone_z2">华南</Option>
-            <Option value="Zone_na0">北美</Option>
-          </Select>
-        )}
-
-      </Form.Item>
-
-      <Form.Item {...formItemLayout} label="上传前缀">
-        {getFieldDecorator('prefix', {
-          initialValue: upload.prefix,
-          rules: [{ required: true, message: '请输入' }]
-        })(
-          <Input placeholder="请输入" />
-        )}
-
-      </Form.Item>
-
-      <Form.Item {...formItemLayout} label="bucketName">
-        {getFieldDecorator('bucketName', {
-          initialValue: upload.bucketName,
-          rules: [{ required: true, message: '请输入' }]
-        })(
-          <Input placeholder="请输入" />
-        )}
-
-      </Form.Item>
-
-
-      <Form.Item {...formItemLayout} label="accessKey">
-        {getFieldDecorator('accessKey', {
-          initialValue: upload.accessKey,
-          rules: [{ required: true, message: '请输入' }]
-        })(
-          <Input placeholder="请输入" />
-        )}
-
-      </Form.Item>
-
-
-      <Form.Item {...formItemLayout} label="secretKey">
-        {getFieldDecorator('secretKey', {
-          initialValue: upload.secretKey,
-          rules: [{ required: true, message: '请输入' }]
-        })(
-          <Input placeholder="请输入" />
-        )}
-
-      </Form.Item>
-
-      <Form.Item {...formItemLayout} label="cdn">
-        {getFieldDecorator('cdn', {
-          initialValue: upload.cdn,
-          rules: [{ required: true, message: '请输入' }]
-        })(
-          <Input placeholder="请输入" />
-        )}
-
-      </Form.Item>
-      </div>
-
-    )
+    return renderForm(attrs, rules, data, getFieldDecorator, formItemLayout)
   }
 
   render() {
-    const { form: { getFieldDecorator }, config: { config: { upload = {} } } } = this.props;
-
-    const type = this.state.type === null ? this.state._type : this.state.type;
-
-    console.log(type);
+    const { form: { getFieldDecorator }, config: { config: { upload = {} } }, plugin: { list = []} } = this.props;
 
     return (
       <Form className="page-form" layout={this.context.isMobile ? 'vertical' : 'horizontal'} onSubmit={this.onSubmit}>
@@ -129,14 +68,18 @@ class DefaultSetting extends Component {
             rules: [{ required: true, message: '请输入' }],
             getValueFromEvent: (e) => {
               this.setState({
-                type: e,
+                formId: `upload_config_${Math.random()}`,
               })
               return e;
             }
           })(
             <Select placeholder="请选择">
-              <Option value="qiniu">七牛云</Option>
               <Option value="local">本地存储</Option>
+              {
+                list.filter(i => (i.type === 2 && i.enable === 1)).map(i => {
+                  return <Option key={`_upload_plugin_${i.id}`} value={i.dirname}>{i.name}</Option>
+                })
+              }
             </Select>
           )}
 
@@ -164,7 +107,9 @@ class DefaultSetting extends Component {
 
         </Form.Item>
 
-        { this[`render${type}`] ? this[`render${type}`]() : [] }
+        <div key={this.state.formId}>
+          { this.renderConfig()}
+        </div>
 
         <Form.Item {...tailFormItemLayout}>
           <Can api="POST@/api/config" cannot={<Button type="primary" disabled>提交</Button>}>

@@ -83,6 +83,11 @@ const menu = [
         can: 'GET@/api/site',
         path: '/site'
       },
+      {
+        name: '插件管理',
+        can: 'GET@/api/plugin',
+        path: '/plugin'
+      },
     ]
   },
 

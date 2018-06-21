@@ -64,7 +64,7 @@ class TablePage extends Component {
       e.preventDefault();
     }
     const { form, dispatch, indexs } = this.props;
-    form.validateFields((err, fieldsValue) => {
+    form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }

@@ -115,4 +115,14 @@ module.exports = app => {
 
   subRouter.resources('站点', '/site', controller.site);
 
+  /**
+   * 插件管理
+   */
+
+  subRouter.get('重载插件', '/plugin/load', controller.plugin.load);
+  subRouter.post('切换插件', '/plugin', controller.plugin.updateOne);
+  subRouter.post('安装插件', '/plugin/:id', controller.plugin.install);
+  subRouter.delete('卸载插件', '/plugin/:id', controller.plugin.uninstall);
+  subRouter.get('插件列表', '/plugin', controller.plugin.index);
+
 };

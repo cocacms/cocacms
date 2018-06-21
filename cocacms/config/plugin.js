@@ -24,9 +24,3 @@ exports.routerPlus = {
   enable: true,
   package: 'egg-router-plus',
 };
-
-// 七牛插件
-exports.qiniu = {
-  enable: true,
-  package: '@cocacms/egg-qiniu',
-};

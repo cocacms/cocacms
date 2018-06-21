@@ -40,7 +40,7 @@ class ThemeService extends Service {
       if (fs.statSync(dir).isDirectory()) {
         const configPath = path.join(dir, 'config.js');
         if (fs.existsSync(configPath)) {
-          let config = require(configPath);
+          let config = Object.assign({}, require(configPath));
           config = await this.ctx.validate({
             package: [{ required: true, message: `主题(${dirname})配置文件中缺少“包名”[package]字段` }],
             name: [{ required: true, message: `主题(${dirname})配置文件中缺少“名称”[name]字段` }],

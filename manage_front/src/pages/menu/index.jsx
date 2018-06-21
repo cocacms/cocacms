@@ -31,7 +31,7 @@ class Edit extends Component {
 
   onOk = () => {
     const { form, action } = this.props;
-    form.validateFields((err, fieldsValue) => {
+    form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) return;
       this.props[action](fieldsValue, form.resetFields);
     });

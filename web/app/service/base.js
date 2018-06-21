@@ -138,11 +138,11 @@ class BaseService extends Service {
       values.push(this.ctx.site.id);
     }
 
+    ({ wheres, values, orders } = this.ctx.whereBuilder(searchs, order, wheres, values, orders));
+
     if (orders.length === 0) {
       orders.push('`id` ASC'); // 默认按id
     }
-
-    ({ wheres, values, orders } = this.ctx.whereBuilder(searchs, order, wheres, values, orders));
 
     const data = await this.app.mysql.query(
       `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} ORDER BY ${orders.join(', ')} LIMIT 1`,

@@ -75,7 +75,7 @@ class DefaultSetting extends Component {
     const { dispatch } = this.props;
 
     e.preventDefault();
-    this.props.form.validateFields((err, fieldsValue) => {
+    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }

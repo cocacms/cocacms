@@ -15,7 +15,7 @@ class Edit extends Component {
   state = {  }
   onOk = () => {
     const { form, action } = this.props;
-    form.validateFields((err, fieldsValue) => {
+    form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) return;
       try {
         fieldsValue.rules = JSON.parse(fieldsValue.rules);

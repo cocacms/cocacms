@@ -1,6 +1,5 @@
 'use strict';
 const path = require('path');
-
 module.exports = app => {
 
   const directory = path.join(__dirname, 'app/hook');
@@ -21,5 +20,13 @@ module.exports = app => {
     const tagInstance = require(targetPath);
     app.nunjucks.addExtension(`${tag}Extension`, new tagInstance());
   }
+
+  Object.defineProperty(app.context, 'plugin', {
+    configurable: true,
+  });
+  app.beforeStart(async () => {
+    const ctx = app.createAnonymousContext();
+    await ctx.reloadPlugin();
+  });
 
 };

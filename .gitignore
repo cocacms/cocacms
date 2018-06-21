@@ -11,3 +11,5 @@ run/
 .DS_Store
 *.sw*
 *.un~
+
+web/app/plugin/*

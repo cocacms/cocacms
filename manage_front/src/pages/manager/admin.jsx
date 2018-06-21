@@ -14,7 +14,7 @@ class Edit extends Component {
   state = {  }
   onOk = () => {
     const { form, action } = this.props;
-    form.validateFields((err, fieldsValue) => {
+    form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) return;
       this.props[action](fieldsValue, form.resetFields);
     });
@@ -199,7 +199,7 @@ class AdminPage extends Component {
       e.preventDefault();
     }
     const { form, dispatch } = this.props;
-    form.validateFields((err, fieldsValue) => {
+    form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }

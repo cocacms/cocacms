@@ -8,12 +8,27 @@ class RoleService extends Service {
     this._table = 'role';
   }
 
+  /**
+   *颁发角色
+   *
+   * @param {*} uid 用户id
+   * @param {*} rid 角色id
+   * @return {*} 处理结果
+   * @memberof RoleService
+   */
   async award(uid, rid) {
     return await this.app.mysql.insert('admin_role', {
       uid, rid,
     });
   }
-
+  /**
+   *撤销角色
+   *
+   * @param {*} uid 用户id
+   * @param {*} rid 角色id
+   * @return {*} 处理结果
+   * @memberof RoleService
+   */
   async undo(uid, rid) {
     return await this.app.mysql.delete('admin_role', {
       uid, rid,

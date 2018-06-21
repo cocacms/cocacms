@@ -23,14 +23,14 @@ class Edit extends Component {
 
   onOk = () => {
     const { form, action } = this.props;
-    form.validateFields((err, fieldsValue) => {
+    form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) return;
       this.props[action](fieldsValue, form.resetFields);
     });
   }
 
   render() {
-    const { action, opened, data = {}, close, form: { getFieldDecorator }, models = [], category: { tree = [] } } = this.props;
+    const { action, opened, data = {}, close, form: { getFieldDecorator, setFieldsValue }, models = [], category: { tree = [] } } = this.props;
     const labelCol = { span: 5 }
     const wrapperCol = { span: 15 }
     return (
@@ -66,6 +66,22 @@ class Edit extends Component {
                 treeNodeFilterProp="id"
                 placeholder="请选择"
                 treeDefaultExpandAll
+                onSelect={(value, node) => {
+                  if (action === 'add') {
+                    setFieldsValue({
+                      model_id: node.props.model_id,
+                    })
+                    setFieldsValue({
+                      template_list: node.props.template_list,
+                    })
+                    setFieldsValue({
+                      template_detail: node.props.template_detail,
+                    })
+                    setFieldsValue({
+                      template_page: node.props.template_page,
+                    })
+                  }
+                }}
               />
             )}
           </Form.Item>

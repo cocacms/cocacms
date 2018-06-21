@@ -28,7 +28,8 @@ class WebContentController extends Controller {
     const key = this.ctx.params.key;
     const category = await this.service.category.single([[ 'key', key ]]);
     // 栏目类型：1列表页 2单页 3表单页 4调整链接
-
+    const categorys = await this.service.category.index(category.id, false, true);
+    const categorys_ids = categorys.map(i => i.id);
     let template = 'category';
     let data = {};
     let model = null;
@@ -81,6 +82,8 @@ class WebContentController extends Controller {
 
     await this.render(template, {
       category,
+      categorys,
+      categorys_ids,
       data,
       model,
       modelAttr,
@@ -97,6 +100,8 @@ class WebContentController extends Controller {
   async detail() {
     const key = this.ctx.params.key;
     let category = await this.service.category.single([[ 'key', key ]]);
+    const categorys = await this.service.category.index(category.id, false, true);
+    const categorys_ids = categorys.map(i => i.id);
 
     let template = 'article';
     let data = {};
@@ -147,11 +152,13 @@ class WebContentController extends Controller {
       }
     }
 
-    const preData = await this.service.base.single([[ 'id', '<', data.id ], [ 'category_id', data.category_id ]]);
-    const nextData = await this.service.base.single([[ 'id', '>', data.id ], [ 'category_id', data.category_id ]]);
+    const preData = await this.service.base.single([[ 'id', '<', data.id ], [ 'category_id', 'in', categorys_ids ]], '*', [[ 'id', 'desc' ]]);
+    const nextData = await this.service.base.single([[ 'id', '>', data.id ], [ 'category_id', 'in', categorys_ids ]]);
 
     await this.render(template, {
       category,
+      categorys,
+      categorys_ids,
       data,
       model,
       modelAttr,

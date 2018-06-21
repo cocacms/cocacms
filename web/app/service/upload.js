@@ -6,16 +6,18 @@ const path = require('path');
 const bytes = require('humanize-bytes');
 
 class UploadService extends Service {
+  /**
+   * 上传入口
+   *
+   * @return {object} 上传结果
+   * @memberof UploadService
+   */
   async generate() {
     const allConfig = await this.service.config.get();
     const { upload: config = { } } = allConfig;
     let type = 'local';
     if (config.type) {
       type = config.type;
-    }
-
-    if (typeof this[type] !== 'function') {
-      type = 'local';
     }
 
     const stream = await this.getFileStream(config);
@@ -30,9 +32,20 @@ class UploadService extends Service {
     }
 
     const filename = `${this.ctx.helper.UUID()}${extname}`;
-    return this[type](config, stream, filename);
+    if (!this.ctx.plugin[type] || typeof this.ctx.plugin[type].upload !== 'function') {
+      return await this.local(config, stream, filename);
+    }
+
+    return await this.ctx.plugin[type].upload(config, stream, filename);
   }
 
+  /**
+   * 获取文件流
+   *
+   * @param {*} config 配置
+   * @return {*} 流
+   * @memberof UploadService
+   */
   async getFileStream(config) {
     const multipartParseOptions = { limits: {} };
 
@@ -66,6 +79,15 @@ class UploadService extends Service {
   }
 
 
+  /**
+   * 本地上传
+   *
+   * @param {*} config 配置
+   * @param {*} stream 流
+   * @param {*} filename 文件名
+   * @return {*} 处理结果
+   * @memberof UploadService
+   */
   async local(config, stream, filename) {
     const writerStream = fs.createWriteStream(path.join(__dirname, `../public/upload/${filename}`));
     stream.pipe(writerStream);
@@ -74,12 +96,6 @@ class UploadService extends Service {
     };
   }
 
-  async qiniu(config, stream, filename) {
-    const result = await this.app.qiniu.upload(stream, `${filename}`, config);
-    return {
-      url: `${config.cdn}${result.key}`,
-    };
-  }
 }
 
 module.exports = UploadService;

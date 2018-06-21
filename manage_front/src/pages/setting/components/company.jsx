@@ -16,7 +16,7 @@ class DefaultSetting extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields((err, fieldsValue) => {
+    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }

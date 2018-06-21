@@ -360,16 +360,21 @@ class NodeService extends BaseService {
       this.error(`不存在的节点ID: ${id}`);
     }
 
-    const preWhere = { rgt: currentNode.lft - 1, is_del: 0 };
+    const preWhere = [ currentNode.lft, currentNode.pid ];
     if (hasSite) {
-      preWhere.site_id = this.ctx.site.id;
+      preWhere.push(this.ctx.site.id);
     }
 
-    const preNode = await this.app.mysql.get(this._table, preWhere);
+    let preNode = await this.app.mysql.query(
+      `SELECT * FROM ${this._table} WHERE lft < ? AND pid = ? AND is_del = 0 ${hasSite ? 'AND site_id = ?' : ''} ORDER BY lft DESC LIMIT 1`,
+      preWhere
+    );
 
-    if (preNode === null) {
+    if (preNode.length === 0) {
       this.error('该节点不能上移动了');
     }
+
+    preNode = preNode[0];
 
     const valueAdd = currentNode.rgt - preNode.rgt;
     const valueMinus = currentNode.lft - preNode.lft;
@@ -417,16 +422,21 @@ class NodeService extends BaseService {
       this.error(`不存在的节点ID: ${id}`);
     }
 
-    const nextWhere = { lft: currentNode.rgt + 1, is_del: 0 };
+    const nextWhere = [ currentNode.rgt, currentNode.pid ];
     if (hasSite) {
-      nextWhere.site_id = this.ctx.site.id;
+      nextWhere.push(this.ctx.site.id);
     }
 
-    const nextNode = await this.app.mysql.get(this._table, nextWhere);
+    let nextNode = await this.app.mysql.query(
+      `SELECT * FROM ${this._table} WHERE lft > ? AND pid = ? AND is_del = 0 ${hasSite ? 'AND site_id = ?' : ''} ORDER BY lft ASC LIMIT 1`,
+      nextWhere
+    );
 
-    if (nextNode === null) {
-      this.error('该节点不能上移动了');
+    if (nextNode.length === 0) {
+      this.error('该节点不能下移动了');
     }
+
+    nextNode = nextNode[0];
 
     const valueAdd = nextNode.rgt - currentNode.rgt;
     const valueMinus = nextNode.lft - currentNode.lft;
