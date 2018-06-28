@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { Layout, Icon, Dropdown, Select, Menu as AntMenu, LocaleProvider } from 'antd';
 import { enquireScreen } from 'enquire-js';
 import PropTypes from 'prop-types';
-import DrawerMenu from 'rc-drawer-menu';
+import DrawerMenu from 'rc-drawer';
 import Breadcrumb from 'components/breadcrumb';
 import { check } from 'components/can/index';
 import Menu from 'components/menu';
 import router from 'umi/router';
 import { connect } from 'dva';
 import { Helmet } from "react-helmet";
-import 'rc-drawer-menu/assets/index.css';
+import 'rc-drawer/assets/index.css';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 
 import styles from './index.less';

@@ -19,6 +19,7 @@ h1{
   font-weight: 200;
   margin-top: 35vh;
   color: #FFF;
+  min-height: 116px;
 }
 
 
@@ -56,4 +57,12 @@ h1{
   -ms-animation: blink 0.7s infinite;
   -o-animation: blink 0.7s infinite;
   animation: blink 0.7s infinite;
+  font-size: 28px;
+}
+
+.message{
+  color: #aaa;
+  text-align: center;
+  margin-top: 50px;
+  font-size: 24px;
 }

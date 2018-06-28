@@ -364,6 +364,50 @@ class ModelAttrService extends Service {
 
     return optionsArray;
   }
+
+  /**
+   *根据key获取模型参数
+   *
+   * @param {*} key key
+   * @return {*} 参数
+   * @memberof ModelAttrService
+   */
+  async getAttrByModalKey(key) {
+    const model = await this.service.model.single([[ 'key', key ]]);
+    if (model === null) {
+      this.error('模型不存在！');
+    }
+
+    const attrs = await this.service.modelAttr.index(
+      null,
+      null,
+      [[ 'model_id', model.id ]],
+      '*',
+      [[ 'sort' ]],
+      false
+    );
+
+    return attrs.map(i => {
+      i.optionsArray = this.service.modelAttr.options2array(i.options);
+      return i;
+    });
+  }
+  /**
+   *根据key获取模型参数字典
+   *
+   * @param {*} key key
+   * @return {*} 参数
+   * @memberof ModelAttrService
+   */
+  async getAttrMapByModalKey(key) {
+    const attrsMap = {};
+    const attr = await this.getAttrByModalKey(key);
+    attr.map(i => {
+      attrsMap[i.key] = i;
+      return i;
+    });
+    return attrsMap;
+  }
 }
 
 module.exports = ModelAttrService;

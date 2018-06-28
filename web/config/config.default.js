@@ -9,7 +9,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + ''; // 密码加密用到
 
   // add your config here
-  config.middleware = [];
+  config.middleware = [ 'error' ];
 
   // 跨域
   config.cors = {
@@ -50,45 +50,40 @@ module.exports = appInfo => {
   };
 
 
-  // 全局错误处理
-  const loggerError = (err, ctx) => {
-    const message = err.message;
+  // config.onerror = {
+  //   html(err, ctx) {
+  //     const messgae = loggerError(err, ctx);
+  //     const theme = await ctx.service.theme.getActive();
+  //     let themeDir = '';
+  //     if (theme !== null) {
+  //       themeDir = `${theme.dirname}/`;
+  //     }
 
-    // 唯一插入报错处理
-    if (message.indexOf('Duplicate entry') >= 0) {
-      return '内容已存在，请勿重复插入';
-    }
-
-    // 表单验证错误
-    if (err.status && err.status === 422) {
-      if (err.errors && err.errors.errors && err.errors.errors.length > 0) {
-        return err.errors.errors[0].message;
-      }
-    }
-
-    if (!(err instanceof ctx.app.exception.runnerExection)) {
-      ctx.logger.warn(err);
-    }
-
-    return message;
-  };
-
-  config.onerror = {
-    html(err, ctx) {
-      ctx.body = `<h3>${loggerError(err, ctx)}</h3>`;
-      ctx.status = 500;
-      if (err.status) {
-        ctx.status = err.status;
-      }
-    },
-    json(err, ctx) {
-      ctx.body = { message: loggerError(err, ctx) };
-      ctx.status = 500;
-      if (err.status) {
-        ctx.status = err.status;
-      }
-    },
-  };
+  //     let hookData = {};
+  //     if (ctx.app.hooks.render) {
+  //       hookData = await ctx.app.hooks.render(ctx);
+  //     }
+  //     try {
+  //       ctx.body = await ctx.render(`${themeDir}500.nj`, {
+  //         ...hookData,
+  //         messgae,
+  //       });
+  //     } catch (error) {
+  //       ctx.body = `<h3>${messgae}</h3>`;
+  //     }
+  //     ctx.status = 500;
+  //     if (err.status) {
+  //       ctx.status = err.status;
+  //     }
+  //   },
+  //   json(err, ctx) {
+  //     ctx.body = { message: loggerError(err, ctx) };
+  //     ctx.status = 500;
+  //     if (err.status) {
+  //       ctx.status = err.status;
+  //     }
+  //   },
+  // };
 
   // 安全配置
   config.security = {

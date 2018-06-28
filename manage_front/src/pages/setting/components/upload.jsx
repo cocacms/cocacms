@@ -51,6 +51,10 @@ class DefaultSetting extends Component {
     if (!plugin.config) return null;
     const attrs = JSON.parse(plugin.config);
     const rules = {};
+    attrs.filter(i => (i.rules && i.rules.length > 0)).map(i => {
+      rules[i.key] = i.rules;
+      return i;
+    });
     const data = upload;
 
     return renderForm(attrs, rules, data, getFieldDecorator, formItemLayout)

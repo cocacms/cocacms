@@ -4,26 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{{ config.defaults.title }}</title>
+  <title>505错误 - {{ config.defaults.title }}</title>
   <link rel="icon" href="{{ config.defaults.logo }}" type="image/x-icon" />
   <link rel="shortcut icon" href="{{ config.defaults.logo }}" type="image/x-icon"/>
   <link rel="stylesheet" href="./static/default/css/923ED5D9D7A9576A2.css">
   <link rel="stylesheet" href="./static/default/css/app.css">
-  <style>
-    .typed-cursor {
-      font-size: 48px;
-    }
-  </style>
 </head>
 <body>
   <h1>
+    <p>
       <span class="typing"></span>
+    </p>
   </h1>
   <script src="./static/default/js/typed.min.js"></script>
   <script>
-    var typed = new Typed('.typing', {
-      strings: ["Hi! Nice to see you.", "Coca, a easy cms.", "It's coming soon..."],
-      typeSpeed: 70
+    new Typed('.typing', {
+      strings: ["Sorry, There is an error. <br/> You can see the error message below:<br/> <span class=\"message\">“{{ message }}”</span>"],
+      typeSpeed: 5
     });
   </script>
 </body>

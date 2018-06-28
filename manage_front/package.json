@@ -12,7 +12,7 @@
     "dva-model-extend": "^0.1.2",
     "enquire-js": "^0.2.1",
     "prop-types": "^15.6.1",
-    "rc-drawer-menu": "^1.0.1",
+    "rc-drawer": "^1.4.4",
     "react-helmet": "^5.2.0",
     "react-router-breadcrumbs-hoc": "^2.1.1",
     "umi": "^1.0.0",

@@ -257,6 +257,7 @@ class WebContentController extends Controller {
     if (body.id) {
       this.ctx.body = await this.service.base.update(body);
     } else {
+      delete body.id;
       this.ctx.body = await this.service.base.create(body);
     }
   }
