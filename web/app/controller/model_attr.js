@@ -61,19 +61,7 @@ class ModelAttrController extends Controller {
   async index() {
     await this.service.modelAttr.model(this.ctx.params.model);
     await this.service.modelAttr.tablePreCheck();
-    const result = await this.service.modelAttr.index(
-      null,
-      null,
-      [[ 'model_id', this.ctx.params.model ]],
-      '*',
-      [[ 'sort' ]],
-      false
-    );
-
-    this.ctx.body = result.map(i => {
-      i.optionsArray = this.service.modelAttr.options2array(i.options);
-      return i;
-    });
+    this.ctx.body = await this.service.modelAttr.getAttrByModalId(this.ctx.params.model);
   }
 
   /**

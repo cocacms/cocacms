@@ -8,10 +8,7 @@ module.exports = app => {
 
   // 加载异常扩展
   const directory = path.join(__dirname, 'app/exception');
-  console.log('====================================');
-  console.log('Coca CMS: Loading Exception Extend to App');
-  console.log(`Path: ${directory}`);
-  console.log('====================================');
+  app.logger.info('[cocacms] Loading Exception Extend to App, Exception is %j', directory);
   app.loader.loadToApp(directory, 'exception');
 
 
@@ -38,12 +35,8 @@ module.exports = app => {
     }
   }
 
-  console.log('====================================');
-  console.log('Coca CMS: Loading Theme Lauguage to App');
-  console.log(`Path: ${app.config.i18n.dirs.join(', ')}`);
-  console.log('====================================');
+  app.logger.info('[cocacms] Loading Theme Lauguage to App, Theme Lauguage is %j', app.config.i18n.dirs);
 
-  debug('app.config.i18n.dirs:', app.config.i18n.dirs);
   locales(app, app.config.i18n);
 
   // 注册主题静态资源解析

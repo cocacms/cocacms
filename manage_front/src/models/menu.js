@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import baseModel from '../common/modelTemplate';
+import { baseModel } from './base';
 import { create, moveUp, moveDown } from '../services/menu';
 import base from '../services/base';
 

@@ -66,7 +66,10 @@ const menu = [
       {
         name: '系统配置',
         can: 'GET@/api/config',
-        path: '/setting'
+        path: {
+          reg: '/setting/:activeKey?',
+          params: {}
+        },
       },
       {
         name: '模型配置',

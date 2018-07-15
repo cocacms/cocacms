@@ -15,6 +15,16 @@ export async function toggle(id, enable) {
   })
 }
 
+export async function setting(id, setting) {
+  return await request(`${host}/api/plugin/setting`, {
+    method: 'POST',
+    body: {
+      id,
+      setting,
+    },
+  })
+}
+
 export async function install(id) {
   return await request(`${host}/api/plugin/${id}`, {
     method: 'POST',

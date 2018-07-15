@@ -276,18 +276,18 @@ class ModelAttrService extends Service {
    * @return {any} 处理结果
    * @memberof ModelAttrService
    */
-  async adjustIndex(keys, keyType = 'key') {
+  async adjustIndex(keys, keyType = 'keys') {
     await this.tablePreCheck();
-    if (keyType === 'key') {
+    if (keyType === 'keys') {
       keys.unshift('site_id', 'category_id');
     }
 
     keys = keys.map(i => `\`${i}\``);
     keys = Array.from(new Set(keys)); // 去重
 
-    const index_name = keyType === 'key' ? this.index_key_name : this.index_fulltext_name;
-    const fulltext = keyType === 'key' ? '' : 'FULLTEXT';
-    const ngram = keyType === 'key' ? '' : 'WITH PARSER ngram';
+    const index_name = keyType === 'keys' ? this.index_key_name : this.index_fulltext_name;
+    const fulltext = keyType === 'keys' ? '' : 'FULLTEXT';
+    const ngram = keyType === 'keys' ? '' : 'WITH PARSER ngram';
     const dropSql = await this.buildDropSql(index_name);
     try {
       return await this.app.mysql.query(`ALTER TABLE \`${this._modelName}\` ${dropSql} ADD ${fulltext} INDEX \`${index_name}\` (${keys.join(', ')}) ${ngram}`);
@@ -366,6 +366,39 @@ class ModelAttrService extends Service {
   }
 
   /**
+   *根据id获取模型参数
+   *
+   * @param {*} id id
+   * @return {*} 参数
+   * @memberof ModelAttrService
+   */
+  async getAttrByModalId(id) {
+    const model = await this.service.model.show(id);
+    if (model === null) {
+      this.error('模型不存在！');
+    }
+    return await this.getAttr(model.id, model.key);
+  }
+
+  /**
+   *根据id获取模型参数字典
+   *
+   * @param {*} id id
+   * @return {*} 参数
+   * @memberof ModelAttrService
+   */
+  async getAttrMapByModalId(id) {
+    const attrsMap = {};
+    const attr = await this.getAttrByModalId(id);
+    attr.map(i => {
+      attrsMap[i.key] = i;
+      return i;
+    });
+    return attrsMap;
+  }
+
+
+  /**
    *根据key获取模型参数
    *
    * @param {*} key key
@@ -377,21 +410,9 @@ class ModelAttrService extends Service {
     if (model === null) {
       this.error('模型不存在！');
     }
-
-    const attrs = await this.service.modelAttr.index(
-      null,
-      null,
-      [[ 'model_id', model.id ]],
-      '*',
-      [[ 'sort' ]],
-      false
-    );
-
-    return attrs.map(i => {
-      i.optionsArray = this.service.modelAttr.options2array(i.options);
-      return i;
-    });
+    return await this.getAttr(model.id, model.key);
   }
+
   /**
    *根据key获取模型参数字典
    *
@@ -407,6 +428,37 @@ class ModelAttrService extends Service {
       return i;
     });
     return attrsMap;
+  }
+
+  /**
+   *获取模型参数
+   *
+   * @param {*} model_id model_id
+   * @param {*} model_key model_key
+   * @return {*} 参数
+   * @memberof ModelAttrService
+   */
+  async getAttr(model_id, model_key) {
+    const attrs = await this.service.modelAttr.index(
+      null,
+      null,
+      [[ 'model_id', model_id ]],
+      '*',
+      [[ 'sort' ]],
+      false
+    );
+    this.service.base._table = `${this.config.model.prefix}${model_key}`;
+    const rules = await this.service.base.getValidateRules(true);
+    for (const attr of attrs) {
+      if (rules[attr.key]) {
+        attr.rules = rules[attr.key];
+      } else {
+        attr.rules = [];
+      }
+      attr.optionsArray = this.service.modelAttr.options2array(attr.options);
+    }
+
+    return attrs;
   }
 }
 

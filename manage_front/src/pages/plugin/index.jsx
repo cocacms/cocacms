@@ -1,16 +1,26 @@
 import React, { Component } from 'react';
 import {
-  Table, Form, Row, Col, Button, Switch, Popconfirm
+  Table, Form, Row, Col, Button, Popconfirm, Modal, Badge
 } from 'antd';
 import name from 'components/name';
+import Switch from 'components/switch';
 import Can from 'components/can/index';
 import { connect } from 'dva';
+import AutoSetting from '../setting/components/auto';
+import Link from 'umi/link';
 
 @connect(({ plugin, loading }) => ({ plugin, loading: loading.models.plugin }))
 @Form.create()
 @name('插件管理')
 class PluginPage extends Component {
   state = {
+    edit: {
+      key: `plugin-setting-0`,
+      visible: false,
+      attrs: [],
+      data: {},
+      keyName: 0,
+    }
   }
 
   componentDidMount() {
@@ -44,6 +54,17 @@ class PluginPage extends Component {
       payload: {
         id, enable
       }
+    })
+  }
+
+  submit = (setting, id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'plugin/setting',
+      payload: {
+        id, setting
+      },
+      cb: this.close
     })
   }
 
@@ -146,10 +167,27 @@ class PluginPage extends Component {
       align: 'center',
       render: (text, record) => {
         return (
-          <Switch checked={text === 1} onChange={(checked) => {
-            this.toggle(record.id, text === 1 ? 0 : 1);
+          <Switch value={text} onChange={(newText) => {
+            this.toggle(record.id, newText);
           }} />
         )
+      }
+    },
+    {
+      dataIndex: 'setting',
+      title: '配置',
+      width: 100,
+      align: 'center',
+      render: (text, record) => {
+        if (record.type === 2) {
+          return <Link to="/setting/uploadSetting">配置</Link>
+        }
+
+        if (record.enable === 1) {
+          return <a onClick={() => { this.open(record); }}>配置</a>;
+        }
+
+        return <Badge status="default" text="未开启" />
       }
     },
     {
@@ -169,6 +207,30 @@ class PluginPage extends Component {
     }
   ])
 
+  close = () => {
+    this.setState({
+      edit: {
+        key: `plugin-setting-0`,
+        visible: false,
+        attrs: [],
+        data: {},
+        keyName: 0,
+      }
+    })
+  }
+
+  open = (record) => {
+    this.setState({
+      edit: {
+        key: `plugin-setting-${record.id}`,
+        visible: true,
+        attrs: JSON.parse(record.config) || [],
+        data: JSON.parse(record.setting) || {},
+        keyName: record.id,
+      }
+    })
+  }
+
   render() {
     const { loading, plugin: { list = [] } } = this.props;
     return (
@@ -184,6 +246,25 @@ class PluginPage extends Component {
           pagination={false}
         >
         </Table>
+
+        <Modal
+          title="编辑配置"
+          visible={this.state.edit.visible}
+          onCancel={this.close}
+          footer={null}
+          width="80%"
+          style={{ top: '5vh' }}
+          bodyStyle={{ maxHeight: '80vh', overflowY: 'auto'}}
+        >
+          <AutoSetting
+            key={this.state.edit.key}
+            submit={this.submit}
+            attrs={this.state.edit.attrs}
+            data={this.state.edit.data}
+            keyName={this.state.edit.keyName}
+          />
+        </Modal>
+
       </Can>
 
     );

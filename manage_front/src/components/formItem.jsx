@@ -1,14 +1,15 @@
 import React from 'react';
 import {
-  Input, Rate, Radio, Select, Checkbox, TimePicker, DatePicker, Form, Switch, Icon, InputNumber
+  Input, Rate, Radio, Select, Checkbox, TimePicker, DatePicker, Form, Icon, InputNumber, Col
 } from 'antd';
 import Upload from 'components/upload';
+import Switch from 'components/switch';
 import RichEditor from 'components/richeditor';
 import moment from 'moment';
 
 import Action from 'components/action';
 
-import re from '../common/re';
+import re from '../utils/re';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 
@@ -35,6 +36,7 @@ export const renderFormComponent = (type, optionsArray = [], len, id, isFilter =
    * 富文本 richtext
    * 评分 rate
    * 开关 switch
+   * 权重 weight
    */
   switch (type) {
     case 'text':
@@ -69,6 +71,8 @@ export const renderFormComponent = (type, optionsArray = [], len, id, isFilter =
       return <Rate disabled={onlyread} allowHalf />;
     case 'switch':
       return <Switch disabled={onlyread} />;
+    case 'weight':
+      return <InputNumber precision={0} />;
     default:
       return <Input disabled={onlyread} />
   }
@@ -106,10 +110,6 @@ export const renderForm = (attrs, rules, data, getFieldDecorator, formItemLayout
       option.initialValue = moment(data[attr.key], [moment.ISO_8601, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']).isValid() ? moment(data[attr.key], [moment.ISO_8601, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss']) : null
     }
 
-    if (['switch'].includes(attr.type)) {
-      option.initialValue = data[attr.key] === 1;
-      option.valuePropName = 'checked'
-    }
 
     if (rules[attr.key]) {
       option.rules = fillRule(rules[attr.key]);
@@ -142,7 +142,7 @@ export const buildWhere = (values, indexs) => {
   const fulltext_value = [];
   const fulltext_key = [];
   for (const index of indexs) {
-    if (index.type === 'key' && values[index.key]) {
+    if (index.type === 'key' && values[index.key] !== undefined) {
       if (Array.isArray(values[index.key]) && values[index.key].length === 2 && values[index.key][0] instanceof moment) {
         wheres.push([index.key, 'between', [values[index.key][0].format('YYYY-MM-DD HH:mm:ss'), values[index.key][1].format('YYYY-MM-DD HH:mm:ss')]])
       } else {
@@ -181,7 +181,7 @@ export const buildWhere = (values, indexs) => {
 *
 * @memberof TablePage
 */
-export const getColumns = (attrs, actionProps, sortedInfo, switchChange = false, category = false, actions = null) => {
+export const getColumns = (attrs, actionProps, sortedInfo, switchChange = false, category = false, actions = null, sortable = false) => {
   const columns = [
     {
       dataIndex: 'id',
@@ -266,8 +266,16 @@ export const getColumns = (attrs, actionProps, sortedInfo, switchChange = false,
             return <div dangerouslySetInnerHTML={{ __html: text }}></div>;
           }
 
+          // switch
           if (['switch'].includes(attr.type)) {
-            return <Switch onChange={(is) => { switchChange && switchChange(record.id, attr.key, is ? 1 : 0) }} checked={text === 1} />;
+            return <Switch onChange={(is) => { switchChange && switchChange(record.id, attr.key, is) }} value={text} />;
+          }
+
+          // weight
+          if (['weight'].includes(attr.type) && typeof sortable === 'function') {
+            return <InputNumber precision={0} onBlur={(e) => {
+              sortable(record.id, attr.key, Number(e.target.defaultValue));
+            }} defaultValue={isNaN(Number(text)) ? 0 : Number(text)}/>;
           }
 
           return text;
@@ -296,4 +304,28 @@ export const getColumns = (attrs, actionProps, sortedInfo, switchChange = false,
   });
 
   return columns;
+}
+
+
+export const renderFilterForm = (attrs, indexs, labelCol, wrapperCol, getFieldDecorator, children = []) => {
+  for (const attr of attrs) {
+    if (indexs.map(i => i.key).includes(attr.key)) {
+      const options = {};
+      if (attr.type === 'switch') {
+        options.initialValue = 0;
+      }
+
+      children.push(
+        <Col sm={12} xs={24} lg={{ span: 8 }} key={attr.key}>
+          <Form.Item label={attr.name} labelCol={labelCol} wrapperCol={wrapperCol}>
+            {getFieldDecorator(attr.key, options)(
+              renderFormComponent(attr.type, attr.optionsArray, attr.len, 0)
+            )}
+          </Form.Item>
+        </Col>
+      );
+    }
+  }
+
+  return children;
 }

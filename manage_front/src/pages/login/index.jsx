@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 
 import './index.less';
-import re from '../../common/re';
+import re from '../../utils/re';
 
 const FormItem = Form.Item;
 

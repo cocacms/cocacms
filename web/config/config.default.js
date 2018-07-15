@@ -49,46 +49,10 @@ module.exports = appInfo => {
     agent: false,
   };
 
-
-  // config.onerror = {
-  //   html(err, ctx) {
-  //     const messgae = loggerError(err, ctx);
-  //     const theme = await ctx.service.theme.getActive();
-  //     let themeDir = '';
-  //     if (theme !== null) {
-  //       themeDir = `${theme.dirname}/`;
-  //     }
-
-  //     let hookData = {};
-  //     if (ctx.app.hooks.render) {
-  //       hookData = await ctx.app.hooks.render(ctx);
-  //     }
-  //     try {
-  //       ctx.body = await ctx.render(`${themeDir}500.nj`, {
-  //         ...hookData,
-  //         messgae,
-  //       });
-  //     } catch (error) {
-  //       ctx.body = `<h3>${messgae}</h3>`;
-  //     }
-  //     ctx.status = 500;
-  //     if (err.status) {
-  //       ctx.status = err.status;
-  //     }
-  //   },
-  //   json(err, ctx) {
-  //     ctx.body = { message: loggerError(err, ctx) };
-  //     ctx.status = 500;
-  //     if (err.status) {
-  //       ctx.status = err.status;
-  //     }
-  //   },
-  // };
-
   // 安全配置
   config.security = {
     csrf: {
-      ignore: [ '/api', '/test' ],
+      ignore: [ '/api' ],
     },
   };
 

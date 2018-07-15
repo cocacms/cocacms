@@ -1,6 +1,6 @@
 {
   "name": "@cocacms/cocacms",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "dependencies": {
     "egg": "^2.2.1",
     "egg-async-validate": "^1.0.1",

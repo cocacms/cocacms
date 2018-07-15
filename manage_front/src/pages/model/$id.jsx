@@ -247,6 +247,7 @@ class Edit extends Component {
   }
 }
 
+@Form.create()
 @connect(({ modelAttr, loading }) => ({ modelAttr, loading: loading.models.modelAttr }))
 class KeyEdit extends Component {
   state = {
@@ -260,26 +261,11 @@ class KeyEdit extends Component {
       type: 'modelAttr/fetchIndexs',
       payload: id,
     })
-
-  }
-
-  static getDerivedStateFromProps(props) {
-    const { modelAttr: { indexs: { keys = [], fulltexts = [] } = {}} = {}, loading } = props;
-    if (loading) {
-      return {};
-    }
-    return { keys, fulltexts };
-  }
-
-  change = (value, key) => {
-    const state = {};
-    state[`${key}s`] = value;
-    this.setState(state);
   }
 
   save = (key) => {
-    const keys = this.state[`${key}s`];
-    const { dispatch, id } =this.props;
+    const { dispatch, id, form: { getFieldValue }} = this.props;
+    const keys = getFieldValue(key);
     dispatch({
       type: 'modelAttr/adjustIndexs',
       payload: {
@@ -293,7 +279,8 @@ class KeyEdit extends Component {
   }
 
   render() {
-    const { opened, close, data = [], loading } = this.props;
+    const { opened, close, data = [], loading, modelAttr: { indexs = {} } = {}, form: { getFieldDecorator } } = this.props;
+
     return (
       <Modal
         visible={opened}
@@ -303,7 +290,7 @@ class KeyEdit extends Component {
       >
         <Spin spinning={loading}>
           <Form>
-          <Form.Item
+            <Form.Item
               wrapperCol={{ span: 15, offset: 5 }}
               label=""
             >
@@ -315,21 +302,24 @@ class KeyEdit extends Component {
               wrapperCol={wrapperCol}
               label="普通索引"
             >
-              <Select
-                placeholder="请选择"
-                mode="multiple"
-                onChange={(value) => { this.change(value, 'key')}}
-                value={this.state.keys}
-              >
-                <Select.Option value='site_id'> 站点id[内置] </Select.Option>
-                <Select.Option value='category_id'> 栏目id[内置] </Select.Option>
-                { data.map(i => {
-                  if (!['text', 'richtext', 'checkbox', 'img', 'file', 'time'].includes(i.type)) {
-                    return <Select.Option value={i.key} key={i.key}> {i.name} </Select.Option>
-                  }
-                  return null;
-                }) }
-              </Select>
+              {getFieldDecorator('keys', {
+                initialValue: indexs.keys,
+              })(
+                <Select
+                  placeholder="请选择"
+                  mode="multiple"
+                >
+                  <Select.Option value='site_id'> 站点id[内置] </Select.Option>
+                  <Select.Option value='category_id'> 栏目id[内置] </Select.Option>
+                  { data.map(i => {
+                    if (!['text', 'richtext', 'checkbox', 'img', 'file', 'time'].includes(i.type)) {
+                      return <Select.Option value={i.key} key={i.key}> {i.name} </Select.Option>
+                    }
+                    return null;
+                  }) }
+                </Select>
+              )}
+
 
             </Form.Item>
 
@@ -337,7 +327,7 @@ class KeyEdit extends Component {
               wrapperCol={{ span: 15, offset: 5 }}
               label=""
             >
-              <Button type="primary" onClick={() => { this.save('key')}}>保存索引</Button>
+              <Button type="primary" onClick={() => { this.save('keys')}}>保存索引</Button>
 
             </Form.Item>
 
@@ -347,11 +337,12 @@ class KeyEdit extends Component {
               wrapperCol={wrapperCol}
               label="全文搜索"
             >
-              <Select
+              {getFieldDecorator('fulltexts', {
+                initialValue: indexs.fulltexts,
+              })(
+                <Select
                 placeholder="请选择"
                 mode="multiple"
-                onChange={(value) => { this.change(value, 'fulltext')}}
-                value={this.state.fulltexts}
               >
                 { data.map(i => {
                   if (!['radio', 'select', 'time', 'date', 'datetime', 'rate', 'img', 'file', 'switch', 'int', 'decimal'].includes(i.type)) {
@@ -360,15 +351,14 @@ class KeyEdit extends Component {
                   return null;
                 }) }
               </Select>
-
+              )}
             </Form.Item>
 
             <Form.Item
               wrapperCol={{ span: 15, offset: 5 }}
               label=""
             >
-              <Button type="primary" onClick={() => { this.save('fulltext')}}>保存全文搜索</Button>
-
+              <Button type="primary" onClick={() => { this.save('fulltexts')}}>保存全文搜索</Button>
             </Form.Item>
 
           </Form>

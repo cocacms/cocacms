@@ -1,5 +1,5 @@
 import modelExtend from 'dva-model-extend'
-import baseModel from '../common/modelTemplate';
+import { baseModel } from './base';
 
 
 export default modelExtend(baseModel('theme', false),

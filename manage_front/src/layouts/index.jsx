@@ -79,7 +79,6 @@ class MainLayout extends Component {
 
 
   init = () => {
-    console.log('init layout');
     if (this.props.location.pathname !== '/login'){
       this.props.dispatch({
         type: 'form/list',
@@ -142,6 +141,30 @@ class MainLayout extends Component {
     router.push('/password');
   }
 
+  renderMenu(collapsed) {
+    const { admin } = this.props;
+    return (
+      <Sider
+        trigger={null}
+        collapsible
+        breakpoint="lg"
+        collapsed={collapsed}
+        width={256}
+        className={styles.sider}
+      >
+        <div className={styles.logo} >
+          <img src={config.logo} alt=""/>
+          <h1>{config.name}</h1>
+        </div>
+        <Menu
+          menudata={this.state.menuform}
+          location={this.props.location}
+          permission={admin.permission}
+          small={this.state.collapsed}
+        />
+      </Sider>
+    )
+  }
   render() {
     const { admin, location, children  } = this.props;
     if (location.pathname === '/login') {
@@ -161,38 +184,12 @@ class MainLayout extends Component {
               iconChild={null}
               open={!this.state.collapsed}
               onMaskClick={() => { this.changeCollapsed(true); }}
-              handleStyle={{ display: 'none' }}
+              handler={null}
               width="256px"
             >
-              <Sider
-                trigger={null}
-                collapsible
-                breakpoint="lg"
-                collapsed={this.state.isMobile ? false : this.state.collapsed}
-                width={256}
-                className={styles.sider}
-              >
-                <div className={styles.logo} >
-                  <img src={config.logo} alt=""/>
-                  <h1>{config.name}</h1>
-                </div>
-                <Menu menudata={this.state.menuform} location={this.props.location} permission={admin.permission} small={this.state.collapsed}/>
-              </Sider>
+              {this.renderMenu(this.state.isMobile ? false : this.state.collapsed)}
             </DrawerMenu>
-          : <Sider
-            trigger={null}
-            collapsible
-            breakpoint="lg"
-            collapsed={this.state.collapsed}
-            width={256}
-            className={styles.sider}
-          >
-            <div className={styles.logo} >
-              <img src={config.logo} alt=""/>
-              <h1>{config.name}</h1>
-            </div>
-            <Menu menudata={this.state.menuform} location={this.props.location} permission={admin.permission} small={this.state.collapsed}/>
-          </Sider>}
+          : this.renderMenu(this.state.collapse)}
 
           <Layout>
             <Header style={{ background: '#fff', padding: 0 }}>

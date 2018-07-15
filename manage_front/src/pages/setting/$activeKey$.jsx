@@ -4,8 +4,7 @@ import { Tabs, Spin } from 'antd';
 import name from 'components/name';
 import Can from 'components/can/index';
 
-import DefaultSetting from './components/index';
-import CompanySetting from './components/company';
+import AutoSetting from './components/auto';
 import UploadSetting from './components/upload';
 import ThemeSetting from './components/theme';
 
@@ -15,13 +14,36 @@ const TabPane = Tabs.TabPane;
 @name('系统配置')
 class SettingPage extends Component {
   state = {
+    activeKey: 'uploadSetting',
+    settings: [],
     isMobile: false,
   }
 
   componentDidMount() {
+
     this.props.dispatch({
       type: 'config/fetch',
+      cb: () =>{
+        this.loadSetting();
+      }
     });
+
+
+  }
+
+  async loadSetting() {
+    const { config: { models = [] }} = this.props;
+    const configList = models.filter(i => i.type === 2 && Array.isArray(i.attrs) && i.attrs.length > 0);
+    const settings = [];
+    for (const config of configList) {
+      settings.push(config);
+    }
+
+    const activeKey = this.props.match.params.activeKey || null;
+    this.setState({
+      activeKey: activeKey ? activeKey : (settings.length > 0 ? settings[0].key : 'uploadSetting'),
+      settings,
+    })
   }
 
   submit = (data, scope) => {
@@ -36,14 +58,16 @@ class SettingPage extends Component {
     return (
       <Can api="GET@/api/config">
         <Spin spinning={loading}>
-          <Tabs>
-            <TabPane tab={<span>基础配置</span>} key="defaultSetting">
-              <DefaultSetting submit={this.submit}/>
-            </TabPane>
-
-            <TabPane tab={<span>公司信息</span>} key="companySetting">
-              <CompanySetting submit={this.submit} />
-            </TabPane>
+          <Tabs activeKey={this.state.activeKey} onChange={(activeKey) => { this.setState({ activeKey })}}>
+            {
+              this.state.settings.map(setting => {
+                return (
+                  <TabPane tab={<span>{setting.name}</span>} key={setting.key}>
+                    <AutoSetting submit={this.submit} keyName={setting.key} attrs={setting.attrs}/>
+                  </TabPane>
+                )
+              })
+            }
 
             <TabPane tab={<span>上传设置</span>} key="uploadSetting">
               <UploadSetting submit={this.submit} />

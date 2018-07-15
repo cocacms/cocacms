@@ -1,7 +1,13 @@
 import base from '../services/base';
 
 
-export default function(serviceName, pager = true) {
+export default {
+  namespace: '__g__',
+  state: {},
+
+}
+
+export const baseModel = function(serviceName, pager = true) {
   const service = base(serviceName);
 
   return {

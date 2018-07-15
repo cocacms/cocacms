@@ -4,8 +4,7 @@ import { message } from 'antd';
 import { login, award, undo, resetPassword } from '../services/admin'
 import { my as myPermission } from '../services/permission'
 import base from '../services/base';
-import baseModel from '../common/modelTemplate';
-
+import { baseModel } from './base';
 
 const siteService = base('site');
 const adminService = base('admin');

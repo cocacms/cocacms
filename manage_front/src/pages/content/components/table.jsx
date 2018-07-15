@@ -5,7 +5,7 @@ import {
 import Can from 'components/can/index';
 
 import { connect } from 'dva';
-import { renderFormComponent, renderForm, buildWhere, getColumns } from 'components/formItem';
+import { renderForm, buildWhere, getColumns, renderFilterForm } from 'components/formItem';
 
 const formItemLayout = {
   labelCol: { span: 5 },
@@ -282,7 +282,7 @@ class TablePage extends Component {
   getFields() {
     const { form: { getFieldDecorator }, indexs= [], attrs = [] } = this.props;
 
-    const children = [];
+    let children = [];
 
     const labelCol = {
       xs: {span: 12},
@@ -296,7 +296,7 @@ class TablePage extends Component {
     };
 
     children.push(
-      <Col sm={12} xs={24} lg={{ span: 8 }} key='s-id'>
+      <Col sm={12} xs={24} lg={{ span: 8 }} key='content-filter-id'>
         <Form.Item label="ID" labelCol={labelCol} wrapperCol={wrapperCol}>
           {getFieldDecorator('id', {
           })(
@@ -306,24 +306,7 @@ class TablePage extends Component {
       </Col>
     );
 
-    for (const attr of attrs) {
-      if (indexs.map(i => i.key).includes(attr.key)) {
-        const options = {};
-        if (attr.type === 'switch') {
-          options.valuePropName = 'checked';
-        }
-
-        children.push(
-          <Col sm={12} xs={24} lg={{ span: 8 }} key={attr.key}>
-            <Form.Item label={attr.name} labelCol={labelCol} wrapperCol={wrapperCol}>
-              {getFieldDecorator(attr.key, options)(
-                renderFormComponent(attr.type, attr.optionsArray, attr.len, 0)
-              )}
-            </Form.Item>
-          </Col>
-        );
-      }
-    }
+    children = renderFilterForm(attrs,indexs, labelCol, wrapperCol, getFieldDecorator, children)
 
     if (children.length > 0) {
       children.push(

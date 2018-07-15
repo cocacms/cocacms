@@ -5,7 +5,7 @@ import {
 import Can from 'components/can/index';
 
 import { connect } from 'dva';
-import { renderFormComponent, buildWhere, getColumns } from 'components/formItem';
+import { renderFilterForm, buildWhere, getColumns } from 'components/formItem';
 
 import  moment from 'moment';
 
@@ -165,7 +165,7 @@ class TablePage extends Component {
   getFields() {
     const { form: { getFieldDecorator }, indexs= [], attrs = [] } = this.props;
 
-    const children = [];
+    let children = [];
 
     const labelCol = {
       xs: {span: 12},
@@ -178,20 +178,7 @@ class TablePage extends Component {
       xxl: {span: 18},
     };
 
-    for (const attr of attrs) {
-      if (indexs.map(i => i.key).includes(attr.key)) {
-        children.push(
-          <Col sm={12} xs={24} lg={{ span: 8 }} key={attr.key}>
-            <Form.Item label={attr.name} labelCol={labelCol} wrapperCol={wrapperCol}>
-              {getFieldDecorator(attr.key, {
-              })(
-                renderFormComponent(attr.type, attr.optionsArray, attr.len, 0, true)
-              )}
-            </Form.Item>
-          </Col>
-        );
-      }
-    }
+    children = renderFilterForm(attrs,indexs, labelCol, wrapperCol, getFieldDecorator, children)
 
     if (children.length > 0) {
       children.push(

@@ -7,14 +7,14 @@
   <title>404错误 - {{ config.defaults.title }}</title>
   <link rel="icon" href="{{ config.defaults.logo }}" type="image/x-icon" />
   <link rel="shortcut icon" href="{{ config.defaults.logo }}" type="image/x-icon"/>
-  <link rel="stylesheet" href="./static/default/css/923ED5D9D7A9576A2.css">
-  <link rel="stylesheet" href="./static/default/css/app.css">
+  <link rel="stylesheet" href="{% static 'css/923ED5D9D7A9576A2.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
 <body>
   <h1>
       <span class="typing"></span>
   </h1>
-  <script src="./static/default/js/typed.min.js"></script>
+  <script src="{% static 'js/typed.min.js' %}"></script>
   <script>
     var typed = new Typed('.typing', {
       strings: ["Sorry, Page NotFound."],

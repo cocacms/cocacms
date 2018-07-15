@@ -7,7 +7,7 @@ import Action from 'components/action';
 import Can from 'components/can/index';
 import { connect } from 'dva';
 
-import re from '../../common/re';
+import re from '../../utils/re';
 
 @Form.create()
 class Edit extends Component {

@@ -134,13 +134,13 @@ class Edit extends Component {
             labelCol={labelCol}
             wrapperCol={wrapperCol}
             label="绑定模型"
-            extra={<Tag color="gold">* 绑定模型会同步设置到子栏目</Tag>}
+            extra={<Tag color="gold">* 绑定模型会同步设置到未设置模型的子栏目</Tag>}
           >
             {getFieldDecorator('model_id', {
               initialValue: data.model_id,
             })(
               <Select placeholder="请选择">
-                { models.map(i => (
+                { models.filter(i => i.type === 0).map(i => (
                   <Select.Option key={`model_id_${i.id}`} value={i.id}>{i.name}</Select.Option>
                 ))}
               </Select>

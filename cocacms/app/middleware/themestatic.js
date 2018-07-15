@@ -55,10 +55,7 @@ module.exports = (options, app) => {
     }
   }
 
-  console.log('====================================');
-  console.log('Coca CMS: Loading Theme Static to App');
-  console.log(`Path: ${staticDirs.join(', ')}`);
-  console.log('====================================');
+  app.logger.info('[cocacms] Loading Theme Static to App, Theme Static is %j', staticDirs);
 
   return compose(middlewares);
 };

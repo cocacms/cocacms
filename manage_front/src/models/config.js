@@ -2,13 +2,14 @@ import { message } from 'antd';
 import base from '../services/base';
 
 const configService = base('config');
-
+const modelService = base('model');
 
 export default {
 
   namespace: 'config',
 
   state: {
+    models: [],
     config: {},
   },
 
@@ -18,14 +19,21 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetch({ payload, cb }, { call, put }) {
       const { data } = yield call(configService.index);
+      const { data: models } = yield call(modelService.index);
+
       yield put({
         type: 'save',
         payload: {
-          config: data
+          config: data,
+          models,
         }
       })
+
+      if (typeof cb === 'function') {
+        cb();
+      }
     },
 
     *set({ payload }, { call, put, select }) {

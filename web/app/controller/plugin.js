@@ -32,7 +32,7 @@ class PluginController extends Controller {
    *
    * @memberof PluginController
    */
-  async updateOne() {
+  async updateEnable() {
     const data = await this.ctx.validate({
       id: [{ required: true, message: '请输入ID' }],
       enable: [{ required: true, message: '请输入状态' }],
@@ -40,7 +40,31 @@ class PluginController extends Controller {
 
     const target = await this.service.plugin.show(data.id);
     if (target.installed !== 1) this.error('请先安装插件');
-    this.ctx.body = await this.service.plugin.update(data);
+    this.ctx.body = await this.service.plugin.update({
+      id: data.id,
+      enable: data.enable,
+    });
+    this.ctx.reloadPlugin();
+  }
+
+  /**
+   * 修改配置
+   *
+   * @memberof PluginController
+   */
+  async updateSetting() {
+    const data = await this.ctx.validate({
+      id: [{ required: true, message: '请输入ID' }],
+      setting: [{ required: true, message: '请输入配置且配置必须为Object', type: 'object' }],
+    });
+
+    const target = await this.service.plugin.show(data.id);
+    if (target.installed !== 1) this.error('请先安装插件');
+    if (target.enable !== 1) this.error('请先启用插件');
+    this.ctx.body = await this.service.plugin.update({
+      id: data.id,
+      setting: JSON.stringify(data.setting) || {},
+    });
     this.ctx.reloadPlugin();
   }
 

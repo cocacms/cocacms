@@ -40,6 +40,7 @@ module.exports = () => {
     }
 
     if (handler) {
+      ctx.status = 500;
       if (ctx.acceptJSON) {
         ctx.body = { message: loggerError(error, ctx) };
       } else {
@@ -60,7 +61,7 @@ module.exports = () => {
             message: loggerError(error, ctx),
           });
         } catch (viewerror) {
-          ctx.body = `<h1>${loggerError(error, ctx)}</h1>`;
+          ctx.body = `<h1>${loggerError(viewerror, ctx)}</h1>`;
         }
 
       }

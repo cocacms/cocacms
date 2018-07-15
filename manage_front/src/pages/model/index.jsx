@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Table, Form, Row, Col, Button, Input, Modal
+  Table, Form, Row, Col, Button, Input, Modal, Radio
 } from 'antd';
 import name from 'components/name';
 import Action from 'components/action';
@@ -68,6 +68,22 @@ class Edit extends Component {
               rules: [{ required: true, message: '请输入模型名称' }],
             })(
               <Input/>
+            )}
+          </Form.Item>
+
+          <Form.Item
+            labelCol={labelCol}
+            wrapperCol={wrapperCol}
+            label="类型"
+          >
+            {getFieldDecorator('type', {
+              initialValue: data.type ? data.type : 0
+            })(
+              <Radio.Group>
+                <Radio value={0}>内容模型</Radio>
+                <Radio value={1}>表单模型</Radio>
+                <Radio value={2}>系统配置</Radio>
+              </Radio.Group>
             )}
           </Form.Item>
 
@@ -230,6 +246,22 @@ class ModelPage extends Component {
     {
       dataIndex: 'name',
       title: '名称',
+    },
+    {
+      dataIndex: 'type',
+      title: '类型',
+      render: (text) => {
+        switch (text) {
+          case 0:
+            return '内容模型';
+          case 1:
+            return '表单模型';
+          case 2:
+            return '系统配置';
+          default:
+            break;
+        }
+      }
     },
     {
       title: '操作',

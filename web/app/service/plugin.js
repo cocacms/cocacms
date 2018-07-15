@@ -60,9 +60,13 @@ class PluginService extends Service {
     const dirname = target.dirname;
     const pluginRootPath = path.resolve('./app/plugin');
     const fullpath = path.join(pluginRootPath, `${dirname}/${dirname}.js`);
+    if (!fs.existsSync(fullpath)) {
+      this.error(`${fullpath}不存在`);
+    }
     const Class = require(fullpath);
     return new Class(this.ctx);
   }
+
   async install(id) {
     const runner = await this._getRunner(id);
     if (typeof runner.install === 'function') {

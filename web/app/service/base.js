@@ -73,10 +73,8 @@ class BaseService extends Service {
     }
 
     if (this.app.config.env === 'local') {
-      console.log('=============DEBUG SQL==============');
-      console.log(`SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} ORDER BY ${orders.join(', ')} ${withPage ? 'LIMIT ?,?' : ''}`);
-      console.log(values);
-      console.log('====================================');
+      this.app.logger.debug('[cocacms] sql  : %s', `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} ORDER BY ${orders.join(', ')} ${withPage ? 'LIMIT ?,?' : ''}`);
+      this.app.logger.debug('[cocacms] value: %j', values);
     }
 
     let data = await this.app.mysql.query(

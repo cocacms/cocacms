@@ -1,6 +1,6 @@
 import modelExtend from 'dva-model-extend'
 import baseService from '../services/base';
-import baseModel from '../common/modelTemplate';
+import { baseModel } from './base';
 import { rules } from '../services/general';
 import { indexs } from '../services/modelAttr';
 

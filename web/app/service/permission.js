@@ -68,7 +68,7 @@ class PermissionService extends Service {
     _.models = await this.service.model.index(null, null, [], '*', [], false);
     _.forms = await this.service.form.index(null, null, [], '*', [], false);
     for (const api of this.ctx.app.router.stack) {
-      if (api.name) {
+      if (api.name && api.path.indexOf('/api') !== -1) {
         apis.push({
           path: `${api.methods[api.methods.length - 1]}@${api.path}`,
           name: api.name,
@@ -79,12 +79,16 @@ class PermissionService extends Service {
     const tags = [ 'model', 'form' ];
     for (const tag of tags) {
       if (_[`${tag}s`] && Array.isArray(_[`${tag}s`])) {
-        const modelList = apis.filter(i => i.name.indexOf(`{${tag}}`) !== -1);
-        for (const iterator of modelList) {
-          for (const target of _[`${tag}s`]) {
+        for (const target of _[`${tag}s`]) {
+          if (tag === 'model' && target.type !== 0) {
+            continue;
+          }
+
+          const modelList = apis.filter(i => i.name.indexOf(`{${tag}}`) !== -1);
+          for (const iterator of modelList) {
             apis.push({
               path: iterator.path.replace(`:${tag}`, target.key),
-              name: iterator.name.replace(`{${tag}}`, ` [${target.name}]${tag === 'model' ? '模型' : '表单'} `),
+              name: iterator.name.replace(`{${tag}}`, ` [${target.name}]`) + (tag === 'model' ? '【模型】' : '【表单】'),
             });
           }
         }

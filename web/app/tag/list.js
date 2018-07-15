@@ -1,7 +1,6 @@
 'use strict';
 
 const { asyncBuilder } = require('./util');
-const nunjucks = require('nunjucks');
 
 class ListExtension {
   constructor() {
@@ -85,8 +84,7 @@ class ListExtension {
         context.env.addGlobal(args._pager, result);
       }
 
-      const val = new nunjucks.runtime.SafeString(ret.join(''));
-      return callback(null, val);
+      return callback(null, context.ctx.helper.shtml(ret.join('')));
     } catch (error) {
       return callback(error);
     }

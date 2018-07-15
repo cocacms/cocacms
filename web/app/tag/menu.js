@@ -1,9 +1,8 @@
 'use strict';
 
 const { asyncBuilder } = require('./util');
-const nunjucks = require('nunjucks');
 
-class ListExtension {
+class MenuExtension {
   constructor() {
     this.tags = [ 'menu' ];
     this.lineno = 0;
@@ -64,8 +63,7 @@ class ListExtension {
       }
       context.setVariable(args._res, menus);
       ret.push(await asyncBuilder(body));
-      const val = new nunjucks.runtime.SafeString(ret.join(''));
-      return callback(null, val);
+      return callback(null, context.ctx.helper.shtml(ret.join('')));
     } catch (error) {
       return callback(error);
     }
@@ -74,4 +72,4 @@ class ListExtension {
 
 }
 
-module.exports = ListExtension;
+module.exports = MenuExtension;

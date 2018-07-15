@@ -27,7 +27,11 @@ class CategoryController extends Controller {
    * @memberof CategoryController
    */
   async index() {
-    this.ctx.body = await this.service.model.index(null, null, [], '*', [], false);
+    const models = await this.service.model.index(null, null, [], '*', [], false);
+    for (const model of models) {
+      model.attrs = await this.service.modelAttr.getAttr(model.id, model.key);
+    }
+    this.ctx.body = models;
   }
 
   /**

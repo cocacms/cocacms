@@ -11,15 +11,6 @@ const svgCaptcha = require('svg-captcha');
 class WebContentController extends Controller {
 
   /**
-   * 首页
-   *
-   * @memberof WebContentController
-   */
-  async index() {
-    await this.render('home');
-  }
-
-  /**
    * 栏目页
    *
    * @memberof WebContentController
@@ -27,6 +18,9 @@ class WebContentController extends Controller {
   async category() {
     const key = this.ctx.params.key;
     const category = await this.service.category.single([[ 'key', key ]]);
+    if (!category) {
+      this.error('栏目不存在');
+    }
     // 栏目类型：1列表页 2单页 3表单页 4调整链接
     const categorys = await this.service.category.index(category.id, false, true);
     const categorys_ids = categorys.map(i => i.id);
@@ -100,6 +94,9 @@ class WebContentController extends Controller {
   async detail() {
     const key = this.ctx.params.key;
     let category = await this.service.category.single([[ 'key', key ]]);
+    if (!category) {
+      this.error('栏目不存在');
+    }
     const categorys = await this.service.category.index(category.id, false, true);
     const categorys_ids = categorys.map(i => i.id);
 
