@@ -13,13 +13,9 @@
 * **动态内容管理**：直接在后台配置模型与表单，将栏目/表单绑定至模型，可动态得管理模型数据
 * **插件扩展**：动态加载插件机制，可插件扩展，丰富CMS功能。→ 查看[插件列表](https://github.com/topics/cocacms-plugin)
 
-## 目录说明
-> web - 服务端项目  
-> manage_front - 管理后台前端项目  
-> *.sql - 数据库导出文件  
-
 ## 使用文档
-- [内置标签](./docs/tags.md)
+- [目录结构](./docs/directory.md)
+- [内置标签](./docs/tag.md)
 
 ## 快速上手
 * clone本项目
