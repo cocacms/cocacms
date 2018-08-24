@@ -30,7 +30,7 @@ class StaticExtension {
       const theme = await ctx.service.theme.getActive();
       const basePath = ctx.helper.urlFor('web-detail', { key: 'static', id: theme.dirname }) + '/path';
       ret.push(url.resolve(basePath, path));
-      return callback(null, context.ctx.helper.shtml(ret.join('')));
+      return callback(null, context.ctx.helper.safe(ret.join('')));
 
     } catch (error) {
       return callback(error, null);

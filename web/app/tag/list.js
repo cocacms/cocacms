@@ -84,7 +84,7 @@ class ListExtension {
         context.env.addGlobal(args._pager, result);
       }
 
-      return callback(null, context.ctx.helper.shtml(ret.join('')));
+      return callback(null, context.ctx.helper.safe(ret.join('')));
     } catch (error) {
       return callback(error);
     }

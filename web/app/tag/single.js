@@ -57,7 +57,7 @@ class SingleExtension {
         ret.push(await asyncBuilder(body));
       }
 
-      return callback(null, context.ctx.helper.shtml(ret.join('')));
+      return callback(null, context.ctx.helper.safe(ret.join('')));
     } catch (error) {
       return callback(error, null);
 
