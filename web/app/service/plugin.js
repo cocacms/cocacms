@@ -49,8 +49,8 @@ class PluginService extends Service {
         }
       }
     }
-
-    await this.app.mysql.query('DELETE FROM plugin WHERE dirname NOT IN (?)', [ dirnames ]);
+    if(dirnames.length > 0)
+      await this.app.mysql.query('DELETE FROM plugin WHERE dirname NOT IN (?)', [ dirnames ]);
 
     return {};
   }

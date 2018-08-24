@@ -64,8 +64,8 @@ class ThemeService extends Service {
         }
       }
     }
-
-    await this.app.mysql.query('DELETE FROM theme WHERE package NOT IN (?)', [ packages ]);
+    if (packages.length > 0)
+      await this.app.mysql.query('DELETE FROM theme WHERE package NOT IN (?)', [ packages ]);
 
     return {};
   }
