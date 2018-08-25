@@ -113,5 +113,10 @@ module.exports = appInfo => {
     whitelist: () => true,
   };
 
+  config.bodyParser = {
+    jsonLimit: '10mb',
+    formLimit: '10mb',
+  };
+
   return config;
 };

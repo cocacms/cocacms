@@ -1,4 +1,5 @@
 'use strict';
+const fs = require('fs');
 
 const loggerError = (err, ctx) => {
   if (err === 404) return 'Page Not Found';
@@ -56,10 +57,15 @@ module.exports = () => {
         }
 
         try {
-          ctx.body = await ctx.renderView(`${themeDir}${error === 404 ? '404' : '500'}.nj`, {
-            ...hookData,
-            message: loggerError(error, ctx),
-          });
+          const template = `${themeDir}${error === 404 ? '404' : '500'}.nj`;
+          if (fs.existsSync(template)) {
+            ctx.body = await ctx.renderView(template, {
+              ...hookData,
+              message: loggerError(error, ctx),
+            });
+          } else {
+            ctx.body = `<h1>${loggerError(error, ctx)}</h1>`;
+          }
         } catch (viewerror) {
           ctx.body = `<h1>${loggerError(viewerror, ctx)}</h1>`;
         }
