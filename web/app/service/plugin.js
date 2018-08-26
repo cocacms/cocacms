@@ -18,6 +18,9 @@ class PluginService extends Service {
    */
   async load() {
     const pluginRootPath = path.resolve('./app/plugin');
+    if (!fs.existsSync(pluginRootPath)) {
+      return {};
+    }
     const dirs = fs.readdirSync(pluginRootPath, 'utf8');
     const dirnames = [];
     for (const dirname of dirs) {
