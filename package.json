@@ -1,0 +1,33 @@
+{
+  "name": "cocacms",
+  "version": "1.0.0",
+  "description": "基于 [egg.js](https://eggjs.org/)、[antd](https://ant.design/index-cn) 的内容管理框架。(Manage front inspired by [ant-design-pro](https://github.com/ant-design/ant-design-pro))",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "conventional-changelog-cli": "^2.0.5",
+    "cz-conventional-changelog": "^2.1.0"
+  },
+  "scripts": {
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rojer95/cocacms.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rojer95/cocacms/issues"
+  },
+  "homepage": "https://github.com/rojer95/cocacms#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
