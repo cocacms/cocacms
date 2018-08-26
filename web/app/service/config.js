@@ -11,9 +11,13 @@ class ConfigService extends Service {
    * @memberof ConfigService
    */
   async set(data) {
-    return await this.app.mysql.update('site', {
-      config: JSON.stringify(data),
-    }, { where: { id: this.ctx.site.id } });
+    return await this.app.mysql.update(
+      'site',
+      {
+        config: JSON.stringify(data),
+      },
+      { where: { id: this.ctx.site.id } }
+    );
   }
 
   /**
@@ -34,7 +38,6 @@ class ConfigService extends Service {
       return {};
     }
   }
-
 }
 
 module.exports = ConfigService;

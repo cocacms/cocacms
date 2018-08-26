@@ -1,4 +1,7 @@
 {
-  "parser": "babel-eslint",
-  "extends": "eslint-config-egg"
+  "extends": "eslint-config-egg",
+  "rules": {
+    "array-bracket-spacing": "off",
+    "generator-star-spacing": "off"
+  }
 }

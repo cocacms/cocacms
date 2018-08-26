@@ -8,7 +8,6 @@ const Controller = require('./base');
  * @extends {Controller}
  */
 class PermissionController extends Controller {
-
   /**
    * 表单验证
    *
@@ -47,7 +46,9 @@ class PermissionController extends Controller {
    * @memberof PermissionController
    */
   async show() {
-    this.ctx.body = await this.service.permission.listByRole(this.ctx.params.id);
+    this.ctx.body = await this.service.permission.listByRole(
+      this.ctx.params.id
+    );
   }
 
   /**

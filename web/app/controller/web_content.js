@@ -9,7 +9,6 @@ const svgCaptcha = require('svg-captcha');
  * @extends {Controller}
  */
 class WebContentController extends Controller {
-
   /**
    * 栏目页
    *
@@ -17,12 +16,16 @@ class WebContentController extends Controller {
    */
   async category() {
     const key = this.ctx.params.key;
-    const category = await this.service.category.single([[ 'key', key ]]);
+    const category = await this.service.category.single([['key', key]]);
     if (!category) {
       this.error('栏目不存在');
     }
     // 栏目类型：1列表页 2单页 3表单页 4调整链接
-    const categorys = await this.service.category.index(category.id, false, true);
+    const categorys = await this.service.category.index(
+      category.id,
+      false,
+      true
+    );
     const categorys_ids = categorys.map(i => i.id);
     let template = 'category';
     let data = {};
@@ -39,9 +42,9 @@ class WebContentController extends Controller {
       const result = await this.service.modelAttr.index(
         null,
         null,
-        [[ 'model_id', model.id ]],
+        [['model_id', model.id]],
         '*',
-        [[ 'sort' ]],
+        [['sort']],
         false
       );
 
@@ -50,18 +53,18 @@ class WebContentController extends Controller {
         modelAttrMap[i.key] = i;
         return i;
       });
-
     }
 
-    if (category.type === 1 && category.template_list) { // 列表页
+    if (category.type === 1 && category.template_list) {
+      // 列表页
       template = category.template_list;
       if (category.model_id) {
         data = await this.service.base.index(
           this.ctx.query.page,
           this.ctx.query.pageSize ? this.ctx.query.pageSize : 8,
-          [[ 'category_id', category.id ]],
+          [['category_id', category.id]],
           '*',
-          [[ 'id', 'desc' ]]
+          [['id', 'desc']]
         );
       }
     }
@@ -72,7 +75,6 @@ class WebContentController extends Controller {
         data = await this.service.base.show(category.bind);
       }
     }
-
 
     await this.render(template, {
       category,
@@ -85,7 +87,6 @@ class WebContentController extends Controller {
     });
   }
 
-
   /**
    * 详情页
    *
@@ -93,11 +94,15 @@ class WebContentController extends Controller {
    */
   async detail() {
     const key = this.ctx.params.key;
-    let category = await this.service.category.single([[ 'key', key ]]);
+    let category = await this.service.category.single([['key', key]]);
     if (!category) {
       this.error('栏目不存在');
     }
-    const categorys = await this.service.category.index(category.id, false, true);
+    const categorys = await this.service.category.index(
+      category.id,
+      false,
+      true
+    );
     const categorys_ids = categorys.map(i => i.id);
 
     let template = 'article';
@@ -119,9 +124,9 @@ class WebContentController extends Controller {
       const result = await this.service.modelAttr.index(
         null,
         null,
-        [[ 'model_id', model.id ]],
+        [['model_id', model.id]],
         '*',
-        [[ 'sort' ]],
+        [['sort']],
         false
       );
 
@@ -135,9 +140,13 @@ class WebContentController extends Controller {
         i.optionsArray = this.service.modelAttr.options2array(i.options);
         if (i.optionsArray.length > 0 && data[i.key]) {
           if (Array.isArray(data[i.key])) {
-            data[i.key] = i.optionsArray.filter(item => data[i.key].includes(item.value));
+            data[i.key] = i.optionsArray.filter(item =>
+              data[i.key].includes(item.value)
+            );
           } else {
-            data[i.key] = i.optionsArray.filter(item => data[i.key] === item.value);
+            data[i.key] = i.optionsArray.filter(
+              item => data[i.key] === item.value
+            );
           }
         }
         modelAttrMap[i.key] = i;
@@ -145,12 +154,21 @@ class WebContentController extends Controller {
       });
 
       if (data.category_id !== category.id) {
-        category = await this.service.category.single([[ 'id', data.category_id ]]);
+        category = await this.service.category.single([
+          ['id', data.category_id],
+        ]);
       }
     }
 
-    const preData = await this.service.base.single([[ 'id', '<', data.id ], [ 'category_id', 'in', categorys_ids ]], '*', [[ 'id', 'desc' ]]);
-    const nextData = await this.service.base.single([[ 'id', '>', data.id ], [ 'category_id', 'in', categorys_ids ]]);
+    const preData = await this.service.base.single(
+      [['id', '<', data.id], ['category_id', 'in', categorys_ids]],
+      '*',
+      [['id', 'desc']]
+    );
+    const nextData = await this.service.base.single([
+      ['id', '>', data.id],
+      ['category_id', 'in', categorys_ids],
+    ]);
 
     await this.render(template, {
       category,
@@ -191,7 +209,6 @@ class WebContentController extends Controller {
     // 自动加上site
     body.site_id = this.ctx.site.id;
 
-
     // transform
     for (const key in rules) {
       if (rules.hasOwnProperty(key) && body.hasOwnProperty(key)) {
@@ -201,7 +218,6 @@ class WebContentController extends Controller {
             body[key] = item.transform(body[key]);
           }
         }
-
       }
     }
 
@@ -223,7 +239,6 @@ class WebContentController extends Controller {
     this.ctx.body = captcha.data;
   }
 
-
   /**
    * 表单提交
    *
@@ -231,7 +246,7 @@ class WebContentController extends Controller {
    */
   async submitForm() {
     const key = this.ctx.params.key;
-    const form = await this.service.form.single([[ 'key', key ]]);
+    const form = await this.service.form.single([['key', key]]);
     if (form === null) {
       this.error('表单不存在！');
     }
@@ -257,6 +272,10 @@ class WebContentController extends Controller {
       delete body.id;
       this.ctx.body = await this.service.base.create(body);
     }
+  }
+
+  async admin() {
+    await this.ctx.render('_admin_.nj');
   }
 }
 

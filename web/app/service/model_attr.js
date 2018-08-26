@@ -4,7 +4,6 @@ const Service = require('./base');
 const momnet = require('moment');
 
 class ModelAttrService extends Service {
-
   constructor(ctx) {
     super(ctx);
     this._table = 'model_attribute';
@@ -39,16 +38,21 @@ class ModelAttrService extends Service {
    * @memberof ModelAttrService
    */
   async tablePreCheck(create = true) {
-    const exist = await this.app.mysql.query('SHOW TABLES LIKE ?', [ this._modelName ]);
+    const exist = await this.app.mysql.query('SHOW TABLES LIKE ?', [
+      this._modelName,
+    ]);
     if (exist.length === 0 && create === true) {
-      await this.app.mysql.query(`CREATE TABLE IF NOT EXISTS \`${this._modelName}\` (
+      await this.app.mysql.query(
+        `CREATE TABLE IF NOT EXISTS \`${this._modelName}\` (
         \`id\` INT(11) NOT NULL AUTO_INCREMENT,
         \`site_id\` INT(11) NOT NULL,
         \`category_id\` INT(11) NULL DEFAULT NULL,
         PRIMARY KEY (\`id\`),
         INDEX \`${this.index_key_name}\` (\`site_id\`, \`category_id\`)
       )
-      ENGINE=InnoDB`, [ this._modelName ]);
+      ENGINE=InnoDB`,
+        [this._modelName]
+      );
     }
 
     return exist.length > 0;
@@ -63,7 +67,6 @@ class ModelAttrService extends Service {
    * @memberof ModelAttrService
    */
   translateType(type, len) {
-
     /**
      * 单行文本 varchar
      * 整数 int
@@ -113,7 +116,6 @@ class ModelAttrService extends Service {
         }
         return `VARCHAR(${len})`;
     }
-
   }
 
   /**
@@ -199,17 +201,21 @@ class ModelAttrService extends Service {
     tableColumAddSql.push(`ADD COLUMN \`${data.key}\``); // 列名称
     tableColumAddSql.push(this.translateType(data.type, data.len)); // 列类型
     tableColumAddSql.push(data.required ? 'NOT NULL' : 'NULL'); // 必填
-    tableColumAddSql.push(this.translateDefault(data.type, data.default, values)); // 默认值
+    tableColumAddSql.push(
+      this.translateDefault(data.type, data.default, values)
+    ); // 默认值
     tableColumAddSql.push('COMMENT ?'); // 备注
     values.push(data.name);
     try {
-      await this.app.mysql.query(`ALTER TABLE \`${this._modelName}\` ${tableColumAddSql.join(' ')}`, values);
+      await this.app.mysql.query(
+        `ALTER TABLE \`${this._modelName}\` ${tableColumAddSql.join(' ')}`,
+        values
+      );
       return await this.app.mysql.insert(this._table, data);
     } catch (error) {
       this.translateError(error);
     }
   }
-
 
   /**
    * 修改列
@@ -239,11 +245,16 @@ class ModelAttrService extends Service {
     tableColumAddSql.push(`CHANGE COLUMN \`${clonum.key}\` \`${data.key}\``); // 列名称
     tableColumAddSql.push(this.translateType(data.type, data.len)); // 列类型
     tableColumAddSql.push(data.required ? 'NOT NULL' : 'NULL'); // 必填
-    tableColumAddSql.push(this.translateDefault(data.type, data.default, values)); // 默认值
+    tableColumAddSql.push(
+      this.translateDefault(data.type, data.default, values)
+    ); // 默认值
     tableColumAddSql.push('COMMENT ?'); // 备注
     values.push(data.name);
     try {
-      await this.app.mysql.query(`ALTER TABLE \`${this._modelName}\` ${tableColumAddSql.join(' ')}`, values);
+      await this.app.mysql.query(
+        `ALTER TABLE \`${this._modelName}\` ${tableColumAddSql.join(' ')}`,
+        values
+      );
       return await this.app.mysql.update(this._table, data, { where: { id } });
     } catch (error) {
       this.translateError(error);
@@ -264,8 +275,9 @@ class ModelAttrService extends Service {
       this.error('列不存在');
     }
     await this.app.mysql.delete(this._table, { id });
-    return await this.app.mysql.query(`ALTER TABLE \`${this._modelName}\` DROP COLUMN \`${clonum.key}\``);
-
+    return await this.app.mysql.query(
+      `ALTER TABLE \`${this._modelName}\` DROP COLUMN \`${clonum.key}\``
+    );
   }
 
   /**
@@ -285,18 +297,23 @@ class ModelAttrService extends Service {
     keys = keys.map(i => `\`${i}\``);
     keys = Array.from(new Set(keys)); // 去重
 
-    const index_name = keyType === 'keys' ? this.index_key_name : this.index_fulltext_name;
+    const index_name =
+      keyType === 'keys' ? this.index_key_name : this.index_fulltext_name;
     const fulltext = keyType === 'keys' ? '' : 'FULLTEXT';
     const ngram = keyType === 'keys' ? '' : 'WITH PARSER ngram';
     const dropSql = await this.buildDropSql(index_name);
     try {
-      return await this.app.mysql.query(`ALTER TABLE \`${this._modelName}\` ${dropSql} ADD ${fulltext} INDEX \`${index_name}\` (${keys.join(', ')}) ${ngram}`);
+      return await this.app.mysql.query(
+        `ALTER TABLE \`${
+          this._modelName
+        }\` ${dropSql} ADD ${fulltext} INDEX \`${index_name}\` (${keys.join(
+          ', '
+        )}) ${ngram}`
+      );
     } catch (error) {
       this.translateError(error);
     }
-
   }
-
 
   /**
    * 查询索引是否存在
@@ -306,10 +323,13 @@ class ModelAttrService extends Service {
    * @memberof ModelAttrService
    */
   async buildDropSql(name) {
-    const data = await this.app.mysql.query(`SHOW INDEX FROM \`${this._modelName}\``);
-    return data.filter(i => i.Key_name === name).length > 0 ? `DROP INDEX \`${name}\`,` : '';
+    const data = await this.app.mysql.query(
+      `SHOW INDEX FROM \`${this._modelName}\``
+    );
+    return data.filter(i => i.Key_name === name).length > 0
+      ? `DROP INDEX \`${name}\`,`
+      : '';
   }
-
 
   /**
    * 获取索引
@@ -319,9 +339,15 @@ class ModelAttrService extends Service {
    */
   async indexs() {
     await this.tablePreCheck();
-    const data = await this.app.mysql.query(`SHOW INDEX FROM \`${this._modelName}\``);
-    const keys = data.filter(i => i.Key_name === this.index_key_name).map(i => i.Column_name);
-    const fulltexts = data.filter(i => i.Key_name === this.index_fulltext_name).map(i => i.Column_name);
+    const data = await this.app.mysql.query(
+      `SHOW INDEX FROM \`${this._modelName}\``
+    );
+    const keys = data
+      .filter(i => i.Key_name === this.index_key_name)
+      .map(i => i.Column_name);
+    const fulltexts = data
+      .filter(i => i.Key_name === this.index_fulltext_name)
+      .map(i => i.Column_name);
 
     return {
       keys,
@@ -336,7 +362,11 @@ class ModelAttrService extends Service {
    * @memberof ModelAttrService
    */
   async retrieve() {
-    return await this.app.mysql.query(`RENAME TABLE \`${this._modelName}\` TO \`${this._modelName}_bp_${momnet().format('YYMMDDHHmmss')}\``);
+    return await this.app.mysql.query(
+      `RENAME TABLE \`${this._modelName}\` TO \`${
+        this._modelName
+      }_bp_${momnet().format('YYMMDDHHmmss')}\``
+    );
   }
 
   /**
@@ -397,7 +427,6 @@ class ModelAttrService extends Service {
     return attrsMap;
   }
 
-
   /**
    *根据key获取模型参数
    *
@@ -406,7 +435,7 @@ class ModelAttrService extends Service {
    * @memberof ModelAttrService
    */
   async getAttrByModalKey(key) {
-    const model = await this.service.model.single([[ 'key', key ]]);
+    const model = await this.service.model.single([['key', key]]);
     if (model === null) {
       this.error('模型不存在！');
     }
@@ -442,9 +471,9 @@ class ModelAttrService extends Service {
     const attrs = await this.service.modelAttr.index(
       null,
       null,
-      [[ 'model_id', model_id ]],
+      [['model_id', model_id]],
       '*',
-      [[ 'sort' ]],
+      [['sort']],
       false
     );
     this.service.base._table = `${this.config.model.prefix}${model_key}`;

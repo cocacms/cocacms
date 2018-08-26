@@ -8,7 +8,6 @@ const Controller = require('./base');
  * @extends {Controller}
  */
 class CategoryController extends Controller {
-
   /**
    * 表单验证
    *
@@ -17,7 +16,10 @@ class CategoryController extends Controller {
    */
   async validate() {
     const body = await this.ctx.validate({
-      key: [{ required: true, message: '请设置栏目关键字' }, { pattern: this.ctx.re.name, message: '栏目关键字只能是字母、数字、_' }],
+      key: [
+        { required: true, message: '请设置栏目关键字' },
+        { pattern: this.ctx.re.name, message: '栏目关键字只能是字母、数字、_' },
+      ],
       name: [{ required: true, message: '请设置栏目名称' }],
       type: [{ required: true, message: '请设置栏目类型' }],
     });
@@ -35,8 +37,17 @@ class CategoryController extends Controller {
    * @memberof CategoryController
    */
   async index() {
-    let result = await this.service.category.index(-1, this.ctx.query.flat === '1', this.ctx.query.root === '1');
-    result = await this.service.category.one2one(result, 'model', 'model_id', 'id');
+    let result = await this.service.category.index(
+      -1,
+      this.ctx.query.flat === '1',
+      this.ctx.query.root === '1'
+    );
+    result = await this.service.category.one2one(
+      result,
+      'model',
+      'model_id',
+      'id'
+    );
     result = result.map(i => {
       try {
         i.pic = JSON.parse(i.pic);
@@ -59,7 +70,10 @@ class CategoryController extends Controller {
    */
   async create() {
     const body = await this.validate();
-    this.ctx.body = await this.service.category.create(body, this.ctx.query.pid);
+    this.ctx.body = await this.service.category.create(
+      body,
+      this.ctx.query.pid
+    );
   }
 
   /**
@@ -75,12 +89,14 @@ class CategoryController extends Controller {
       await this.service.category.update(this.ctx.params.id, { bind: null });
     }
 
-    this.ctx.body = await this.service.category.update(this.ctx.params.id, body);
+    this.ctx.body = await this.service.category.update(
+      this.ctx.params.id,
+      body
+    );
     if (body.model_id && this.ctx.body.affectedRows > 0) {
       await this.setChild(this.ctx.params.id, body.model_id);
     }
   }
-
 
   /**
    * 修改bind
@@ -88,12 +104,13 @@ class CategoryController extends Controller {
    * @memberof CategoryController
    */
   async bind() {
-
     const body = await this.ctx.validate({
       bind: [{ required: true, message: '请设置栏目类型' }],
     });
 
-    this.ctx.body = await this.service.category.update(this.ctx.params.id, { bind: body.bind });
+    this.ctx.body = await this.service.category.update(this.ctx.params.id, {
+      bind: body.bind,
+    });
   }
 
   /**
@@ -139,7 +156,6 @@ class CategoryController extends Controller {
   async moveDown() {
     this.ctx.body = await this.service.category.moveDown(this.ctx.params.id);
   }
-
 }
 
 module.exports = CategoryController;

@@ -33,5 +33,4 @@ module.exports = {
 
     return this[PLUGINCONFIG][name];
   },
-
 };

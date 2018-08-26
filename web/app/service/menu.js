@@ -20,7 +20,6 @@ class MenuService extends Service {
       type: 1,
     };
   }
-
 }
 
 module.exports = MenuService;

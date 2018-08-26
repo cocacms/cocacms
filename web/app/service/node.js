@@ -3,7 +3,6 @@
 const BaseService = require('./base');
 
 class NodeService extends BaseService {
-
   /**
    * 默认数据
    *
@@ -26,18 +25,21 @@ class NodeService extends BaseService {
     }
     const root = await this.app.mysql.get(this._table, where);
     if (root === null) {
-      const data = {
-        ...this.getDefault(),
+      const data = Object.assign({}, this.getDefault(), {
         lft: 1,
         rgt: 2,
         level: 0,
-      };
+      });
       if (hasSite) {
         data.site_id = this.ctx.site.id;
       }
 
       await this.app.mysql.query(
-        `INSERT INTO \`${this._table}\` (${Object.keys(data).map(i => `\`${i}\``).join(', ')}) VALUES (${Object.keys(data).map(() => '?').join(', ')}) ON DUPLICATE KEY UPDATE level=0`,
+        `INSERT INTO \`${this._table}\` (${Object.keys(data)
+          .map(i => `\`${i}\``)
+          .join(', ')}) VALUES (${Object.keys(data)
+          .map(() => '?')
+          .join(', ')}) ON DUPLICATE KEY UPDATE level=0`,
         Object.keys(data).map(key => data[key])
       );
     }
@@ -77,8 +79,12 @@ class NodeService extends BaseService {
     }
 
     const datas = await this.app.mysql.query(
-      `SELECT * FROM ${this._table} WHERE lft ${gt} ? AND lft ${lt} ? AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''} ORDER BY lft`,
-      [ parentNode.lft, parentNode.rgt ]
+      `SELECT * FROM ${
+        this._table
+      } WHERE lft ${gt} ? AND lft ${lt} ? AND is_del = 0 ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      } ORDER BY lft`,
+      [parentNode.lft, parentNode.rgt]
     );
 
     if (!buildTree) {
@@ -86,8 +92,6 @@ class NodeService extends BaseService {
     }
 
     return this.toTree(datas);
-
-
   }
 
   /**
@@ -101,7 +105,14 @@ class NodeService extends BaseService {
     const stack = [];
     const tree = [];
     for (const item of datas) {
-      while (stack.length > 0 && !(stack[stack.length - 1].lft < item.lft && item.lft < stack[stack.length - 1].rgt)) { // 不是子节点，出栈
+      while (
+        stack.length > 0 &&
+        !(
+          stack[stack.length - 1].lft < item.lft &&
+          item.lft < stack[stack.length - 1].rgt
+        )
+      ) {
+        // 不是子节点，出栈
         stack.pop();
       }
 
@@ -120,7 +131,6 @@ class NodeService extends BaseService {
     }
 
     return tree;
-
   }
 
   /**
@@ -154,25 +164,34 @@ class NodeService extends BaseService {
     pid = parentNode.id;
 
     await this.app.mysql.query(
-      `UPDATE ${this._table} SET lft = lft + 2 where lft > ? ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`,
-      [ parentNode.rgt ]
+      `UPDATE ${this._table} SET lft = lft + 2 where lft > ? ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      }`,
+      [parentNode.rgt]
     );
 
     await this.app.mysql.query(
-      `UPDATE ${this._table} SET rgt = rgt + 2 where rgt >= ? ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`,
-      [ parentNode.rgt ]
+      `UPDATE ${this._table} SET rgt = rgt + 2 where rgt >= ? ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      }`,
+      [parentNode.rgt]
     );
 
-    return await this.app.mysql.insert(this._table, Object.assign(data, {
-      lft: parentNode.rgt,
-      rgt: parentNode.rgt + 1,
-      level: parentNode.level + 1,
-      pid: parentNode.id,
-      is_del: 0,
-    }, hasSite ? { site_id: this.ctx.site.id } : {}));
-
+    return await this.app.mysql.insert(
+      this._table,
+      Object.assign(
+        data,
+        {
+          lft: parentNode.rgt,
+          rgt: parentNode.rgt + 1,
+          level: parentNode.level + 1,
+          pid: parentNode.id,
+          is_del: 0,
+        },
+        hasSite ? { site_id: this.ctx.site.id } : {}
+      )
+    );
   }
-
 
   /**
    * 删除节点（含子节点）
@@ -186,7 +205,10 @@ class NodeService extends BaseService {
     const hasSite = await this.columnExist('site_id');
 
     // 删除子元素以及自身
-    const currentNode = await this.app.mysql.get(this._table, { id, is_del: 0 });
+    const currentNode = await this.app.mysql.get(this._table, {
+      id,
+      is_del: 0,
+    });
 
     if (currentNode === null) {
       this.error(`不存在的节点ID: ${id}`);
@@ -197,20 +219,26 @@ class NodeService extends BaseService {
     }
 
     const result = await this.app.mysql.query(
-      `UPDATE ${this._table} SET is_del = 1 WHERE lft >= ? AND rgt <= ? ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`,
-      [ currentNode.lft, currentNode.rgt ]
+      `UPDATE ${this._table} SET is_del = 1 WHERE lft >= ? AND rgt <= ? ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      }`,
+      [currentNode.lft, currentNode.rgt]
     );
 
     if (result.affectedRows > 0) {
       // 修改其他节点的左右值
       const value = currentNode.rgt - currentNode.lft + 1;
       await this.app.mysql.query(
-        `UPDATE ${this._table} SET lft = lft - ? WHERE lft > ? AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`,
-        [ value, currentNode.lft ]
+        `UPDATE ${this._table} SET lft = lft - ? WHERE lft > ? AND is_del = 0 ${
+          hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+        }`,
+        [value, currentNode.lft]
       );
       await this.app.mysql.query(
-        `UPDATE ${this._table} SET rgt = rgt - ? WHERE rgt > ? AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`,
-        [ value, currentNode.rgt ]
+        `UPDATE ${this._table} SET rgt = rgt - ? WHERE rgt > ? AND is_del = 0 ${
+          hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+        }`,
+        [value, currentNode.rgt]
       );
     }
 
@@ -228,14 +256,20 @@ class NodeService extends BaseService {
   async update(id, data) {
     await this.preCheck();
     const hasSite = await this.columnExist('site_id');
-    const currentNode = await this.app.mysql.get(this._table, { id, is_del: 0 });
+    const currentNode = await this.app.mysql.get(this._table, {
+      id,
+      is_del: 0,
+    });
 
     if (currentNode === null) {
       this.error(`不存在的节点ID: ${id}`);
     }
 
     // 如果修改了父id，进行移动
-    if (this.ctx.helper.hasOwnPro(data, 'pid') && Number(data.pid) !== Number(currentNode.pid)) {
+    if (
+      this.ctx.helper.hasOwnPro(data, 'pid') &&
+      Number(data.pid) !== Number(currentNode.pid)
+    ) {
       const pid = data.pid;
       await this.move(id, pid);
     }
@@ -259,7 +293,6 @@ class NodeService extends BaseService {
     }
 
     return {};
-
   }
 
   /**
@@ -273,7 +306,10 @@ class NodeService extends BaseService {
   async move(currentID, parentID) {
     await this.preCheck();
     const hasSite = await this.columnExist('site_id');
-    const currentNode = await this.app.mysql.get(this._table, { id: currentID, is_del: 0 });
+    const currentNode = await this.app.mysql.get(this._table, {
+      id: currentID,
+      is_del: 0,
+    });
 
     const where = { is_del: 0 };
     if (parentID > 0) {
@@ -301,8 +337,12 @@ class NodeService extends BaseService {
     const value = currentNode.rgt - currentNode.lft;
     const ids = [];
     const currentNodeWithChild = await this.app.mysql.query(
-      `SELECT * FROM ${this._table} WHERE lft >= ? AND lft <= ? AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`,
-      [ currentNode.lft, currentNode.rgt ]
+      `SELECT * FROM ${
+        this._table
+      } WHERE lft >= ? AND lft <= ? AND is_del = 0 ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      }`,
+      [currentNode.lft, currentNode.rgt]
     );
     for (const iterator of currentNodeWithChild) {
       ids.push(iterator.id);
@@ -312,37 +352,70 @@ class NodeService extends BaseService {
     let updateRightSQL = 'SELECT 1';
     let updateSelfSQL = 'SELECT 1';
     if (parentNode.rgt > currentNode.rgt) {
-      updateLeftSQL = `UPDATE ${this._table} SET lft = lft - ${value} - 1 WHERE lft > ${currentNode.rgt} AND rgt <= ${parentNode.rgt} AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`;
-      updateRightSQL = `UPDATE ${this._table} SET rgt = rgt - ${value} - 1 WHERE rgt > ${currentNode.rgt} AND rgt < ${parentNode.rgt} AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`;
+      updateLeftSQL = `UPDATE ${
+        this._table
+      } SET lft = lft - ${value} - 1 WHERE lft > ${
+        currentNode.rgt
+      } AND rgt <= ${parentNode.rgt} AND is_del = 0 ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      }`;
+      updateRightSQL = `UPDATE ${
+        this._table
+      } SET rgt = rgt - ${value} - 1 WHERE rgt > ${currentNode.rgt} AND rgt < ${
+        parentNode.rgt
+      } AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`;
       if (ids.length > 0) {
         const tmpValue = parentNode.rgt - currentNode.rgt - 1;
-        const tempLevel = (parentNode.level + 1) - currentNode.level;
-        updateSelfSQL = `UPDATE ${this._table} SET lft = lft + ${tmpValue},rgt = rgt + ${tmpValue},level = level + ${tempLevel} WHERE id IN(${ids.join(',')}) AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`;
+        const tempLevel = parentNode.level + 1 - currentNode.level;
+        updateSelfSQL = `UPDATE ${
+          this._table
+        } SET lft = lft + ${tmpValue},rgt = rgt + ${tmpValue},level = level + ${tempLevel} WHERE id IN(${ids.join(
+          ','
+        )}) AND is_del = 0 ${
+          hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+        }`;
       }
     } else {
-      updateLeftSQL = `UPDATE ${this._table} SET lft = lft + ${value} + 1 WHERE lft > ${parentNode.rgt} AND lft < ${currentNode.lft} AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`;
-      updateRightSQL = `UPDATE ${this._table} SET rgt = rgt + ${value} + 1 WHERE rgt >= ${parentNode.rgt} AND rgt < ${currentNode.lft} AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`;
+      updateLeftSQL = `UPDATE ${
+        this._table
+      } SET lft = lft + ${value} + 1 WHERE lft > ${parentNode.rgt} AND lft < ${
+        currentNode.lft
+      } AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`;
+      updateRightSQL = `UPDATE ${
+        this._table
+      } SET rgt = rgt + ${value} + 1 WHERE rgt >= ${parentNode.rgt} AND rgt < ${
+        currentNode.lft
+      } AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`;
       if (ids.length > 0) {
         const tmpValue = currentNode.lft - parentNode.rgt;
-        const tempLevel = (parentNode.level + 1) - currentNode.level;
-        updateSelfSQL = `UPDATE ${this._table} SET lft = lft - ${tmpValue},rgt = rgt - ${tmpValue},level = level + ${tempLevel} WHERE id IN(${ids.join(',')}) AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`;
+        const tempLevel = parentNode.level + 1 - currentNode.level;
+        updateSelfSQL = `UPDATE ${
+          this._table
+        } SET lft = lft - ${tmpValue},rgt = rgt - ${tmpValue},level = level + ${tempLevel} WHERE id IN(${ids.join(
+          ','
+        )}) AND is_del = 0 ${
+          hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+        }`;
       }
     }
 
     // 更新pid
-    await this.app.mysql.update(this._table, {
-      pid: parentNode.id,
-    }, {
-      where: {
-        id: currentID,
+    await this.app.mysql.update(
+      this._table,
+      {
+        pid: parentNode.id,
       },
-    });
+      {
+        where: {
+          id: currentID,
+        },
+      }
+    );
 
     await this.app.mysql.query(updateLeftSQL);
     await this.app.mysql.query(updateRightSQL);
     return await this.app.mysql.query(updateSelfSQL);
   }
-
 
   /**
    * 上移节点
@@ -354,19 +427,24 @@ class NodeService extends BaseService {
   async moveUp(id) {
     await this.preCheck();
     const hasSite = await this.columnExist('site_id');
-    const currentNode = await this.app.mysql.get(this._table, { id, is_del: 0 });
+    const currentNode = await this.app.mysql.get(this._table, {
+      id,
+      is_del: 0,
+    });
 
     if (currentNode === null) {
       this.error(`不存在的节点ID: ${id}`);
     }
 
-    const preWhere = [ currentNode.lft, currentNode.pid ];
+    const preWhere = [currentNode.lft, currentNode.pid];
     if (hasSite) {
       preWhere.push(this.ctx.site.id);
     }
 
     let preNode = await this.app.mysql.query(
-      `SELECT * FROM ${this._table} WHERE lft < ? AND pid = ? AND is_del = 0 ${hasSite ? 'AND site_id = ?' : ''} ORDER BY lft DESC LIMIT 1`,
+      `SELECT * FROM ${this._table} WHERE lft < ? AND pid = ? AND is_del = 0 ${
+        hasSite ? 'AND site_id = ?' : ''
+      } ORDER BY lft DESC LIMIT 1`,
       preWhere
     );
 
@@ -382,29 +460,47 @@ class NodeService extends BaseService {
     const plusIds = [];
     const minusIds = [];
 
-    const plusDatas = await this.app.mysql.query(`SELECT id FROM ${this._table} WHERE lft >= ? AND rgt <= ? AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`, [ preNode.lft, preNode.rgt ]);
-    const minusDatas = await this.app.mysql.query(`SELECT id FROM ${this._table} WHERE lft >= ? AND rgt <= ? AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`, [ currentNode.lft, currentNode.rgt ]);
+    const plusDatas = await this.app.mysql.query(
+      `SELECT id FROM ${
+        this._table
+      } WHERE lft >= ? AND rgt <= ? AND is_del = 0 ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      }`,
+      [preNode.lft, preNode.rgt]
+    );
+    const minusDatas = await this.app.mysql.query(
+      `SELECT id FROM ${
+        this._table
+      } WHERE lft >= ? AND rgt <= ? AND is_del = 0 ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      }`,
+      [currentNode.lft, currentNode.rgt]
+    );
 
     for (const iterator of plusDatas) {
       plusIds.push(iterator.id);
     }
 
     if (plusIds.length > 0) {
-      await this.app.mysql.query(`UPDATE ${this._table} SET lft = lft + ?,rgt = rgt + ? WHERE id IN (?)`, [ valueAdd, valueAdd, plusIds ]);
+      await this.app.mysql.query(
+        `UPDATE ${this._table} SET lft = lft + ?,rgt = rgt + ? WHERE id IN (?)`,
+        [valueAdd, valueAdd, plusIds]
+      );
     }
-
 
     for (const iterator of minusDatas) {
       minusIds.push(iterator.id);
     }
 
     if (minusIds.length > 0) {
-      await this.app.mysql.query(`UPDATE ${this._table} SET lft = lft - ?,rgt = rgt - ? WHERE id IN (?)`, [ valueMinus, valueMinus, minusIds ]);
+      await this.app.mysql.query(
+        `UPDATE ${this._table} SET lft = lft - ?,rgt = rgt - ? WHERE id IN (?)`,
+        [valueMinus, valueMinus, minusIds]
+      );
     }
 
     return {};
   }
-
 
   /**
    * 下一节点
@@ -416,19 +512,24 @@ class NodeService extends BaseService {
   async moveDown(id) {
     await this.preCheck();
     const hasSite = await this.columnExist('site_id');
-    const currentNode = await this.app.mysql.get(this._table, { id, is_del: 0 });
+    const currentNode = await this.app.mysql.get(this._table, {
+      id,
+      is_del: 0,
+    });
 
     if (currentNode === null) {
       this.error(`不存在的节点ID: ${id}`);
     }
 
-    const nextWhere = [ currentNode.rgt, currentNode.pid ];
+    const nextWhere = [currentNode.rgt, currentNode.pid];
     if (hasSite) {
       nextWhere.push(this.ctx.site.id);
     }
 
     let nextNode = await this.app.mysql.query(
-      `SELECT * FROM ${this._table} WHERE lft > ? AND pid = ? AND is_del = 0 ${hasSite ? 'AND site_id = ?' : ''} ORDER BY lft ASC LIMIT 1`,
+      `SELECT * FROM ${this._table} WHERE lft > ? AND pid = ? AND is_del = 0 ${
+        hasSite ? 'AND site_id = ?' : ''
+      } ORDER BY lft ASC LIMIT 1`,
       nextWhere
     );
 
@@ -444,29 +545,47 @@ class NodeService extends BaseService {
     const plusIds = [];
     const minusIds = [];
 
-    const plusDatas = await this.app.mysql.query(`SELECT id FROM ${this._table} WHERE lft >= ? AND rgt <= ? AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`, [ currentNode.lft, currentNode.rgt ]);
-    const minusDatas = await this.app.mysql.query(`SELECT id FROM ${this._table} WHERE lft >= ? AND rgt <= ? AND is_del = 0 ${hasSite ? 'AND site_id = ' + this.ctx.site.id : ''}`, [ nextNode.lft, nextNode.rgt ]);
+    const plusDatas = await this.app.mysql.query(
+      `SELECT id FROM ${
+        this._table
+      } WHERE lft >= ? AND rgt <= ? AND is_del = 0 ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      }`,
+      [currentNode.lft, currentNode.rgt]
+    );
+    const minusDatas = await this.app.mysql.query(
+      `SELECT id FROM ${
+        this._table
+      } WHERE lft >= ? AND rgt <= ? AND is_del = 0 ${
+        hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
+      }`,
+      [nextNode.lft, nextNode.rgt]
+    );
 
     for (const iterator of plusDatas) {
       plusIds.push(iterator.id);
     }
 
     if (plusIds.length > 0) {
-      await this.app.mysql.query(`UPDATE ${this._table} SET lft = lft + ?,rgt = rgt + ? WHERE id IN (?)`, [ valueAdd, valueAdd, plusIds ]);
+      await this.app.mysql.query(
+        `UPDATE ${this._table} SET lft = lft + ?,rgt = rgt + ? WHERE id IN (?)`,
+        [valueAdd, valueAdd, plusIds]
+      );
     }
-
 
     for (const iterator of minusDatas) {
       minusIds.push(iterator.id);
     }
 
     if (minusIds.length > 0) {
-      await this.app.mysql.query(`UPDATE ${this._table} SET lft = lft - ?,rgt = rgt - ? WHERE id IN (?)`, [ valueMinus, valueMinus, minusIds ]);
+      await this.app.mysql.query(
+        `UPDATE ${this._table} SET lft = lft - ?,rgt = rgt - ? WHERE id IN (?)`,
+        [valueMinus, valueMinus, minusIds]
+      );
     }
 
     return {};
   }
-
 }
 
 module.exports = NodeService;

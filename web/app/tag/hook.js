@@ -2,7 +2,7 @@
 
 class HookExtension {
   constructor() {
-    this.tags = [ 'hook' ];
+    this.tags = ['hook'];
     this.lineno = 0;
   }
 
@@ -13,7 +13,6 @@ class HookExtension {
     parser.advanceAfterBlockEnd(tok.value);
     return new nodes.CallExtensionAsync(this, 'run', args);
   }
-
 
   async run(context, name, callback) {
     callback = arguments[arguments.length - 1];
@@ -40,14 +39,10 @@ class HookExtension {
       }
 
       return callback(null, context.ctx.helper.safe(ret.join('')));
-
     } catch (error) {
       return callback(error, null);
-
     }
-
   }
-
 }
 
 module.exports = HookExtension;

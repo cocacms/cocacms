@@ -20,17 +20,15 @@ module.exports = () => {
       ctx.cookies.set('site', site.id);
     }
 
-
     if (ctx.session.uid) {
       ctx.uid = ctx.session.uid;
     }
 
     ctx.site = site;
 
-    ctx.query = {
-      ...ctx.request.query,
+    ctx.query = Object.assign({}, ctx.request.query, {
       locale: site.locale,
-    };
+    });
 
     await next();
   };

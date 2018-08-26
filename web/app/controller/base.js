@@ -39,11 +39,9 @@ class BaseController extends Controller {
       hookData = await this.app.hooks.render(this.ctx);
     }
 
-    await this.ctx.render(`${themeDir}${path}.nj`, {
+    await this.ctx.render(`${themeDir}${path}.nj`, Object.assign({}, {
       config,
-      ...hookData,
-      ...data,
-    });
+    }, hookData, data));
   }
 }
 

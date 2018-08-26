@@ -9,7 +9,6 @@ const Controller = require('./base');
  * @extends {Controller}
  */
 class MenuController extends Controller {
-
   /**
    * 表单验证
    *
@@ -34,7 +33,6 @@ class MenuController extends Controller {
         url: [{ required: true, message: '请设置导航菜单链接' }],
       });
     }
-
   }
 
   /**
@@ -43,7 +41,11 @@ class MenuController extends Controller {
    * @memberof MenuController
    */
   async index() {
-    const result = await this.service.menu.index(-1, this.ctx.query.flat === '1', this.ctx.query.root === '1');
+    const result = await this.service.menu.index(
+      -1,
+      this.ctx.query.flat === '1',
+      this.ctx.query.root === '1'
+    );
     this.ctx.body = this.service.category.toTree(result);
   }
 
@@ -54,7 +56,10 @@ class MenuController extends Controller {
    */
   async create() {
     await this.validate();
-    this.ctx.body = await this.service.menu.create(this.ctx.request.body, this.ctx.query.pid);
+    this.ctx.body = await this.service.menu.create(
+      this.ctx.request.body,
+      this.ctx.query.pid
+    );
   }
 
   /**
@@ -64,7 +69,10 @@ class MenuController extends Controller {
    */
   async update() {
     await this.validate();
-    this.ctx.body = await this.service.menu.update(this.ctx.params.id, this.ctx.request.body);
+    this.ctx.body = await this.service.menu.update(
+      this.ctx.params.id,
+      this.ctx.request.body
+    );
   }
 
   /**
@@ -93,7 +101,6 @@ class MenuController extends Controller {
   async moveDown() {
     this.ctx.body = await this.service.menu.moveDown(this.ctx.params.id);
   }
-
 }
 
 module.exports = MenuController;

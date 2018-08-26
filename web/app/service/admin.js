@@ -18,7 +18,9 @@ class AdminService extends Service {
    * @memberof AdminService
    */
   signPassword(password) {
-    return this.ctx.helper.md5(this.ctx.helper.md5(this.config.keys + password) + this.config.keys);
+    return this.ctx.helper.md5(
+      this.ctx.helper.md5(this.config.keys + password) + this.config.keys
+    );
   }
 
   /**
@@ -39,20 +41,23 @@ class AdminService extends Service {
       jwtOption.expiresIn = options.expires;
     }
 
-
     let cert = options.key;
     if (options.alg === 'RS512') {
       cert = fs.readFileSync(options.key);
     }
 
-    const token = jwt.sign({
-      r: Math.random(),
-      uid,
-      site,
-    }, cert, jwtOption);
+    const token = jwt.sign(
+      {
+        r: Math.random(),
+        uid,
+        site,
+      },
+      cert,
+      jwtOption
+    );
 
     const expire = options.expires;
-    return { token, expire, ...extraData };
+    return Object.assign({}, { token, expire }, extraData);
   }
 
   /**
@@ -78,7 +83,6 @@ class AdminService extends Service {
       this.error('站点不存在，请检查数据库');
     }
 
-
     return this.signToken(user.id, site, { site });
   }
 
@@ -98,7 +102,6 @@ class AdminService extends Service {
       nickname,
     });
   }
-
 
   /**
    * 修改密码

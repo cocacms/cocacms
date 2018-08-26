@@ -1,14 +1,16 @@
 'use strict';
 const path = require('path');
 module.exports = app => {
-
   // hook机制
   const directory = path.join(__dirname, 'app/hook');
-  app.logger.info('[cocacms] Loading Hook Extend to App, hook is %j', directory);
+  app.logger.info(
+    '[cocacms] Loading Hook Extend to App, hook is %j',
+    directory
+  );
   app.loader.loadToApp(directory, 'hooks');
 
   // 注册自定义模板标签
-  const tagMap = [ 'list', 'single', 'menu', 'category', 'static', 'hook' ];
+  const tagMap = ['list', 'single', 'menu', 'category', 'static', 'hook'];
   app.logger.info('[cocacms] Loading Nunjucks Tag to App, tags is %j', tagMap);
 
   for (const tag of tagMap) {
@@ -23,7 +25,6 @@ module.exports = app => {
   });
   app.beforeStart(async () => {
     const ctx = app.createAnonymousContext();
-    console.log(111);
 
     await ctx.reloadPlugin();
     if (app.hooks && typeof app.hooks.appLoaded === 'function') {
@@ -36,5 +37,4 @@ module.exports = app => {
       }
     }
   });
-
 };

@@ -7,7 +7,6 @@ class ModelService extends Service {
     super(ctx);
     this._table = 'model';
   }
-
 }
 
 module.exports = ModelService;

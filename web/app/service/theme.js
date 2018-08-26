@@ -41,35 +41,59 @@ class ThemeService extends Service {
         const configPath = path.join(dir, 'config.js');
         if (fs.existsSync(configPath)) {
           let config = Object.assign({}, require(configPath));
-          config = await this.ctx.validate({
-            package: [{ required: true, message: `主题(${dirname})配置文件中缺少“包名”[package]字段` }],
-            name: [{ required: true, message: `主题(${dirname})配置文件中缺少“名称”[name]字段` }],
-            author: [{ required: true, message: `主题(${dirname})配置文件中缺少“作者”[author]字段` }],
-          }, config);
-          const exist = await this.app.mysql.count(this._table, { package: config.package });
+          config = await this.ctx.validate(
+            {
+              package: [
+                {
+                  required: true,
+                  message: `主题(${dirname})配置文件中缺少“包名”[package]字段`,
+                },
+              ],
+              name: [
+                {
+                  required: true,
+                  message: `主题(${dirname})配置文件中缺少“名称”[name]字段`,
+                },
+              ],
+              author: [
+                {
+                  required: true,
+                  message: `主题(${dirname})配置文件中缺少“作者”[author]字段`,
+                },
+              ],
+            },
+            config
+          );
+          const exist = await this.app.mysql.count(this._table, {
+            package: config.package,
+          });
 
           packages.push(config.package);
 
           if (exist > 0) {
-            await this.app.mysql.update(this._table, {
-              ...config,
-              dirname,
-            }, { where: { package: config.package } });
+            await this.app.mysql.update(
+              this._table,
+              Object.assign({}, config, {
+                dirname,
+              }),
+              { where: { package: config.package } }
+            );
           } else {
-            await this.app.mysql.insert(this._table, {
-              ...config,
+            await this.app.mysql.insert(this._table, Object.assign({}, config, {
               dirname,
-            });
+            }));
           }
         }
       }
     }
-    if (packages.length > 0)
-      await this.app.mysql.query('DELETE FROM theme WHERE package NOT IN (?)', [ packages ]);
+    if (packages.length > 0) {
+      await this.app.mysql.query('DELETE FROM theme WHERE package NOT IN (?)', [
+        packages,
+      ]);
+    }
 
     return {};
   }
-
 
   /**
    * 设为当前主题
@@ -80,9 +104,11 @@ class ThemeService extends Service {
    */
   async active(id) {
     await this.app.mysql.query(`UPDATE ${this._table} SET \`use\` = 0`);
-    return await this.app.mysql.query(`UPDATE ${this._table} SET \`use\` = 1 WHERE id = ?`, [ id ]);
+    return await this.app.mysql.query(
+      `UPDATE ${this._table} SET \`use\` = 1 WHERE id = ?`,
+      [id]
+    );
   }
-
 }
 
 module.exports = ThemeService;

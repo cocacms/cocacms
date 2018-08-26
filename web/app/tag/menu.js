@@ -4,10 +4,9 @@ const { asyncBuilder } = require('./util');
 
 class MenuExtension {
   constructor() {
-    this.tags = [ 'menu' ];
+    this.tags = ['menu'];
     this.lineno = 0;
   }
-
 
   parse(parser, nodes) {
     const tok = parser.nextToken();
@@ -21,9 +20,8 @@ class MenuExtension {
 
     parser.advanceAfterBlockEnd();
 
-    return new nodes.CallExtensionAsync(this, 'run', args, [ body ]);
+    return new nodes.CallExtensionAsync(this, 'run', args, [body]);
   }
-
 
   async run(context, args, body, callback) {
     callback = arguments[arguments.length - 1];
@@ -52,7 +50,9 @@ class MenuExtension {
         } else if (menu.category_id) {
           const category = await ctx.service.category.show(menu.category_id);
           if (category.type !== 4) {
-            menu.jump = ctx.helper.urlFor('web-category', { key: category.key });
+            menu.jump = ctx.helper.urlFor('web-category', {
+              key: category.key,
+            });
           } else {
             menu.jump = category.url;
           }
@@ -67,9 +67,7 @@ class MenuExtension {
     } catch (error) {
       return callback(error);
     }
-
   }
-
 }
 
 module.exports = MenuExtension;

@@ -8,7 +8,6 @@ const Controller = require('./base');
  * @extends {Controller}
  */
 class WebCustomController extends Controller {
-
   /**
    * 首页
    *

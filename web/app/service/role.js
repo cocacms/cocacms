@@ -18,7 +18,8 @@ class RoleService extends Service {
    */
   async award(uid, rid) {
     return await this.app.mysql.insert('admin_role', {
-      uid, rid,
+      uid,
+      rid,
     });
   }
   /**
@@ -31,7 +32,8 @@ class RoleService extends Service {
    */
   async undo(uid, rid) {
     return await this.app.mysql.delete('admin_role', {
-      uid, rid,
+      uid,
+      rid,
     });
   }
 }

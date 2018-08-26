@@ -6,7 +6,6 @@ const moment = require('moment');
 const TABLE = Symbol('Service#table');
 
 class BaseService extends Service {
-
   /**
    * 抛出异常
    *
@@ -31,7 +30,6 @@ class BaseService extends Service {
     this[TABLE] = value;
   }
 
-
   /**
    * 获取数据列表
    *
@@ -44,10 +42,17 @@ class BaseService extends Service {
    * @return {object} 分页数据
    * @memberof BaseService
    */
-  async index(page = 1, pageSize = 20, searchs = [], fields = '*', order = [], withPage = true) {
+  async index(
+    page = 1,
+    pageSize = 20,
+    searchs = [],
+    fields = '*',
+    order = [],
+    withPage = true
+  ) {
     page = Number(page);
     pageSize = Number(pageSize);
-    let wheres = [ '1 = 1' ];
+    let wheres = ['1 = 1'];
     let values = [];
     let orders = [];
 
@@ -66,20 +71,33 @@ class BaseService extends Service {
       values.push(this.ctx.site.id);
     }
 
-    ({ wheres, values, orders } = this.ctx.whereBuilder(searchs, order, wheres, values, orders));
+    ({ wheres, values, orders } = this.ctx.whereBuilder(
+      searchs,
+      order,
+      wheres,
+      values,
+      orders
+    ));
 
     if (orders.length === 0) {
       orders.push('`id` ASC'); // 默认按id
     }
 
     if (this.app.config.env === 'local') {
-      this.app.logger.debug('[cocacms] sql  : %s', `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} ORDER BY ${orders.join(', ')} ${withPage ? 'LIMIT ?,?' : ''}`);
+      this.app.logger.debug(
+        '[cocacms] sql  : %s',
+        `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(
+          ' AND '
+        )} ORDER BY ${orders.join(', ')} ${withPage ? 'LIMIT ?,?' : ''}`
+      );
       this.app.logger.debug('[cocacms] value: %j', values);
     }
 
     let data = await this.app.mysql.query(
-      `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} ORDER BY ${orders.join(', ')} ${withPage ? 'LIMIT ?,?' : ''}`,
-      [ ...values, (page - 1) * pageSize, pageSize ]
+      `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(
+        ' AND '
+      )} ORDER BY ${orders.join(', ')} ${withPage ? 'LIMIT ?,?' : ''}`,
+      [...values, (page - 1) * pageSize, pageSize]
     );
 
     data = await this.fillData(data);
@@ -90,7 +108,7 @@ class BaseService extends Service {
 
     const total = await this.app.mysql.query(
       `SELECT count(*) as c FROM ${this._table} WHERE ${wheres.join(' AND ')}`,
-      [ ...values ]
+      [...values]
     );
 
     return this.ctx.helper.pager(data, page, pageSize, total[0].c);
@@ -117,7 +135,7 @@ class BaseService extends Service {
    * @memberof BaseService
    */
   async single(searchs = [], fields = '*', order = []) {
-    let wheres = [ '1 = 1' ];
+    let wheres = ['1 = 1'];
     let values = [];
     let orders = [];
 
@@ -136,14 +154,22 @@ class BaseService extends Service {
       values.push(this.ctx.site.id);
     }
 
-    ({ wheres, values, orders } = this.ctx.whereBuilder(searchs, order, wheres, values, orders));
+    ({ wheres, values, orders } = this.ctx.whereBuilder(
+      searchs,
+      order,
+      wheres,
+      values,
+      orders
+    ));
 
     if (orders.length === 0) {
       orders.push('`id` ASC'); // 默认按id
     }
 
     const data = await this.app.mysql.query(
-      `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(' AND ')} ORDER BY ${orders.join(', ')} LIMIT 1`,
+      `SELECT ${fields} FROM ${this._table} WHERE ${wheres.join(
+        ' AND '
+      )} ORDER BY ${orders.join(', ')} LIMIT 1`,
       values
     );
 
@@ -169,7 +195,6 @@ class BaseService extends Service {
     return await this.app.mysql.insert(this._table, data);
   }
 
-
   /**
    * 更新数据
    *
@@ -183,7 +208,6 @@ class BaseService extends Service {
     }
     return await this.app.mysql.update(this._table, data);
   }
-
 
   /**
    * 删除数据
@@ -213,7 +237,10 @@ class BaseService extends Service {
    * @memberof BaseService
    */
   async columnExist(fieldName, _table = false) {
-    const has = await this.app.mysql.query('select * from INFORMATION_SCHEMA.COLUMNS where table_name = ? and column_name = ?', [ _table ? _table : this._table, fieldName ]);
+    const has = await this.app.mysql.query(
+      'select * from INFORMATION_SCHEMA.COLUMNS where table_name = ? and column_name = ?',
+      [_table ? _table : this._table, fieldName]
+    );
     return has.length > 0;
   }
 
@@ -225,7 +252,10 @@ class BaseService extends Service {
    */
   async count() {
     const hasSite = await this.columnExist('site_id');
-    return await this.app.mysql.count(this._table, hasSite ? { site_id: this.ctx.site.id } : {});
+    return await this.app.mysql.count(
+      this._table,
+      hasSite ? { site_id: this.ctx.site.id } : {}
+    );
   }
 
   /**
@@ -235,7 +265,9 @@ class BaseService extends Service {
    * @memberof BaseService
    */
   async getColumn() {
-    const model = await this.app.mysql.get('model', { key: this._table.replace(this.config.model.prefix, '') });
+    const model = await this.app.mysql.get('model', {
+      key: this._table.replace(this.config.model.prefix, ''),
+    });
     if (model === null) {
       this.error('模型不存在');
     }
@@ -254,8 +286,7 @@ class BaseService extends Service {
    */
   async getValidateRules(isFront = false) {
     const columns = await this.getColumn();
-    const rules = {
-    };
+    const rules = {};
 
     for (const column of columns) {
       let rule = [];
@@ -280,22 +311,25 @@ class BaseService extends Service {
                 required: column.required === 1,
                 validator(rule, value, callback) {
                   const errors = [];
-                  if (value && !moment(value, [ moment.ISO_8601, format ]).isValid()) {
+                  if (
+                    value &&
+                    !moment(value, [moment.ISO_8601, format]).isValid()
+                  ) {
                     errors.push(`${column.name}的时间格式不正确`);
                   }
                   callback(errors);
                 },
               });
             }
-
           }
         }
 
         // 数组转化
-        for (const key of [ 'img', 'file' ]) {
+        for (const key of ['img', 'file']) {
           if (column.type === key) {
             rule.push({
-              transform(value) { // 数据 格式化
+              transform(value) {
+                // 数据 格式化
                 return JSON.stringify(value);
               },
             });
@@ -305,9 +339,10 @@ class BaseService extends Service {
         // checkbox 合并成
         if (column.type === 'checkbox') {
           rule.push({
-            transform(value) { // 数据 格式化
+            transform(value) {
+              // 数据 格式化
               if (!Array.isArray(value)) {
-                value = [ value ];
+                value = [value];
               }
               return value.join(',');
             },
@@ -315,17 +350,21 @@ class BaseService extends Service {
         }
 
         // 时间
-        if ([ 'date', 'datetime', 'time' ].includes(column.type)) {
+        if (['date', 'datetime', 'time'].includes(column.type)) {
           const format = toValidateTime[column.type];
           rule.push({
-            transform(value) { // 数据 格式化
-              return moment(value, [ moment.ISO_8601, 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'HH:mm:ss' ]).format(format);
+            transform(value) {
+              // 数据 格式化
+              return moment(value, [
+                moment.ISO_8601,
+                'YYYY-MM-DD HH:mm:ss',
+                'YYYY-MM-DD',
+                'HH:mm:ss',
+              ]).format(format);
             },
           });
         }
-
       }
-
 
       try {
         const others = JSON.parse(column.rules);
@@ -334,7 +373,8 @@ class BaseService extends Service {
             for (const other of others) {
               // 实例化正则对象
               if (this.helper.hasOwnPro(other, 'pattern')) {
-                if (this.helper.hasOwnPro(this.ctx.re, other.pattern)) { // 判断内置正则
+                if (this.helper.hasOwnPro(this.ctx.re, other.pattern)) {
+                  // 判断内置正则
                   other.pattern = this.ctx.re[other.pattern];
                 } else {
                   other.pattern = new RegExp(other.pattern);
@@ -342,7 +382,7 @@ class BaseService extends Service {
               }
             }
           }
-          rule = [ ...rule, ...others ];
+          rule = [...rule, ...others];
         }
       } catch (error) {
         // in fact, do noting...
@@ -351,7 +391,6 @@ class BaseService extends Service {
       if (rule.length > 0) {
         rules[column.key] = rule;
       }
-
     }
 
     return rules;
@@ -372,13 +411,15 @@ class BaseService extends Service {
     }
 
     let columns = await this.getColumn();
-    columns = columns.filter(i => i.type === 'img' || i.type === 'file' || i.type === 'checkbox');
+    columns = columns.filter(
+      i => i.type === 'img' || i.type === 'file' || i.type === 'checkbox'
+    );
     if (columns.length === 0) {
       return data;
     }
 
     if (!isArray) {
-      data = [ data ];
+      data = [data];
     }
 
     data = data.map(i => {
@@ -437,7 +478,6 @@ class BaseService extends Service {
           break;
         }
       }
-
     }
 
     return data;
@@ -480,10 +520,11 @@ class BaseService extends Service {
     for (const iterator of data) {
       for (const relationIterator of relationData) {
         if (iterator[primaryKey] === relationIterator[relationKey]) {
-          tempMap[String(iterator[primaryKey])][`${relation}s`].push(relationIterator);
+          tempMap[String(iterator[primaryKey])][`${relation}s`].push(
+            relationIterator
+          );
         }
       }
-
     }
 
     return data;
@@ -519,7 +560,15 @@ class BaseService extends Service {
    * @return {array} 返回数据
    * @memberof BaseService
    */
-  async many2many(data, relation, map = null, mapFromKey = null, mapToKey = null, primaryKey = 'id', relationKey = 'id') {
+  async many2many(
+    data,
+    relation,
+    map = null,
+    mapFromKey = null,
+    mapToKey = null,
+    primaryKey = 'id',
+    relationKey = 'id'
+  ) {
     if (!map) {
       map = `${this._table}_${relation}`;
     }
@@ -569,7 +618,9 @@ class BaseService extends Service {
     for (const iterator of tempData) {
       for (const relationIterator of relationData) {
         if (iterator[mapToKey] === relationIterator[relationKey]) {
-          tempMap[String(iterator[mapFromKey])][`${relation}s`].push(relationIterator);
+          tempMap[String(iterator[mapFromKey])][`${relation}s`].push(
+            relationIterator
+          );
           break;
         }
       }
@@ -577,8 +628,6 @@ class BaseService extends Service {
 
     return data;
   }
-
-
 }
 
 module.exports = BaseService;

@@ -26,7 +26,14 @@ class RoleController extends Controller {
    * @memberof RoleController
    */
   async index() {
-    this.ctx.body = await this.service.role.index(null, null, [], '*', [[ 'id', 'asc' ]], false);
+    this.ctx.body = await this.service.role.index(
+      null,
+      null,
+      [],
+      '*',
+      [['id', 'asc']],
+      false
+    );
   }
 
   /**
@@ -36,7 +43,7 @@ class RoleController extends Controller {
    */
   async show() {
     const data = await this.service.role.show(this.ctx.params.id);
-    this.ctx.body = (await this.service.role.one2many([ data ], 'permission'))[0];
+    this.ctx.body = (await this.service.role.one2many([data], 'permission'))[0];
   }
 
   /**
@@ -56,10 +63,9 @@ class RoleController extends Controller {
    */
   async update() {
     await this.validate();
-    this.ctx.body = await this.service.role.update({
-      ...this.ctx.request.body,
+    this.ctx.body = await this.service.role.update(Object.assign({}, this.ctx.request.body, {
       id: this.ctx.params.id,
-    });
+    }));
   }
 
   /**
@@ -70,7 +76,6 @@ class RoleController extends Controller {
   async destroy() {
     this.ctx.body = await this.service.role.destroy(this.ctx.params.id);
   }
-
 }
 
 module.exports = RoleController;

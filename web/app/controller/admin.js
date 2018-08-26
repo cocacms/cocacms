@@ -8,7 +8,6 @@ const Controller = require('./base');
  * @extends {Controller}
  */
 class AdminController extends Controller {
-
   /**
    * 表单验证
    *
@@ -21,7 +20,6 @@ class AdminController extends Controller {
     });
   }
 
-
   /**
    * 用户登录
    *
@@ -29,7 +27,10 @@ class AdminController extends Controller {
    */
   async login() {
     const data = await this.ctx.validate({
-      account: [{ required: true, message: '请输入登录邮箱' }, { pattern: this.ctx.re.mail, message: '请输入邮箱' }],
+      account: [
+        { required: true, message: '请输入登录邮箱' },
+        { pattern: this.ctx.re.mail, message: '请输入邮箱' },
+      ],
       password: [{ required: true, message: '请输入密码' }],
     });
 
@@ -43,7 +44,10 @@ class AdminController extends Controller {
    */
   async award() {
     await this.validateAward();
-    this.ctx.body = await this.service.role.award(this.ctx.request.body.uid, this.ctx.request.body.rid);
+    this.ctx.body = await this.service.role.award(
+      this.ctx.request.body.uid,
+      this.ctx.request.body.rid
+    );
   }
 
   /**
@@ -53,7 +57,10 @@ class AdminController extends Controller {
    */
   async undo() {
     await this.validateAward();
-    this.ctx.body = await this.service.role.undo(this.ctx.request.body.uid, this.ctx.request.body.rid);
+    this.ctx.body = await this.service.role.undo(
+      this.ctx.request.body.uid,
+      this.ctx.request.body.rid
+    );
   }
 
   /**
@@ -62,8 +69,20 @@ class AdminController extends Controller {
    * @memberof AdminController
    */
   async index() {
-    const result = await this.service.admin.index(this.ctx.query.page, this.ctx.query.pageSize, this.ctx.query.where, 'id,account,nickname,is_super', this.ctx.query.order);
-    result.data = await this.service.admin.many2many(result.data, 'role', null, 'uid', 'rid');
+    const result = await this.service.admin.index(
+      this.ctx.query.page,
+      this.ctx.query.pageSize,
+      this.ctx.query.where,
+      'id,account,nickname,is_super',
+      this.ctx.query.order
+    );
+    result.data = await this.service.admin.many2many(
+      result.data,
+      'role',
+      null,
+      'uid',
+      'rid'
+    );
     this.ctx.body = result;
   }
 
@@ -73,9 +92,11 @@ class AdminController extends Controller {
    * @memberof AdminController
    */
   async create() {
-
     const data = await this.ctx.validate({
-      account: [{ required: true, message: '请输入登录邮箱' }, { pattern: this.ctx.re.mail, message: '请输入邮箱' }],
+      account: [
+        { required: true, message: '请输入登录邮箱' },
+        { pattern: this.ctx.re.mail, message: '请输入邮箱' },
+      ],
       password: [{ required: true, message: '请输入密码' }],
       nickname: [{ required: true, message: '请输入昵称' }],
     });
@@ -84,7 +105,6 @@ class AdminController extends Controller {
     delete data.is_super;
 
     this.ctx.body = await this.service.admin.create(data);
-
   }
 
   /**
@@ -94,7 +114,10 @@ class AdminController extends Controller {
    */
   async update() {
     const data = await this.ctx.validate({
-      account: [{ required: true, message: '请输入登录邮箱' }, { pattern: this.ctx.re.mail, message: '请输入邮箱' }],
+      account: [
+        { required: true, message: '请输入登录邮箱' },
+        { pattern: this.ctx.re.mail, message: '请输入邮箱' },
+      ],
       nickname: [{ required: true, message: '请输入昵称' }],
     });
 
@@ -104,10 +127,9 @@ class AdminController extends Controller {
 
     delete data.is_super;
 
-    this.ctx.body = await this.service.admin.update({
-      ...this.ctx.request.body,
+    this.ctx.body = await this.service.admin.update(Object.assign({}, this.ctx.request.body, {
       id: this.ctx.params.id,
-    });
+    }));
   }
 
   /**
@@ -143,9 +165,11 @@ class AdminController extends Controller {
       oPassword: { required: true, message: '请输入旧密码' },
       newPassword: { required: true, message: '请输入新密码' },
     });
-    this.ctx.body = await this.service.admin.resetPassword(body.oPassword, body.newPassword);
+    this.ctx.body = await this.service.admin.resetPassword(
+      body.oPassword,
+      body.newPassword
+    );
   }
-
 }
 
 module.exports = AdminController;

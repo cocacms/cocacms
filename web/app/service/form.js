@@ -7,7 +7,6 @@ class FormService extends Service {
     super(ctx);
     this._table = 'form';
   }
-
 }
 
 module.exports = FormService;

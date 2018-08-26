@@ -16,7 +16,10 @@ class CategoryController extends Controller {
    */
   async validate() {
     return await this.ctx.validate({
-      key: [{ required: true, message: '请设置模型关键字' }, { pattern: this.ctx.re.name, message: '模型关键字只能是字母、数字、_' }],
+      key: [
+        { required: true, message: '请设置模型关键字' },
+        { pattern: this.ctx.re.name, message: '模型关键字只能是字母、数字、_' },
+      ],
       name: [{ required: true, message: '请设置模型名称' }],
     });
   }
@@ -27,7 +30,14 @@ class CategoryController extends Controller {
    * @memberof CategoryController
    */
   async index() {
-    const models = await this.service.model.index(null, null, [], '*', [], false);
+    const models = await this.service.model.index(
+      null,
+      null,
+      [],
+      '*',
+      [],
+      false
+    );
     for (const model of models) {
       model.attrs = await this.service.modelAttr.getAttr(model.id, model.key);
     }
@@ -57,10 +67,9 @@ class CategoryController extends Controller {
   async update() {
     const body = await this.validate();
     delete body.key; // 不允许修改
-    this.ctx.body = await this.service.model.update({
-      ...body,
+    this.ctx.body = await this.service.model.update(Object.assign({}, body, {
       id: this.ctx.params.id,
-    });
+    }));
   }
 
   /**
@@ -81,7 +90,6 @@ class CategoryController extends Controller {
       await this.service.modelAttr.retrieve();
     }
   }
-
 }
 
 module.exports = CategoryController;

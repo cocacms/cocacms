@@ -20,8 +20,6 @@ class ConfigController extends Controller {
   async set() {
     this.ctx.body = await this.service.config.set(this.ctx.request.body);
   }
-
-
 }
 
 module.exports = ConfigController;

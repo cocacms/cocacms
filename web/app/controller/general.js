@@ -15,9 +15,11 @@ class GeneralController extends Controller {
    * @memberof GeneralController
    */
   async init() {
-
-    if (this.ctx.params.model) { // 模型
-      const model = await this.service.model.single([[ 'key', this.ctx.params.model ]]);
+    if (this.ctx.params.model) {
+      // 模型
+      const model = await this.service.model.single([
+        ['key', this.ctx.params.model],
+      ]);
       if (model === null) {
         this.error('表单不存在！');
       }
@@ -26,8 +28,11 @@ class GeneralController extends Controller {
       return;
     }
 
-    if (this.ctx.params.form) { // 表单
-      const form = await this.service.form.single([[ 'key', this.ctx.params.form ]]);
+    if (this.ctx.params.form) {
+      // 表单
+      const form = await this.service.form.single([
+        ['key', this.ctx.params.form],
+      ]);
       if (form === null) {
         this.error('表单不存在！');
       }
@@ -39,7 +44,6 @@ class GeneralController extends Controller {
       const modelName = model.key;
       this.service.base._table = `${this.config.model.prefix}${modelName}`;
     }
-
   }
 
   /**
@@ -58,7 +62,6 @@ class GeneralController extends Controller {
         if (body[key] === null || body[key] === undefined) {
           delete body[key];
         }
-
       }
     }
 
@@ -70,7 +73,6 @@ class GeneralController extends Controller {
     // 自动加上site
     body.site_id = this.ctx.site.id;
 
-
     // transform
     for (const key in rules) {
       if (rules.hasOwnProperty(key) && body.hasOwnProperty(key)) {
@@ -80,13 +82,11 @@ class GeneralController extends Controller {
             body[key] = item.transform(body[key]);
           }
         }
-
       }
     }
 
     return body;
   }
-
 
   /**
    * 列表
@@ -123,12 +123,19 @@ class GeneralController extends Controller {
         });
 
         if (category_id_where.length >= 2) {
-          const categorys = await this.service.category.index(category_id_where[1], false, true);
+          const categorys = await this.service.category.index(
+            category_id_where[1],
+            false,
+            true
+          );
           if (categorys && categorys.length > 0) {
-            this.ctx.query.where.push([ 'category_id', 'in', categorys.map(i => i.id) ]);
+            this.ctx.query.where.push([
+              'category_id',
+              'in',
+              categorys.map(i => i.id),
+            ]);
           }
         }
-
       }
     } catch (error) {
       this.ctx.query.where = [];
@@ -142,9 +149,13 @@ class GeneralController extends Controller {
       this.ctx.query.order
     );
 
-    result.data = await this.service.base.many2one(result.data, 'category', 'category_id', 'id');
+    result.data = await this.service.base.many2one(
+      result.data,
+      'category',
+      'category_id',
+      'id'
+    );
     this.ctx.body = result;
-
   }
 
   /**
@@ -174,10 +185,9 @@ class GeneralController extends Controller {
    */
   async update() {
     const body = await this.validate();
-    this.ctx.body = await this.service.base.update({
-      ...body,
+    this.ctx.body = await this.service.base.update(Object.assign({}, body, {
       id: this.ctx.params.id,
-    });
+    }));
   }
 
   /**
@@ -195,7 +205,11 @@ class GeneralController extends Controller {
     const data = {};
     data[body.key] = body.value;
 
-    this.ctx.body = await this.app.mysql.update(this.service.base._table, data, { where: { id: this.ctx.params.id } });
+    this.ctx.body = await this.app.mysql.update(
+      this.service.base._table,
+      data,
+      { where: { id: this.ctx.params.id } }
+    );
   }
 
   /**
@@ -217,7 +231,6 @@ class GeneralController extends Controller {
     await this.init();
     this.ctx.body = await this.service.base.getValidateRules(true);
   }
-
 }
 
 module.exports = GeneralController;

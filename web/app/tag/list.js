@@ -4,10 +4,9 @@ const { asyncBuilder } = require('./util');
 
 class ListExtension {
   constructor() {
-    this.tags = [ 'list' ];
+    this.tags = ['list'];
     this.lineno = 0;
   }
-
 
   parse(parser, nodes) {
     const tok = parser.nextToken();
@@ -26,9 +25,8 @@ class ListExtension {
 
     parser.advanceAfterBlockEnd();
 
-    return new nodes.CallExtensionAsync(this, 'run', args, [ body, nodataBody ]);
+    return new nodes.CallExtensionAsync(this, 'run', args, [body, nodataBody]);
   }
-
 
   async run(context, args, body, nodataBody, callback) {
     callback = arguments[arguments.length - 1];
@@ -40,7 +38,10 @@ class ListExtension {
     const ctx = context.ctx.ctx;
 
     if (!Object.prototype.hasOwnProperty.call(args, 'name') || !args.name) {
-      return callback(new Error(`list标签_缺少name参数 [行${this.lineno}]`), null);
+      return callback(
+        new Error(`list标签_缺少name参数 [行${this.lineno}]`),
+        null
+      );
     }
 
     if (!Object.prototype.hasOwnProperty.call(args, 'item') || !args.item) {
@@ -56,8 +57,17 @@ class ListExtension {
     }
 
     try {
-      ctx.service.base._table = `${args.model ? ctx.app.config.model.prefix : ''}${args.name}`;
-      const result = await ctx.service.base.index(args.page, args.pageSize, args.where, args.fields, args.order, args.withPage);
+      ctx.service.base._table = `${
+        args.model ? ctx.app.config.model.prefix : ''
+      }${args.name}`;
+      const result = await ctx.service.base.index(
+        args.page,
+        args.pageSize,
+        args.where,
+        args.fields,
+        args.order,
+        args.withPage
+      );
       const ret = [];
       const datas = args.withPage === true ? result.data : result;
       for (let index = 0; index < datas.length; index++) {
@@ -88,9 +98,7 @@ class ListExtension {
     } catch (error) {
       return callback(error);
     }
-
   }
-
 }
 
 module.exports = ListExtension;

@@ -3,7 +3,7 @@ const { asyncBuilder } = require('./util');
 
 class SingleExtension {
   constructor() {
-    this.tags = [ 'single' ];
+    this.tags = ['single'];
     this.lineno = 0;
   }
 
@@ -24,21 +24,26 @@ class SingleExtension {
 
     parser.advanceAfterBlockEnd();
 
-    return new nodes.CallExtensionAsync(this, 'run', args, [ body, nodataBody ]);
+    return new nodes.CallExtensionAsync(this, 'run', args, [body, nodataBody]);
   }
-
 
   async run(context, args, body, nodataBody, callback) {
     callback = arguments[arguments.length - 1];
 
     if (arguments.length !== 5) {
-      return callback(new Error(`single 标签_缺少参数 [行${this.lineno}]`), null);
+      return callback(
+        new Error(`single 标签_缺少参数 [行${this.lineno}]`),
+        null
+      );
     }
 
     const ctx = context.ctx.ctx;
 
     if (!Object.prototype.hasOwnProperty.call(args, 'name') || !args.name) {
-      return callback(new Error(`single 标签_缺少name参数 [行${this.lineno}]`), null);
+      return callback(
+        new Error(`single 标签_缺少name参数 [行${this.lineno}]`),
+        null
+      );
     }
 
     if (!Object.prototype.hasOwnProperty.call(args, '_res') || !args._res) {
@@ -46,8 +51,14 @@ class SingleExtension {
     }
 
     try {
-      ctx.service.base._table = `${args.model ? ctx.app.config.model.prefix : ''}${args.name}`;
-      const result = await ctx.service.base.single(args.where, args.fields, args.order);
+      ctx.service.base._table = `${
+        args.model ? ctx.app.config.model.prefix : ''
+      }${args.name}`;
+      const result = await ctx.service.base.single(
+        args.where,
+        args.fields,
+        args.order
+      );
 
       const ret = [];
       if (result === null && nodataBody) {
@@ -60,11 +71,8 @@ class SingleExtension {
       return callback(null, context.ctx.helper.safe(ret.join('')));
     } catch (error) {
       return callback(error, null);
-
     }
-
   }
-
 }
 
 module.exports = SingleExtension;

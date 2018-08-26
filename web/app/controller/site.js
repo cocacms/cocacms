@@ -31,7 +31,14 @@ class SiteController extends Controller {
    * @memberof SiteController
    */
   async index() {
-    this.ctx.body = await this.service.site.index(null, null, [], '*', [[ 'id', 'asc' ]], false);
+    this.ctx.body = await this.service.site.index(
+      null,
+      null,
+      [],
+      '*',
+      [['id', 'asc']],
+      false
+    );
   }
 
   /**
@@ -51,10 +58,9 @@ class SiteController extends Controller {
    */
   async update() {
     const body = await this.validate();
-    this.ctx.body = await this.service.site.update({
-      ...body,
+    this.ctx.body = await this.service.site.update(Object.assign({}, body, {
       id: this.ctx.params.id,
-    });
+    }));
   }
 
   /**
@@ -83,7 +89,6 @@ class SiteController extends Controller {
   async new() {
     this.ctx.body = this.ctx.site;
   }
-
 }
 
 module.exports = SiteController;

@@ -29,8 +29,6 @@ class SiteService extends Service {
     const site = await this.show(id);
     return this.service.admin.signToken(Number(this.ctx.uid), site);
   }
-
-
 }
 
 module.exports = SiteService;

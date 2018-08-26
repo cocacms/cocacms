@@ -8,7 +8,6 @@ class CategoryService extends Service {
     this._table = 'category';
   }
 
-
   /**
    * 默认数据
    *
@@ -41,7 +40,6 @@ class CategoryService extends Service {
     }
     return await this.index(pid, buildTree, withMe);
   }
-
 }
 
 module.exports = CategoryService;

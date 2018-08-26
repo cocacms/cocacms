@@ -8,14 +8,20 @@ const Controller = require('./base');
  * @extends {Controller}
  */
 class PluginController extends Controller {
-
   /**
    * 列表
    *
    * @memberof PluginController
    */
   async index() {
-    this.ctx.body = await this.service.plugin.index(null, null, [], '*', [[ 'id', 'asc' ]], false);
+    this.ctx.body = await this.service.plugin.index(
+      null,
+      null,
+      [],
+      '*',
+      [['id', 'asc']],
+      false
+    );
   }
 
   /**
@@ -55,7 +61,13 @@ class PluginController extends Controller {
   async updateSetting() {
     const data = await this.ctx.validate({
       id: [{ required: true, message: '请输入ID' }],
-      setting: [{ required: true, message: '请输入配置且配置必须为Object', type: 'object' }],
+      setting: [
+        {
+          required: true,
+          message: '请输入配置且配置必须为Object',
+          type: 'object',
+        },
+      ],
     });
 
     const target = await this.service.plugin.show(data.id);
@@ -75,7 +87,6 @@ class PluginController extends Controller {
   async uninstall() {
     this.ctx.body = await this.service.plugin.uninstall(this.ctx.params.id);
   }
-
 }
 
 module.exports = PluginController;

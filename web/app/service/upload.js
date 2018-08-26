@@ -14,7 +14,7 @@ class UploadService extends Service {
    */
   async generate() {
     const allConfig = await this.service.config.get();
-    const { upload: config = { } } = allConfig;
+    const { upload: config = {} } = allConfig;
     let type = 'local';
     if (config.type) {
       type = config.type;
@@ -32,7 +32,10 @@ class UploadService extends Service {
     }
 
     const filename = `${this.ctx.helper.UUID()}${extname}`;
-    if (!this.ctx.plugin[type] || typeof this.ctx.plugin[type].upload !== 'function') {
+    if (
+      !this.ctx.plugin[type] ||
+      typeof this.ctx.plugin[type].upload !== 'function'
+    ) {
       return await this.local(config, stream, filename);
     }
 
@@ -78,7 +81,6 @@ class UploadService extends Service {
     return stream;
   }
 
-
   /**
    * 本地上传
    *
@@ -89,13 +91,14 @@ class UploadService extends Service {
    * @memberof UploadService
    */
   async local(config, stream, filename) {
-    const writerStream = fs.createWriteStream(path.join(__dirname, `../public/upload/${filename}`));
+    const writerStream = fs.createWriteStream(
+      path.join(__dirname, `../public/upload/${filename}`)
+    );
     stream.pipe(writerStream);
     return {
       url: `${this.ctx.protocol}://${this.ctx.host}/public/upload/${filename}`,
     };
   }
-
 }
 
 module.exports = UploadService;

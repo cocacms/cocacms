@@ -5,8 +5,13 @@
  */
 module.exports = app => {
   const { router, controller, middleware } = app;
-  const subRouter = router.namespace('', middleware.front(), middleware.hook(app.hooks));
+  const subRouter = router.namespace(
+    '',
+    middleware.front(),
+    middleware.hook(app.hooks)
+  );
 
+  subRouter.get('/admin', controller.webContent.admin);
   subRouter.post('web-form', '/form/:key', controller.webContent.submitForm);
   subRouter.get('web-captcha', '/_/captcha', controller.webContent.captcha);
   subRouter.get('web-category', '/:key', controller.webContent.category);

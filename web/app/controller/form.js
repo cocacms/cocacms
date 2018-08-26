@@ -16,8 +16,14 @@ class FormController extends Controller {
    */
   async validate() {
     return await this.ctx.validate({
-      key: [{ required: true, message: '请设置关键字' }, { pattern: this.ctx.re.name, message: '关键字只能是字母、数字、_' }],
-      model_id: [{ required: true, message: '请设置绑定的模型' }, { type: 'integer', message: '模型id必须为数字' }],
+      key: [
+        { required: true, message: '请设置关键字' },
+        { pattern: this.ctx.re.name, message: '关键字只能是字母、数字、_' },
+      ],
+      model_id: [
+        { required: true, message: '请设置绑定的模型' },
+        { type: 'integer', message: '模型id必须为数字' },
+      ],
       name: [{ required: true, message: '请设置表单名称' }],
     });
   }
@@ -28,7 +34,14 @@ class FormController extends Controller {
    * @memberof FormController
    */
   async index() {
-    this.ctx.body = await this.service.form.index(null, null, this.ctx.query.where, '*', [], false);
+    this.ctx.body = await this.service.form.index(
+      null,
+      null,
+      this.ctx.query.where,
+      '*',
+      [],
+      false
+    );
   }
 
   /**
@@ -48,10 +61,8 @@ class FormController extends Controller {
    */
   async update() {
     await this.validate();
-    this.ctx.body = await this.service.form.update({
-      ...this.ctx.request.body,
-      id: this.ctx.params.id,
-    });
+    this.ctx.body = await this.service.form.update(Object.assign({}, { id: this.ctx.params.id,
+    }, this.ctx.request.body));
   }
 
   /**
@@ -62,7 +73,6 @@ class FormController extends Controller {
   async destroy() {
     this.ctx.body = await this.service.form.destroy(this.ctx.params.id);
   }
-
 }
 
 module.exports = FormController;

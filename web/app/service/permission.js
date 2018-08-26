@@ -3,7 +3,6 @@ const pathToRegexp = require('path-to-regexp');
 const Service = require('./base');
 
 class PermissionService extends Service {
-
   constructor(ctx) {
     super(ctx);
     this._table = 'permission';
@@ -76,7 +75,7 @@ class PermissionService extends Service {
       }
     }
 
-    const tags = [ 'model', 'form' ];
+    const tags = ['model', 'form'];
     for (const tag of tags) {
       if (_[`${tag}s`] && Array.isArray(_[`${tag}s`])) {
         for (const target of _[`${tag}s`]) {
@@ -88,14 +87,18 @@ class PermissionService extends Service {
           for (const iterator of modelList) {
             apis.push({
               path: iterator.path.replace(`:${tag}`, target.key),
-              name: iterator.name.replace(`{${tag}}`, ` [${target.name}]`) + (tag === 'model' ? '【模型】' : '【表单】'),
+              name:
+                iterator.name.replace(`{${tag}}`, ` [${target.name}]`) +
+                (tag === 'model' ? '【模型】' : '【表单】'),
             });
           }
         }
       }
     }
 
-    apis = apis.filter(i => (i.name.indexOf('{') === -1 && i.name.indexOf('}') === -1));
+    apis = apis.filter(
+      i => i.name.indexOf('{') === -1 && i.name.indexOf('}') === -1
+    );
     return apis;
   }
 
@@ -119,26 +122,30 @@ class PermissionService extends Service {
   async listByUid(uid) {
     const user = await this.app.mysql.get('admin', { id: uid });
     const apis = await this.allApis();
-    const permissions = await this.app.mysql.query('SELECT permission.* FROM admin_role LEFT JOIN permission ON permission.role_id = admin_role.rid WHERE admin_role.uid = ?', [ uid ]);
-    return apis.filter(_ => {
-      if (user.is_super === 1) {
-        return true;
-      }
-      const apiDatas = _.path.split('@', 2);
-      const method = apiDatas[0];
-      const uri = apiDatas[1];
-      for (const permission of permissions) {
-        if (
-          permission.method.toLowerCase() === method.toLowerCase() &&
-          permission.uri.toLowerCase() === uri.toLowerCase()
-        ) {
+    const permissions = await this.app.mysql.query(
+      'SELECT permission.* FROM admin_role LEFT JOIN permission ON permission.role_id = admin_role.rid WHERE admin_role.uid = ?',
+      [uid]
+    );
+    return apis
+      .filter(_ => {
+        if (user.is_super === 1) {
           return true;
         }
-      }
-      return false;
-    }).map(i => i.path);
+        const apiDatas = _.path.split('@', 2);
+        const method = apiDatas[0];
+        const uri = apiDatas[1];
+        for (const permission of permissions) {
+          if (
+            permission.method.toLowerCase() === method.toLowerCase() &&
+            permission.uri.toLowerCase() === uri.toLowerCase()
+          ) {
+            return true;
+          }
+        }
+        return false;
+      })
+      .map(i => i.path);
   }
-
 
   /**
    * 根据角色ID获取用户权限
@@ -149,23 +156,27 @@ class PermissionService extends Service {
    */
   async listByRole(rid) {
     const apis = await this.allApis();
-    const permissions = await this.app.mysql.query('SELECT permission.* FROM permission WHERE permission.role_id = ?', [ rid ]);
-    return apis.filter(_ => {
-      const apiDatas = _.path.split('@', 2);
-      const method = apiDatas[0];
-      const uri = apiDatas[1];
-      for (const permission of permissions) {
-        if (
-          permission.method.toLowerCase() === method.toLowerCase() &&
-          permission.uri.toLowerCase() === uri.toLowerCase()
-        ) {
-          return true;
+    const permissions = await this.app.mysql.query(
+      'SELECT permission.* FROM permission WHERE permission.role_id = ?',
+      [rid]
+    );
+    return apis
+      .filter(_ => {
+        const apiDatas = _.path.split('@', 2);
+        const method = apiDatas[0];
+        const uri = apiDatas[1];
+        for (const permission of permissions) {
+          if (
+            permission.method.toLowerCase() === method.toLowerCase() &&
+            permission.uri.toLowerCase() === uri.toLowerCase()
+          ) {
+            return true;
+          }
         }
-      }
-      return false;
-    }).map(i => i.path);
+        return false;
+      })
+      .map(i => i.path);
   }
-
 }
 
 module.exports = PermissionService;

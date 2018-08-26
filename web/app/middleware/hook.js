@@ -5,7 +5,9 @@ module.exports = hooks => {
     let _matchedRouteName = '';
 
     if (ctx._matchedRouteName) {
-      const property = ctx._matchedRouteName.replace(/[_-][a-z]/ig, s => s.substring(1).toUpperCase());
+      const property = ctx._matchedRouteName.replace(/[_-][a-z]/gi, s =>
+        s.substring(1).toUpperCase()
+      );
       let first = property[0];
       first = first.toUpperCase();
       _matchedRouteName = first + property.substring(1);
@@ -15,7 +17,10 @@ module.exports = hooks => {
       await hooks[`before${_matchedRouteName}`](ctx);
     }
 
-    if (ctx.app.pluginHook[`before${_matchedRouteName}`] && Array.isArray(ctx.app.pluginHook[`before${_matchedRouteName}`])) {
+    if (
+      ctx.app.pluginHook[`before${_matchedRouteName}`] &&
+      Array.isArray(ctx.app.pluginHook[`before${_matchedRouteName}`])
+    ) {
       for (const hookFun of ctx.app.pluginHook[`before${_matchedRouteName}`]) {
         if (typeof hookFun === 'function') {
           await hookFun(ctx);
@@ -31,13 +36,15 @@ module.exports = hooks => {
       }
     }
 
-    if (ctx.app.pluginHook[`after${_matchedRouteName}`] && Array.isArray(ctx.app.pluginHook[`after${_matchedRouteName}`])) {
+    if (
+      ctx.app.pluginHook[`after${_matchedRouteName}`] &&
+      Array.isArray(ctx.app.pluginHook[`after${_matchedRouteName}`])
+    ) {
       for (const hookFun of ctx.app.pluginHook[`after${_matchedRouteName}`]) {
         if (typeof hookFun === 'function') {
           await hookFun(ctx);
         }
       }
     }
-
   };
 };

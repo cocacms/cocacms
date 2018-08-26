@@ -4,10 +4,9 @@ const { asyncBuilder } = require('./util');
 
 class CategoryExtension {
   constructor() {
-    this.tags = [ 'category' ];
+    this.tags = ['category'];
     this.lineno = 0;
   }
-
 
   parse(parser, nodes) {
     const tok = parser.nextToken();
@@ -21,15 +20,17 @@ class CategoryExtension {
 
     parser.advanceAfterBlockEnd();
 
-    return new nodes.CallExtensionAsync(this, 'run', args, [ body ]);
+    return new nodes.CallExtensionAsync(this, 'run', args, [body]);
   }
-
 
   async run(context, args, body, callback) {
     callback = arguments[arguments.length - 1];
 
     if (arguments.length !== 4) {
-      return callback(new Error(`category标签_缺少参数 [行${this.lineno}]`), null);
+      return callback(
+        new Error(`category标签_缺少参数 [行${this.lineno}]`),
+        null
+      );
     }
 
     const ctx = context.ctx.ctx;
@@ -47,7 +48,10 @@ class CategoryExtension {
     }
 
     if (!args.key && !args.id) {
-      return callback(new Error(`category标签_key与id中至少有一个 [行${this.lineno}]`), null);
+      return callback(
+        new Error(`category标签_key与id中至少有一个 [行${this.lineno}]`),
+        null
+      );
     }
 
     try {
@@ -62,7 +66,9 @@ class CategoryExtension {
       for (const category of result) {
         // 栏目类型：1列表页 2单页 3表单页 4调整链接
         if (category.type !== 4) {
-          category.jump = ctx.helper.urlFor('web-category', { key: category.key });
+          category.jump = ctx.helper.urlFor('web-category', {
+            key: category.key,
+          });
         } else {
           category.jump = category.url;
         }
@@ -86,9 +92,7 @@ class CategoryExtension {
     } catch (error) {
       return callback(error);
     }
-
   }
-
 }
 
 module.exports = CategoryExtension;

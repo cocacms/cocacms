@@ -26,31 +26,50 @@ class PluginService extends Service {
         const configPath = path.join(dir, 'config.js');
         if (fs.existsSync(configPath)) {
           let config = Object.assign({}, require(configPath));
-          config = await this.ctx.validate({
-            name: [{ required: true, message: `插件(${dirname})配置文件中缺少“名称”[name]字段` }],
-            author: [{ required: true, message: `插件(${dirname})配置文件中缺少“作者”[author]字段` }],
-          }, config);
+          config = await this.ctx.validate(
+            {
+              name: [
+                {
+                  required: true,
+                  message: `插件(${dirname})配置文件中缺少“名称”[name]字段`,
+                },
+              ],
+              author: [
+                {
+                  required: true,
+                  message: `插件(${dirname})配置文件中缺少“作者”[author]字段`,
+                },
+              ],
+            },
+            config
+          );
           const exist = await this.app.mysql.count(this._table, { dirname });
 
           dirnames.push(dirname);
           config.config = JSON.stringify(config.config);
 
           if (exist > 0) {
-            await this.app.mysql.update(this._table, {
-              ...config,
-              dirname,
-            }, { where: { dirname } });
+            await this.app.mysql.update(
+              this._table,
+              Object.assign({}, config, {
+                dirname,
+              }),
+              { where: { dirname } }
+            );
           } else {
-            await this.app.mysql.insert(this._table, {
-              ...config,
+            await this.app.mysql.insert(this._table, Object.assign({}, config, {
               dirname,
-            });
+            }));
           }
         }
       }
     }
-    if(dirnames.length > 0)
-      await this.app.mysql.query('DELETE FROM plugin WHERE dirname NOT IN (?)', [ dirnames ]);
+    if (dirnames.length > 0) {
+      await this.app.mysql.query(
+        'DELETE FROM plugin WHERE dirname NOT IN (?)',
+        [dirnames]
+      );
+    }
 
     return {};
   }
@@ -101,8 +120,6 @@ class PluginService extends Service {
 
     this.error('卸载程序未定义');
   }
-
-
 }
 
 module.exports = PluginService;

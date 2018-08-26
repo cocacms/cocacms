@@ -45,7 +45,6 @@ module.exports = () => {
       if (ctx.acceptJSON) {
         ctx.body = { message: loggerError(error, ctx) };
       } else {
-
         const theme = await ctx.service.theme.getActive();
         let themeDir = '';
         if (theme !== null) {
@@ -59,19 +58,16 @@ module.exports = () => {
         try {
           const template = `${themeDir}${error === 404 ? '404' : '500'}.nj`;
           if (fs.existsSync(template)) {
-            ctx.body = await ctx.renderView(template, {
-              ...hookData,
+            ctx.body = await ctx.renderView(template, Object.assign({}, hookData, {
               message: loggerError(error, ctx),
-            });
+            }));
           } else {
             ctx.body = `<h1>${loggerError(error, ctx)}</h1>`;
           }
         } catch (viewerror) {
           ctx.body = `<h1>${loggerError(viewerror, ctx)}</h1>`;
         }
-
       }
     }
-
   };
 };

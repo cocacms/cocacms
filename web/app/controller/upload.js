@@ -2,7 +2,6 @@
 
 const Controller = require('./base');
 
-
 class UploadController extends Controller {
   /**
    *上传

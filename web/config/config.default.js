@@ -9,7 +9,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + ''; // 密码加密用到
 
   // add your config here
-  config.middleware = [ 'error' ];
+  config.middleware = ['error'];
 
   // 跨域
   config.cors = {
@@ -52,7 +52,7 @@ module.exports = appInfo => {
   // 安全配置
   config.security = {
     csrf: {
-      ignore: [ '/api' ],
+      ignore: ['/api'],
     },
   };
 
@@ -66,7 +66,8 @@ module.exports = appInfo => {
 
   // 权限验证配置
   config.auth = {
-    public: [ // 无需权限验证可访问的路由
+    public: [
+      // 无需权限验证可访问的路由
       'POST@/api/admin/login',
       'GET@/api/permission/my',
       'GET@/api/admin/:id',
@@ -95,7 +96,10 @@ module.exports = appInfo => {
   // 主题模板配置
 
   config.view = {
-    root: path.join(appInfo.baseDir, 'app/theme'),
+    root: [
+      path.join(appInfo.baseDir, 'app/view'),
+      path.join(appInfo.baseDir, 'app/theme'),
+    ].join(','),
     mapping: {
       '.nj': 'nunjucks',
     },
@@ -116,6 +120,22 @@ module.exports = appInfo => {
   config.bodyParser = {
     jsonLimit: '10mb',
     formLimit: '10mb',
+  };
+
+  config.assets = {
+    publicPath: '/public/',
+    devServer: {
+      debug: false,
+      command: 'umi dev',
+      port: 8000,
+      env: {
+        APP_ROOT: process.cwd() + '/app/manage_front',
+        BROWSER: 'none',
+        ESLINT: 'none',
+        SOCKET_SERVER: 'http://127.0.0.1:8000',
+        PUBLIC_PATH: 'http://127.0.0.1:8000',
+      },
+    },
   };
 
   return config;
