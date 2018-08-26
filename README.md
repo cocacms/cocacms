@@ -27,8 +27,6 @@ $ git clone https://github.com/rojer95/cocacms.git
 ```
 $ cd cocacms/web
 $ yarn install
-$ cd ../manage_front
-$ yarn install
 ```
 
 * 修改配置
@@ -42,13 +40,9 @@ $ cd cocacms/web
 $ yarn debug
 ```
 
-```
-$ cd cocacms/manage_front
-$ yarn start
-```
 
 * 开始使用
-> 后台：`http://localhost:8000`  
+> 后台：`http://localhost:7001/admin`  
 > 账户：`admin@admin.com`  
 > 密码 `admin123456`  
 
