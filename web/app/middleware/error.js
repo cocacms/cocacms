@@ -41,7 +41,7 @@ module.exports = () => {
     }
 
     if (handler) {
-      ctx.status = 500;
+      ctx.status = error.status || 500;
       if (ctx.acceptJSON) {
         ctx.body = { message: loggerError(error, ctx) };
       } else {
