@@ -215,7 +215,7 @@ class Edit extends Component {
             }
           >
             {getFieldDecorator('rules', {
-              initialValue: data.rules,
+              initialValue: data.rules_str || '[]',
               rules: [
                 {
                   validator(rule, value, callback) {

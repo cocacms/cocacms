@@ -479,6 +479,7 @@ class ModelAttrService extends Service {
     this.service.base._table = `${this.config.model.prefix}${model_key}`;
     const rules = await this.service.base.getValidateRules(true);
     for (const attr of attrs) {
+      attr.rules_str = attr.rules;
       if (rules[attr.key]) {
         attr.rules = rules[attr.key];
       } else {
