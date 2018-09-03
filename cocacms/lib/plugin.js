@@ -4,13 +4,16 @@ const BaseContextClass = require('egg').BaseContextClass;
 const path = require('path');
 
 class Plugin extends BaseContextClass {
-  constructor(ctx) {
+  constructor(ctx, fullpath = null) {
     super(ctx);
-    this.loadPluginConfig();
+    if (fullpath === null) {
+      fullpath = this.fullPath;
+    }
+    this.loadPluginConfig(fullpath);
   }
 
-  loadPluginConfig() {
-    const name = path.parse(this.fullPath).name;
+  loadPluginConfig(fullpath) {
+    const name = path.parse(fullpath).name;
     this.config = this.app.getPluginConfig(name);
   }
 

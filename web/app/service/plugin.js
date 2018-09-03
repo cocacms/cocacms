@@ -86,7 +86,7 @@ class PluginService extends Service {
       this.error(`${fullpath}不存在`);
     }
     const Class = require(fullpath);
-    return new Class(this.ctx);
+    return new Class(this.ctx, fullpath);
   }
 
   async install(id) {

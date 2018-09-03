@@ -16,20 +16,22 @@ class ThemeSetting extends Component {
     value: null,
   };
 
-  static getDerivedStateFromProps(props) {
-    const {
-      theme: { list = [] },
-    } = props;
+  static getDerivedStateFromProps(nextProps, preState) {
+    if (preState.value === null) {
+      const {
+        theme: { list = [] },
+      } = nextProps;
 
-    const defaults = list.filter(i => i.use === 1);
-    let defaultvalue = null;
-    if (defaults.length > 0) {
-      defaultvalue = defaults[0].id;
+      const defaults = list.filter(i => i.use === 1);
+      let defaultvalue = null;
+      if (defaults.length > 0) {
+        defaultvalue = defaults[0].id;
+      }
+
+      return {
+        value: defaultvalue,
+      };
     }
-
-    return {
-      value: defaultvalue,
-    };
   }
 
   componentDidMount() {
