@@ -1,6 +1,7 @@
 'use strict';
 
 const inflection = require('inflection');
+const is = require('is-type-of');
 const Router = require('@eggjs/router').EggRouter;
 
 const REST_MAP = {
@@ -44,6 +45,26 @@ const REST_MAP = {
   },
 };
 
+/**
+ * resolve controller from string to function
+ * @param  {String|Function} controller input controller
+ * @param  {Application} app egg application instance
+ * @return {Function} controller function
+ */
+function resolveController(controller, app) {
+  if (is.string(controller)) {
+    const actions = controller.split('.');
+    let obj = app.controller;
+    actions.forEach(key => {
+      obj = obj[key];
+      if (!obj) throw new Error(`controller '${controller}' not exists`);
+    });
+    controller = obj;
+  }
+  // ensure controller is exists
+  if (!controller) throw new Error('controller not exists');
+  return controller;
+}
 
 
 /**
