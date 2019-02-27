@@ -18,4 +18,5 @@ export default {
   },
 
   history: 'hash',
+  hash: true,
 };
