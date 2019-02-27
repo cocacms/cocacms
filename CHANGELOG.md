@@ -1,5 +1,15 @@
-<a name=""></a>
-# [](https://github.com/rojer95/cocacms/compare/v1.0.4...v) (2019-02-27)
+<a name="1.0.0-bate.4"></a>
+# [1.0.0-bate.4](https://github.com/rojer95/cocacms/compare/v1.0.4...v1.0.0-bate.4) (2019-02-27)
+
+
+### Bug Fixes
+
+* **cocacms/router:** fix router bug ([6571249](https://github.com/rojer95/cocacms/commit/6571249))
+
+
+### Features
+
+* add hd ([a0133fd](https://github.com/rojer95/cocacms/commit/a0133fd))
 
 
 

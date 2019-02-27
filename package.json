@@ -1,5 +1,6 @@
 {
   "name": "cocacms",
+  "version": "1.0.0-bate.4",
   "description": "基于 [egg.js](https://eggjs.org/)、[antd](https://ant.design/index-cn) 的内容管理框架。(Manage front inspired by [ant-design-pro](https://github.com/ant-design/ant-design-pro))",
   "main": "index.js",
   "directories": {
