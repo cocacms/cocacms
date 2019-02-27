@@ -66,7 +66,7 @@ class PermissionService extends Service {
     const _ = {};
     _.models = await this.service.model.index(null, null, [], '*', [], false);
     _.forms = await this.service.form.index(null, null, [], '*', [], false);
-    for (const api of this.ctx.app.router.stack) {
+    for (const api of this.app.router.stack) {
       if (api.name && api.path.indexOf('/api') !== -1) {
         apis.push({
           path: `${api.methods[api.methods.length - 1]}@${api.path}`,

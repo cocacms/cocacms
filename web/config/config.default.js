@@ -122,21 +122,5 @@ module.exports = appInfo => {
     formLimit: '10mb',
   };
 
-  config.assets = {
-    publicPath: '/public/',
-    devServer: {
-      debug: false,
-      command: 'umi dev',
-      port: 8000,
-      env: {
-        APP_ROOT: process.cwd() + '/manage_front',
-        BROWSER: 'none',
-        ESLINT: 'none',
-        SOCKET_SERVER: 'http://127.0.0.1:8000',
-        PUBLIC_PATH: 'http://127.0.0.1:8000',
-      },
-    },
-  };
-
   return config;
 };

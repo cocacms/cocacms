@@ -273,10 +273,6 @@ class WebContentController extends Controller {
       this.ctx.body = await this.service.base.create(body);
     }
   }
-
-  async admin() {
-    await this.ctx.render('_admin_.nj');
-  }
 }
 
 module.exports = WebContentController;
