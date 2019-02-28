@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Table,
   Form,
@@ -8,14 +8,14 @@ import {
   Input,
   Modal,
   Spin,
-  Checkbox,
-} from 'antd';
-import name from 'components/name';
-import Action from 'components/action';
-import Can from 'components/can/index';
-import { connect } from 'dva';
+  Checkbox
+} from "antd";
+import name from "components/name";
+import Action from "components/action";
+import Can from "components/can/index";
+import { connect } from "dva";
 
-import re from '../../utils/re';
+import re from "../../utils/re";
 
 @Form.create()
 class Edit extends Component {
@@ -34,33 +34,33 @@ class Edit extends Component {
       opened,
       data = {},
       close,
-      form: { getFieldDecorator },
+      form: { getFieldDecorator }
     } = this.props;
     const labelCol = { span: 5 };
     const wrapperCol = { span: 15 };
 
     return (
       <Modal
-        title={action === 'add' ? '添加' : '编辑'}
+        title={action === "add" ? "添加" : "编辑"}
         visible={opened}
         onCancel={close}
         onOk={this.onOk}
       >
         <Form>
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="ID">
-            {getFieldDecorator('id', {
-              initialValue: data.id,
+            {getFieldDecorator("id", {
+              initialValue: data.id
             })(<Input disabled />)}
           </Form.Item>
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="账号">
-            {getFieldDecorator('account', {
+            {getFieldDecorator("account", {
               initialValue: data.account,
               rules: [
-                { required: action === 'add', message: '请输入登录邮箱' },
-                { pattern: re.mail, message: '请输入正确的邮箱格式' },
-              ],
-            })(<Input disabled={action !== 'add'} />)}
+                { required: action === "add", message: "请输入登录邮箱" },
+                { pattern: re.mail, message: "请输入正确的邮箱格式" }
+              ]
+            })(<Input disabled={action !== "add"} />)}
           </Form.Item>
 
           <Form.Item
@@ -69,19 +69,19 @@ class Edit extends Component {
             label="密码"
             extra="填写则更新密码"
           >
-            {getFieldDecorator('password', {
-              initialValue: '',
+            {getFieldDecorator("password", {
+              initialValue: "",
               rules: [
-                { required: action === 'add', message: '请输入密码' },
-                { type: 'string', min: 8, message: '请输入8位以上' },
-              ],
+                { required: action === "add", message: "请输入密码" },
+                { type: "string", min: 8, message: "请输入8位以上" }
+              ]
             })(<Input />)}
           </Form.Item>
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="名称">
-            {getFieldDecorator('nickname', {
+            {getFieldDecorator("nickname", {
               initialValue: data.nickname,
-              rules: [{ required: true, message: '请输入名称' }],
+              rules: [{ required: true, message: "请输入名称" }]
             })(<Input />)}
           </Form.Item>
         </Form>
@@ -97,7 +97,7 @@ class RoleEdit extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'admin/fetchRole',
+      type: "admin/fetchRole"
     });
   }
 
@@ -105,13 +105,13 @@ class RoleEdit extends Component {
     const { dispatch } = this.props;
     const { uid } = this.props;
     const rid = e.target.value;
-    const type = `admin/${e.target.checked ? 'award' : 'undo'}`;
+    const type = `admin/${e.target.checked ? "award" : "undo"}`;
     dispatch({
       type,
       payload: {
         uid,
-        rid,
-      },
+        rid
+      }
     });
   };
 
@@ -121,7 +121,7 @@ class RoleEdit extends Component {
       opened,
       close,
       loading,
-      rids = [],
+      rids = []
     } = this.props;
     return (
       <Modal
@@ -157,21 +157,21 @@ class RoleEdit extends Component {
 
 @connect(({ admin, loading }) => ({ admin, loading: loading.models.admin }))
 @Form.create()
-@name('管理员管理')
+@name("管理员管理")
 class AdminPage extends Component {
   state = {
     expand: false,
     edit: {
-      action: 'add',
+      action: "add",
       data: {},
-      opened: false,
+      opened: false
     },
     roleEdit: {
       uid: 0,
       opened: false,
       rids: [],
-      key: 0,
-    },
+      key: 0
+    }
   };
 
   componentDidMount() {
@@ -187,13 +187,13 @@ class AdminPage extends Component {
     const { dispatch, form } = this.props;
     form.resetFields();
     dispatch({
-      type: 'admin/list',
+      type: "admin/list",
       payload: {
         page: 1,
         pageSize: 20,
         where: [],
-        order: [],
-      },
+        order: []
+      }
     });
   };
 
@@ -213,13 +213,13 @@ class AdminPage extends Component {
       }
 
       dispatch({
-        type: 'admin/list',
+        type: "admin/list",
         payload: {
           page,
           pageSize,
-          where: [['id', fieldsValue.id]],
-          order: sorter,
-        },
+          where: [["id", fieldsValue.id]],
+          order: sorter
+        }
       });
     });
   };
@@ -234,7 +234,7 @@ class AdminPage extends Component {
     if (sorter.columnKey) {
       order.push([
         sorter.columnKey,
-        sorter.order === 'ascend' ? 'asc' : 'desc',
+        sorter.order === "ascend" ? "asc" : "desc"
       ]);
     }
     this.handleSearch(null, pagination.current, pagination.pageSize, order);
@@ -243,32 +243,32 @@ class AdminPage extends Component {
   add = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'admin/add',
+      type: "admin/add",
       payload: data,
       cb: () => {
         this.closeModal();
         reset();
-      },
+      }
     });
   };
 
   edit = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'admin/edit',
+      type: "admin/edit",
       payload: data,
       cb: () => {
         this.closeModal();
         reset();
-      },
+      }
     });
   };
 
   delete = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'admin/del',
-      payload: id,
+      type: "admin/del",
+      payload: id
     });
   };
 
@@ -295,18 +295,18 @@ class AdminPage extends Component {
     const labelCol = {
       xs: { span: 12 },
       sm: { span: 7 },
-      xxl: { span: 4 },
+      xxl: { span: 4 }
     };
     const wrapperCol = {
       xs: { span: 12 },
       sm: { span: 17 },
-      xxl: { span: 18 },
+      xxl: { span: 18 }
     };
 
     children.push(
       <Col sm={12} xs={24} lg={{ span: 8 }} key="s-id">
         <Form.Item label="用户ID" labelCol={labelCol} wrapperCol={wrapperCol}>
-          {getFieldDecorator('id', {})(<Input placeholder="" />)}
+          {getFieldDecorator("id", {})(<Input placeholder="" />)}
         </Form.Item>
       </Col>
     );
@@ -340,12 +340,12 @@ class AdminPage extends Component {
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row gutter={24}>{this.getFields()}</Row>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: "right" }}>
               <Can api="POST@/api/admin">
                 <Button
                   type="primary"
                   onClick={() => {
-                    this.openModal('add', {});
+                    this.openModal("add", {});
                   }}
                 >
                   创建
@@ -369,7 +369,7 @@ class AdminPage extends Component {
 
   openRoleModal = (uid, rids) => {
     this.setState({
-      roleEdit: { opened: true, uid, rids, key: Math.random() },
+      roleEdit: { opened: true, uid, rids, key: Math.random() }
     });
   };
 
@@ -393,55 +393,55 @@ class AdminPage extends Component {
    */
   getColumns = () => [
     {
-      dataIndex: 'id',
-      title: 'ID',
-      sorter: true,
+      dataIndex: "id",
+      title: "ID",
+      sorter: true
     },
     {
-      align: 'center',
-      dataIndex: 'nickname',
-      title: '名称',
+      align: "center",
+      dataIndex: "nickname",
+      title: "名称"
     },
     {
-      align: 'center',
-      dataIndex: 'account',
-      title: '账号',
+      align: "center",
+      dataIndex: "account",
+      title: "账号"
     },
     {
-      dataIndex: 'is_super',
-      align: 'center',
-      title: '超级管理员',
+      dataIndex: "is_super",
+      align: "center",
+      title: "超级管理员",
       render: text => {
-        return text === 1 ? '是' : '否';
-      },
+        return text === 1 ? "是" : "否";
+      }
     },
     {
-      dataIndex: 'roles',
-      align: 'center',
-      title: '角色',
+      dataIndex: "roles",
+      align: "center",
+      title: "角色",
       render: text => {
         if (!Array.isArray(text) || text.length === 0) {
-          return '-';
+          return "-";
         }
-        return text.map(i => i.name).join('，');
-      },
+        return text.map(i => i.name).join("，");
+      }
     },
     {
-      title: '操作',
+      title: "操作",
       width: 180,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         return (
           <Action
             can={{
-              edit: 'PUT@/api/admin/:id',
-              delete: 'DELETE@/api/admin/:id',
+              edit: "PUT@/api/admin/:id",
+              delete: "DELETE@/api/admin/:id"
             }}
             delete={() => {
               this.delete(record.id);
             }}
             edit={() => {
-              this.openModal('edit', record);
+              this.openModal("edit", record);
             }}
           >
             <a
@@ -453,16 +453,16 @@ class AdminPage extends Component {
             </a>
           </Action>
         );
-      },
-    },
+      }
+    }
   ];
 
   render() {
     const {
       loading,
       admin: {
-        list: { data = [], page: current = 1, total = 0, pageSize = 20 } = {},
-      },
+        list: { data = [], page: current = 1, total = 0, pageSize = 20 } = {}
+      }
     } = this.props;
     return (
       <Can api="GET@/api/admin" cannot={null}>
@@ -476,7 +476,7 @@ class AdminPage extends Component {
             showSizeChanger: true,
             current,
             total,
-            pageSize,
+            pageSize
           }}
           scroll={{ x: 980 }}
           onChange={this.handleTableChange}

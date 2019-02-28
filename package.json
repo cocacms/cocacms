@@ -9,10 +9,13 @@
   "dependencies": {},
   "devDependencies": {
     "conventional-changelog-cli": "^2.0.5",
-    "cz-conventional-changelog": "^2.1.0"
+    "cz-conventional-changelog": "^2.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "prettier": "^1.16.4"
   },
   "scripts": {
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "format": "prettier --write \"**/*.js\" \"**/*.jsx\""
   },
   "repository": {
     "type": "git",

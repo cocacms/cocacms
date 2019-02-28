@@ -185,9 +185,11 @@ class GeneralController extends Controller {
    */
   async update() {
     const body = await this.validate();
-    this.ctx.body = await this.service.base.update(Object.assign({}, body, {
-      id: this.ctx.params.id,
-    }));
+    this.ctx.body = await this.service.base.update(
+      Object.assign({}, body, {
+        id: this.ctx.params.id,
+      })
+    );
   }
 
   /**

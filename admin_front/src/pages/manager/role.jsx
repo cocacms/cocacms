@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Table,
   Form,
@@ -9,12 +9,12 @@ import {
   Modal,
   Spin,
   Checkbox,
-  Divider,
-} from 'antd';
-import name from 'components/name';
-import Action from 'components/action';
-import Can from 'components/can/index';
-import { connect } from 'dva';
+  Divider
+} from "antd";
+import name from "components/name";
+import Action from "components/action";
+import Can from "components/can/index";
+import { connect } from "dva";
 
 @Form.create()
 class Edit extends Component {
@@ -33,22 +33,22 @@ class Edit extends Component {
       opened,
       data = {},
       close,
-      form: { getFieldDecorator },
+      form: { getFieldDecorator }
     } = this.props;
     const labelCol = { span: 5 };
     const wrapperCol = { span: 15 };
 
     return (
       <Modal
-        title={action === 'add' ? '添加' : '编辑'}
+        title={action === "add" ? "添加" : "编辑"}
         visible={opened}
         onCancel={close}
         onOk={this.onOk}
       >
         <Form>
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="ID">
-            {getFieldDecorator('id', {
-              initialValue: data.id,
+            {getFieldDecorator("id", {
+              initialValue: data.id
             })(<Input disabled />)}
           </Form.Item>
 
@@ -57,9 +57,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="角色名称"
           >
-            {getFieldDecorator('name', {
+            {getFieldDecorator("name", {
               initialValue: data.name,
-              rules: [{ required: true, message: '请输入角色名称' }],
+              rules: [{ required: true, message: "请输入角色名称" }]
             })(<Input />)}
           </Form.Item>
         </Form>
@@ -71,36 +71,36 @@ class Edit extends Component {
 @connect(({ permission, role, loading }) => ({
   permission,
   role,
-  loading: loading.models.permission && loading.models.role,
+  loading: loading.models.permission && loading.models.role
 }))
 class PermissionEdit extends Component {
   state = {
-    map: {},
+    map: {}
   };
 
   componentDidMount() {
     const { dispatch, role_id } = this.props;
     dispatch({
-      type: 'permission/list',
+      type: "permission/list"
     });
 
     if (role_id > 0) {
       dispatch({
-        type: 'role/show',
-        payload: role_id,
+        type: "role/show",
+        payload: role_id
       });
     }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const getItemData = (iterator, permissions) => {
-      const pathData = iterator.path.split('@', 2);
+      const pathData = iterator.path.split("@", 2);
       const method = pathData[0];
       const path = pathData[1];
-      const paths = path.split('/', 4);
+      const paths = path.split("/", 4);
       let key = paths[2];
       // /api/f/:model/:id or /api/g/:model/:id
-      if (key === 'f' || key === 'g') {
+      if (key === "f" || key === "g") {
         key = `_auto_${key}_${paths[3]}`; // model name
       }
       const selected = permissions.filter(i => {
@@ -123,13 +123,13 @@ class PermissionEdit extends Component {
         method,
         selected: selected.length > 0,
         value,
-        name: iterator.name,
+        name: iterator.name
       };
     };
 
     const {
       permission: { list = [] },
-      role: { show: { permissions = [] } = {} },
+      role: { show: { permissions = [] } = {} }
     } = nextProps;
     const map = {};
 
@@ -142,7 +142,7 @@ class PermissionEdit extends Component {
     }
 
     return {
-      map,
+      map
     };
   }
 
@@ -150,11 +150,11 @@ class PermissionEdit extends Component {
     const { dispatch } = this.props;
     const { role_id } = this.props;
     let data = e.target.value;
-    const type = `permission/${e.target.checked ? 'add' : 'del'}`;
+    const type = `permission/${e.target.checked ? "add" : "del"}`;
     if (e.target.checked) {
       data = {
         ...data,
-        role_id,
+        role_id
       };
     }
     dispatch({
@@ -162,10 +162,10 @@ class PermissionEdit extends Component {
       payload: data,
       cb: () => {
         dispatch({
-          type: 'role/show',
-          payload: role_id,
+          type: "role/show",
+          payload: role_id
         });
-      },
+      }
     });
   };
 
@@ -178,7 +178,7 @@ class PermissionEdit extends Component {
         onCancel={close}
         onOk={close}
         width="60%"
-        bodyStyle={{ maxHeight: '70vh', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: "70vh", overflowY: "auto" }}
         footer={
           <Button type="primary" onClick={close}>
             关闭
@@ -201,7 +201,7 @@ class PermissionEdit extends Component {
                   </Checkbox>
                 </Col>
               ))}
-              <div style={{ height: 0, clear: 'both' }} />
+              <div style={{ height: 0, clear: "both" }} />
             </Row>
           ))}
         </Spin>
@@ -213,22 +213,22 @@ class PermissionEdit extends Component {
 @connect(({ role, permission, loading }) => ({
   role,
   permission,
-  loading: loading.models.role,
+  loading: loading.models.role
 }))
 @Form.create()
-@name('角色管理')
+@name("角色管理")
 class RolePage extends Component {
   state = {
     expand: false,
     edit: {
-      action: 'add',
+      action: "add",
       data: {},
-      opened: false,
+      opened: false
     },
     permissionEdit: {
       opened: false,
-      role_id: 0,
-    },
+      role_id: 0
+    }
   };
 
   componentDidMount() {
@@ -244,39 +244,39 @@ class RolePage extends Component {
     const { dispatch, form } = this.props;
     form.resetFields();
     dispatch({
-      type: 'role/list',
+      type: "role/list"
     });
   };
 
   add = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'role/add',
+      type: "role/add",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   edit = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'role/edit',
+      type: "role/edit",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   delete = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'role/del',
-      payload: id,
+      type: "role/del",
+      payload: id
     });
   };
 
@@ -290,12 +290,12 @@ class RolePage extends Component {
       <div>
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: "right" }}>
               <Can api="POST@/api/role">
                 <Button
                   type="primary"
                   onClick={() => {
-                    this.openModel('add', {});
+                    this.openModel("add", {});
                   }}
                 >
                   创建
@@ -324,7 +324,7 @@ class RolePage extends Component {
 
   openPermissionModal = role_id => {
     this.setState({
-      permissionEdit: { opened: true, role_id, key: Math.random() },
+      permissionEdit: { opened: true, role_id, key: Math.random() }
     });
   };
 
@@ -339,7 +339,7 @@ class RolePage extends Component {
 
   closePermissionModal = () => {
     this.setState({
-      permissionEdit: { ...this.state.permissionEdit, opened: false },
+      permissionEdit: { ...this.state.permissionEdit, opened: false }
     });
   };
 
@@ -350,27 +350,27 @@ class RolePage extends Component {
    */
   getColumns = () => [
     {
-      dataIndex: 'id',
+      dataIndex: "id",
       width: 100,
-      title: 'ID',
+      title: "ID"
     },
     {
-      dataIndex: 'name',
-      title: '名称',
+      dataIndex: "name",
+      title: "名称"
     },
     {
-      title: '操作',
+      title: "操作",
       width: 180,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         return (
           <Action
-            can={{ edit: 'PUT@/api/role/:id', delete: 'DELETE@/api/role/:id' }}
+            can={{ edit: "PUT@/api/role/:id", delete: "DELETE@/api/role/:id" }}
             delete={() => {
               this.delete(record.id);
             }}
             edit={() => {
-              this.openModel('edit', record);
+              this.openModel("edit", record);
             }}
           >
             <Can api="POST@/api/permission">
@@ -384,14 +384,14 @@ class RolePage extends Component {
             </Can>
           </Action>
         );
-      },
-    },
+      }
+    }
   ];
 
   render() {
     const {
       loading,
-      role: { list = [] },
+      role: { list = [] }
     } = this.props;
     return (
       <Can api="GET@/api/role" cannot={null}>

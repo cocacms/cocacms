@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Input,
   Rate,
@@ -10,18 +10,18 @@ import {
   Form,
   Icon,
   InputNumber,
-  Col,
-} from 'antd';
-import Upload from 'components/upload';
-import Switch from 'components/switch';
-import RichEditor from 'components/richeditor';
-import moment from 'moment';
+  Col
+} from "antd";
+import Upload from "components/upload";
+import Switch from "components/switch";
+import RichEditor from "components/richeditor";
+import moment from "moment";
 
-import Action from 'components/action';
+import Action from "components/action";
 
-import re from '../utils/re';
-import 'moment/locale/zh-cn';
-moment.locale('zh-cn');
+import re from "../utils/re";
+import "moment/locale/zh-cn";
+moment.locale("zh-cn");
 
 export const renderFormComponent = (
   type,
@@ -55,25 +55,25 @@ export const renderFormComponent = (
    * 权重 weight
    */
   switch (type) {
-    case 'text':
+    case "text":
       return <Input.TextArea autosize={{ minRows: 8 }} disabled={onlyread} />;
-    case 'int':
+    case "int":
       return (
         <InputNumber
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           precision={0}
           disabled={onlyread}
         />
       );
-    case 'decimal':
+    case "decimal":
       return (
         <InputNumber
-          style={{ width: '100%' }}
-          precision={Number(len.split(',', 2)[1])}
+          style={{ width: "100%" }}
+          precision={Number(len.split(",", 2)[1])}
           disabled={onlyread}
         />
       );
-    case 'radio':
+    case "radio":
       return (
         <Radio.Group disabled={onlyread}>
           {optionsArray.map(i => (
@@ -83,7 +83,7 @@ export const renderFormComponent = (
           ))}
         </Radio.Group>
       );
-    case 'select':
+    case "select":
       return (
         <Select placeholder="请选择" disabled={onlyread}>
           {optionsArray.map(i => (
@@ -93,42 +93,42 @@ export const renderFormComponent = (
           ))}
         </Select>
       );
-    case 'checkbox':
+    case "checkbox":
       return <Checkbox.Group options={optionsArray} disabled={onlyread} />;
-    case 'time':
-      return <TimePicker disabled={onlyread} style={{ width: '100%' }} />;
-    case 'date':
+    case "time":
+      return <TimePicker disabled={onlyread} style={{ width: "100%" }} />;
+    case "date":
       return isFilter ? (
-        <DatePicker.RangePicker style={{ width: '100%' }} />
+        <DatePicker.RangePicker style={{ width: "100%" }} />
       ) : (
-        <DatePicker disabled={onlyread} style={{ width: '100%' }} />
+        <DatePicker disabled={onlyread} style={{ width: "100%" }} />
       );
-    case 'datetime':
+    case "datetime":
       return isFilter ? (
         <DatePicker.RangePicker
           showTime
           format="YYYY-MM-DD HH:mm:ss"
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
         />
       ) : (
         <DatePicker
           disabled={onlyread}
           showTime
           format="YYYY-MM-DD HH:mm:ss"
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
         />
       );
-    case 'img':
+    case "img":
       return <Upload disabled={onlyread} max={len} />;
-    case 'file':
+    case "file":
       return <Upload disabled={onlyread} accept="" max={len} />;
-    case 'richtext':
+    case "richtext":
       return <RichEditor disabled={onlyread} id={id} />;
-    case 'rate':
+    case "rate":
       return <Rate disabled={onlyread} allowHalf />;
-    case 'switch':
+    case "switch":
       return <Switch disabled={onlyread} />;
-    case 'weight':
+    case "weight":
       return <InputNumber precision={0} />;
     default:
       return <Input disabled={onlyread} />;
@@ -139,7 +139,7 @@ export const fillRule = rules => {
   if (rules && rules.length > 0) {
     for (const rule of rules) {
       // 实例化正则对象
-      if (Object.prototype.hasOwnProperty.call(rule, 'pattern')) {
+      if (Object.prototype.hasOwnProperty.call(rule, "pattern")) {
         if (Object.prototype.hasOwnProperty.call(re, rule.pattern)) {
           // 判断内置正则
           rule.pattern = re[rule.pattern];
@@ -168,18 +168,18 @@ export const renderForm = (
       option.initialValue = attr.default;
     }
 
-    if (['time', 'date', 'datetime'].includes(attr.type)) {
+    if (["time", "date", "datetime"].includes(attr.type)) {
       option.initialValue = moment(data[attr.key], [
         moment.ISO_8601,
-        'YYYY-MM-DD HH:mm:ss',
-        'YYYY-MM-DD',
-        'HH:mm:ss',
+        "YYYY-MM-DD HH:mm:ss",
+        "YYYY-MM-DD",
+        "HH:mm:ss"
       ]).isValid()
         ? moment(data[attr.key], [
             moment.ISO_8601,
-            'YYYY-MM-DD HH:mm:ss',
-            'YYYY-MM-DD',
-            'HH:mm:ss',
+            "YYYY-MM-DD HH:mm:ss",
+            "YYYY-MM-DD",
+            "HH:mm:ss"
           ])
         : null;
     }
@@ -220,7 +220,7 @@ export const buildWhere = (values, indexs) => {
   const fulltext_value = [];
   const fulltext_key = [];
   for (const index of indexs) {
-    if (index.type === 'key' && values[index.key] !== undefined) {
+    if (index.type === "key" && values[index.key] !== undefined) {
       if (
         Array.isArray(values[index.key]) &&
         values[index.key].length === 2 &&
@@ -228,18 +228,18 @@ export const buildWhere = (values, indexs) => {
       ) {
         wheres.push([
           index.key,
-          'between',
+          "between",
           [
-            values[index.key][0].format('YYYY-MM-DD HH:mm:ss'),
-            values[index.key][1].format('YYYY-MM-DD HH:mm:ss'),
-          ],
+            values[index.key][0].format("YYYY-MM-DD HH:mm:ss"),
+            values[index.key][1].format("YYYY-MM-DD HH:mm:ss")
+          ]
         ]);
       } else {
         wheres.push([index.key, values[index.key]]);
       }
     }
 
-    if (index.type === 'fulltext') {
+    if (index.type === "fulltext") {
       fulltext_key.push(index.key);
       if (Array.isArray(values[index.key]) && values[index.key].length > 0) {
         for (const iterator of values[index.key]) {
@@ -250,18 +250,18 @@ export const buildWhere = (values, indexs) => {
           values[index.key]
             .split(/\s+/)
             .map(i => `+${i}`)
-            .join(' ')
+            .join(" ")
         );
       }
     }
   }
 
   if (fulltext_value.length > 0) {
-    wheres.push([fulltext_key.join(','), 'match', fulltext_value.join(' ')]);
+    wheres.push([fulltext_key.join(","), "match", fulltext_value.join(" ")]);
   }
 
   if (values.id) {
-    wheres.push(['id', values.id]);
+    wheres.push(["id", values.id]);
   }
 
   return wheres;
@@ -283,18 +283,18 @@ export const getColumns = (
 ) => {
   const columns = [
     {
-      dataIndex: 'id',
+      dataIndex: "id",
       width: 80,
       sorter: true,
-      title: 'ID',
-      sortOrder: sortedInfo.columnKey === 'id' && sortedInfo.order,
-    },
+      title: "ID",
+      sortOrder: sortedInfo.columnKey === "id" && sortedInfo.order
+    }
   ];
 
   if (category) {
     columns.push({
-      dataIndex: 'category.name',
-      title: '栏目',
+      dataIndex: "category.name",
+      title: "栏目"
     });
   }
 
@@ -305,21 +305,21 @@ export const getColumns = (
         sorter: attr.sortable === 1,
         sortOrder: sortedInfo.columnKey === attr.key && sortedInfo.order,
         dataIndex: attr.key,
-        align: 'center',
+        align: "center",
         render: (text, record) => {
           // 单选，选择框 数据显示转换
-          if (['radio', 'select'].includes(attr.type)) {
+          if (["radio", "select"].includes(attr.type)) {
             for (const option of attr.optionsArray) {
               if (option.value === String(text)) {
                 return option.label;
               }
             }
 
-            return '-';
+            return "-";
           }
 
           // 多选 数据显示转换
-          if (['checkbox'].includes(attr.type) && Array.isArray(text)) {
+          if (["checkbox"].includes(attr.type) && Array.isArray(text)) {
             const strs = [];
             for (const option of attr.optionsArray) {
               if (text.includes(option.value)) {
@@ -327,11 +327,11 @@ export const getColumns = (
               }
             }
 
-            return strs.length === 0 ? '-' : strs.join(', ');
+            return strs.length === 0 ? "-" : strs.join(", ");
           }
 
           // 图片 数据显示转换
-          if (['img'].includes(attr.type) && Array.isArray(text)) {
+          if (["img"].includes(attr.type) && Array.isArray(text)) {
             return text.map(i => (
               <img
                 key={`img_${i}`}
@@ -343,43 +343,43 @@ export const getColumns = (
           }
 
           // 文件 数据显示转换
-          if (['file'].includes(attr.type) && Array.isArray(text)) {
+          if (["file"].includes(attr.type) && Array.isArray(text)) {
             return text.map(i => (
               <p key={`file_${i}`}>
                 <a href={i} target="black">
-                  <Icon type="file" /> {i.split('/')[i.split('/').length - 1]}
+                  <Icon type="file" /> {i.split("/")[i.split("/").length - 1]}
                 </a>
               </p>
             ));
           }
 
           // 时间
-          if (['time', 'date', 'datetime'].includes(attr.type)) {
+          if (["time", "date", "datetime"].includes(attr.type)) {
             const formats = {
-              time: 'HH:mm:ss',
-              date: 'YYYY-MM-DD',
-              datetime: 'YYYY-MM-DD HH:mm:ss',
+              time: "HH:mm:ss",
+              date: "YYYY-MM-DD",
+              datetime: "YYYY-MM-DD HH:mm:ss"
             };
             return moment(text, [
               moment.ISO_8601,
-              'YYYY-MM-DD HH:mm:ss',
-              'YYYY-MM-DD',
-              'HH:mm:ss',
+              "YYYY-MM-DD HH:mm:ss",
+              "YYYY-MM-DD",
+              "HH:mm:ss"
             ]).format(formats[attr.type]);
           }
 
           // rate
-          if (['rate'].includes(attr.type)) {
+          if (["rate"].includes(attr.type)) {
             return <Rate allowHalf value={text} disabled />;
           }
 
           // richtext
-          if (['richtext'].includes(attr.type)) {
+          if (["richtext"].includes(attr.type)) {
             return <div dangerouslySetInnerHTML={{ __html: text }} />;
           }
 
           // switch
-          if (['switch'].includes(attr.type)) {
+          if (["switch"].includes(attr.type)) {
             return (
               <Switch
                 onChange={is => {
@@ -392,8 +392,8 @@ export const getColumns = (
 
           // weight
           if (
-            ['weight'].includes(attr.type) &&
-            typeof sortable === 'function'
+            ["weight"].includes(attr.type) &&
+            typeof sortable === "function"
           ) {
             return (
               <InputNumber
@@ -407,15 +407,15 @@ export const getColumns = (
           }
 
           return text;
-        },
+        }
       });
     }
   }
 
   columns.push({
-    title: '操作',
+    title: "操作",
     width: 180,
-    align: 'center',
+    align: "center",
     render: (text, record) => {
       return (
         <Action
@@ -427,10 +427,10 @@ export const getColumns = (
             actionProps.edit(record);
           }}
         >
-          {typeof actions === 'function' && actions(record)}
+          {typeof actions === "function" && actions(record)}
         </Action>
       );
-    },
+    }
   });
 
   return columns;
@@ -447,7 +447,7 @@ export const renderFilterForm = (
   for (const attr of attrs) {
     if (indexs.map(i => i.key).includes(attr.key)) {
       const options = {};
-      if (attr.type === 'switch') {
+      if (attr.type === "switch") {
         options.initialValue = 0;
       }
 

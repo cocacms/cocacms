@@ -63,9 +63,11 @@ class RoleController extends Controller {
    */
   async update() {
     await this.validate();
-    this.ctx.body = await this.service.role.update(Object.assign({}, this.ctx.request.body, {
-      id: this.ctx.params.id,
-    }));
+    this.ctx.body = await this.service.role.update(
+      Object.assign({}, this.ctx.request.body, {
+        id: this.ctx.params.id,
+      })
+    );
   }
 
   /**

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Table,
   Form,
@@ -9,27 +9,27 @@ import {
   Modal,
   Select,
   TreeSelect,
-  Tag,
-} from 'antd';
-import name from 'components/name';
-import Action from 'components/action';
-import Can from 'components/can/index';
-import Upload from 'components/upload';
-import RichEditor from 'components/richeditor';
-import { connect } from 'dva';
+  Tag
+} from "antd";
+import name from "components/name";
+import Action from "components/action";
+import Can from "components/can/index";
+import Upload from "components/upload";
+import RichEditor from "components/richeditor";
+import { connect } from "dva";
 
 @Form.create()
 @connect(({ category, loading }) => ({
   category,
-  loading: loading.models.category,
+  loading: loading.models.category
 }))
 class Edit extends Component {
   state = {};
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'category/tree',
-      payload: {},
+      type: "category/tree",
+      payload: {}
     });
   }
 
@@ -49,51 +49,51 @@ class Edit extends Component {
       close,
       form: { getFieldDecorator, setFieldsValue },
       models = [],
-      category: { tree = [] },
+      category: { tree = [] }
     } = this.props;
     const labelCol = { span: 5 };
     const wrapperCol = { span: 15 };
     return (
       <Modal
-        title={action === 'add' ? '添加' : '编辑'}
+        title={action === "add" ? "添加" : "编辑"}
         visible={opened}
         onCancel={close}
         onOk={this.onOk}
         width="90%"
-        style={{ top: '5vh' }}
-        bodyStyle={{ maxHeight: '80vh', overflowY: 'auto' }}
+        style={{ top: "5vh" }}
+        bodyStyle={{ maxHeight: "80vh", overflowY: "auto" }}
       >
         <Form>
-          {getFieldDecorator('id', {
-            initialValue: data.id,
+          {getFieldDecorator("id", {
+            initialValue: data.id
           })(<Input type="hidden" disabled />)}
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="父栏目">
-            {getFieldDecorator('pid', {
+            {getFieldDecorator("pid", {
               initialValue:
                 data.pid === undefined ? undefined : String(data.pid),
-              rules: [{ required: true, message: '请设置栏目父栏目' }],
+              rules: [{ required: true, message: "请设置栏目父栏目" }]
             })(
               <TreeSelect
-                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
                 treeData={tree}
                 treeNodeLabelProp="name"
                 treeNodeFilterProp="id"
                 placeholder="请选择"
                 treeDefaultExpandAll
                 onSelect={(value, node) => {
-                  if (action === 'add') {
+                  if (action === "add") {
                     setFieldsValue({
-                      model_id: node.props.model_id,
+                      model_id: node.props.model_id
                     });
                     setFieldsValue({
-                      template_list: node.props.template_list,
+                      template_list: node.props.template_list
                     });
                     setFieldsValue({
-                      template_detail: node.props.template_detail,
+                      template_detail: node.props.template_detail
                     });
                     setFieldsValue({
-                      template_page: node.props.template_page,
+                      template_page: node.props.template_page
                     });
                   }
                 }}
@@ -106,9 +106,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="栏目关键字"
           >
-            {getFieldDecorator('key', {
+            {getFieldDecorator("key", {
               initialValue: data.key,
-              rules: [{ required: true, message: '请设置栏目关键字' }],
+              rules: [{ required: true, message: "请设置栏目关键字" }]
             })(<Input />)}
           </Form.Item>
 
@@ -117,9 +117,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="栏目名称"
           >
-            {getFieldDecorator('name', {
+            {getFieldDecorator("name", {
               initialValue: data.name,
-              rules: [{ required: true, message: '请设置栏目名称' }],
+              rules: [{ required: true, message: "请设置栏目名称" }]
             })(<Input />)}
           </Form.Item>
 
@@ -128,9 +128,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="栏目类型"
           >
-            {getFieldDecorator('type', {
+            {getFieldDecorator("type", {
               initialValue: data.type,
-              rules: [{ required: true, message: '请设置栏目类型' }],
+              rules: [{ required: true, message: "请设置栏目类型" }]
             })(
               <Select placeholder="请选择">
                 <Select.Option value={1}>列表页</Select.Option>
@@ -149,28 +149,30 @@ class Edit extends Component {
               <Tag color="gold">* 绑定模型会同步设置到未设置模型的子栏目</Tag>
             }
           >
-            {getFieldDecorator('model_id', {
-              initialValue: data.model_id,
+            {getFieldDecorator("model_id", {
+              initialValue: data.model_id
             })(
               <Select placeholder="请选择">
-                {models.filter(i => i.type === 0).map(i => (
-                  <Select.Option key={`model_id_${i.id}`} value={i.id}>
-                    {i.name}
-                  </Select.Option>
-                ))}
+                {models
+                  .filter(i => i.type === 0)
+                  .map(i => (
+                    <Select.Option key={`model_id_${i.id}`} value={i.id}>
+                      {i.name}
+                    </Select.Option>
+                  ))}
               </Select>
             )}
           </Form.Item>
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="外链">
-            {getFieldDecorator('url', {
-              initialValue: data.url,
+            {getFieldDecorator("url", {
+              initialValue: data.url
             })(<Input />)}
           </Form.Item>
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="图片">
-            {getFieldDecorator('pic', {
-              initialValue: data.pic,
+            {getFieldDecorator("pic", {
+              initialValue: data.pic
             })(<Upload />)}
           </Form.Item>
 
@@ -179,8 +181,8 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="SEO 关键字"
           >
-            {getFieldDecorator('keyword', {
-              initialValue: data.keyword,
+            {getFieldDecorator("keyword", {
+              initialValue: data.keyword
             })(<Input />)}
           </Form.Item>
 
@@ -189,14 +191,14 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="SEO 描述"
           >
-            {getFieldDecorator('description', {
-              initialValue: data.description,
+            {getFieldDecorator("description", {
+              initialValue: data.description
             })(<Input.TextArea autosize={{ minRows: 8 }} />)}
           </Form.Item>
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="内容">
-            {getFieldDecorator('content', {
-              initialValue: data.content,
+            {getFieldDecorator("content", {
+              initialValue: data.content
             })(<RichEditor id={data.id} />)}
           </Form.Item>
 
@@ -205,8 +207,8 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="列表模板"
           >
-            {getFieldDecorator('template_list', {
-              initialValue: data.template_list,
+            {getFieldDecorator("template_list", {
+              initialValue: data.template_list
             })(<Input />)}
           </Form.Item>
 
@@ -215,8 +217,8 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="详情模板"
           >
-            {getFieldDecorator('template_detail', {
-              initialValue: data.template_detail,
+            {getFieldDecorator("template_detail", {
+              initialValue: data.template_detail
             })(<Input />)}
           </Form.Item>
 
@@ -225,8 +227,8 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="单页模板"
           >
-            {getFieldDecorator('template_page', {
-              initialValue: data.template_page,
+            {getFieldDecorator("template_page", {
+              initialValue: data.template_page
             })(<Input />)}
           </Form.Item>
         </Form>
@@ -237,16 +239,16 @@ class Edit extends Component {
 
 @connect(({ category, loading }) => ({ category, loading }))
 @Form.create()
-@name('栏目管理')
+@name("栏目管理")
 class CategoryPage extends Component {
   state = {
     expand: false,
     edit: {
-      action: 'add',
+      action: "add",
       data: {},
       key: 1,
-      opened: false,
-    },
+      opened: false
+    }
   };
 
   componentDidMount() {
@@ -262,63 +264,63 @@ class CategoryPage extends Component {
     const { dispatch, form } = this.props;
     form.resetFields();
     dispatch({
-      type: 'category/list',
-      payload: {},
+      type: "category/list",
+      payload: {}
     });
     dispatch({
-      type: 'category/fetchProps',
-      payload: {},
+      type: "category/fetchProps",
+      payload: {}
     });
   };
 
   add = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'category/add',
+      type: "category/add",
       payload: {
         data,
-        pid: Number(data.pid),
+        pid: Number(data.pid)
       },
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   edit = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'category/edit',
+      type: "category/edit",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   delete = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'category/del',
-      payload: id,
+      type: "category/del",
+      payload: id
     });
   };
 
   moveUp = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'category/moveUp',
-      payload: id,
+      type: "category/moveUp",
+      payload: id
     });
   };
 
   moveDown = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'category/moveDown',
-      payload: id,
+      type: "category/moveDown",
+      payload: id
     });
   };
 
@@ -332,12 +334,12 @@ class CategoryPage extends Component {
       <div>
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: "right" }}>
               <Can api="POST@/api/category">
                 <Button
                   type="primary"
                   onClick={() => {
-                    this.openModel('add', {});
+                    this.openModel("add", {});
                   }}
                 >
                   创建
@@ -362,7 +364,7 @@ class CategoryPage extends Component {
    */
   openModel = (action, record) => {
     this.setState({
-      edit: { action, opened: true, data: record, key: Math.random() },
+      edit: { action, opened: true, data: record, key: Math.random() }
     });
   };
 
@@ -377,7 +379,7 @@ class CategoryPage extends Component {
 
   isBottom = id => {
     const {
-      category: { list = [] },
+      category: { list = [] }
     } = this.props;
     const find = finddata => {
       for (let index = 0; index < finddata.length; index++) {
@@ -405,47 +407,47 @@ class CategoryPage extends Component {
    */
   getColumns = () => [
     {
-      dataIndex: 'name',
-      title: '名称',
+      dataIndex: "name",
+      title: "名称"
     },
     {
-      dataIndex: 'key',
-      title: '关键字',
+      dataIndex: "key",
+      title: "关键字"
     },
     {
-      dataIndex: 'type',
-      title: '类型',
+      dataIndex: "type",
+      title: "类型",
       render: text => {
         switch (
           text //1列表页 2单页 3表单页
         ) {
           case 1:
-            return '列表页';
+            return "列表页";
           case 2:
-            return '单页';
+            return "单页";
           case 3:
-            return '表单页';
+            return "表单页";
           case 4:
-            return '外链';
+            return "外链";
           default:
-            return '-';
+            return "-";
         }
-      },
+      }
     },
     {
-      dataIndex: 'model.name',
-      title: '绑定模型',
+      dataIndex: "model.name",
+      title: "绑定模型"
     },
     {
-      title: '排序',
+      title: "排序",
       width: 100,
-      align: 'center',
+      align: "center",
       render: (text, record, index) => {
         return (
           <Action
             can={{
-              edit: 'PUT@/api/category/:id',
-              delete: 'DELETE@/api/category/:id',
+              edit: "PUT@/api/category/:id",
+              delete: "DELETE@/api/category/:id"
             }}
             editable={false}
             deleteable={false}
@@ -474,33 +476,33 @@ class CategoryPage extends Component {
             </Can>
           </Action>
         );
-      },
+      }
     },
     {
-      title: '操作',
+      title: "操作",
       width: 180,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         return (
           <Action
-            can={{ edit: 'PUT@/api/category/:id' }}
+            can={{ edit: "PUT@/api/category/:id" }}
             deleteable={false}
             edit={() => {
-              this.openModel('edit', record);
+              this.openModel("edit", record);
             }}
           >
             <a
               className="danger"
               onClick={() => {
                 Modal.confirm({
-                  title: '确定要删除这个栏目吗？',
-                  content: '删除栏目后，栏目下的内容将会丢失，请谨慎操作！',
-                  okText: '是，我要删除',
-                  okType: 'danger',
-                  cancelText: '不删除',
+                  title: "确定要删除这个栏目吗？",
+                  content: "删除栏目后，栏目下的内容将会丢失，请谨慎操作！",
+                  okText: "是，我要删除",
+                  okType: "danger",
+                  cancelText: "不删除",
                   onOk: () => {
                     this.delete(record.id);
-                  },
+                  }
                 });
               }}
             >
@@ -508,14 +510,14 @@ class CategoryPage extends Component {
             </a>
           </Action>
         );
-      },
-    },
+      }
+    }
   ];
 
   render() {
     const {
       loading: { effects: loading = {} },
-      category: { list = [], models = [] },
+      category: { list = [], models = [] }
     } = this.props;
 
     return (
@@ -526,7 +528,7 @@ class CategoryPage extends Component {
           title={this.renderFilter}
           defaultExpandAllRows
           columns={this.getColumns()}
-          loading={loading['category/list']}
+          loading={loading["category/list"]}
           rowKey="id"
           dataSource={list}
           pagination={false}

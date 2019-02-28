@@ -1,28 +1,28 @@
-import React, { Component } from 'react';
-import { Row, Col, TreeSelect, Tree, Alert } from 'antd';
-import name from 'components/name';
-import Can from 'components/can';
-import { connect } from 'dva';
+import React, { Component } from "react";
+import { Row, Col, TreeSelect, Tree, Alert } from "antd";
+import name from "components/name";
+import Can from "components/can";
+import { connect } from "dva";
 
-import styles from './index.less';
-import FormPage from './components/form';
-import TablePage from './components/table';
+import styles from "./index.less";
+import FormPage from "./components/form";
+import TablePage from "./components/table";
 
 const TreeNode = Tree.TreeNode;
 
 let isMount = true;
-@name('内容管理')
+@name("内容管理")
 @connect(({ content }) => ({ content }))
 class ContentList extends Component {
   state = {
-    categoryNodes: [],
+    categoryNodes: []
   };
 
   componentDidMount() {
     isMount = true;
     const { dispatch } = this.props;
     dispatch({
-      type: 'content/fetchCategory',
+      type: "content/fetchCategory"
     });
   }
 
@@ -30,16 +30,16 @@ class ContentList extends Component {
     isMount = false;
     const { dispatch } = this.props;
     dispatch({
-      type: 'content/save',
+      type: "content/save",
       payload: {
         category: [],
         current: {
-          model: {},
+          model: {}
         },
         attrs: [],
         rules: {},
-        indexs: [],
-      },
+        indexs: []
+      }
     });
   }
 
@@ -62,7 +62,7 @@ class ContentList extends Component {
     };
 
     const {
-      content: { category = [] },
+      content: { category = [] }
     } = props;
     const categoryNodes = renderTreeNodes(category);
 
@@ -72,8 +72,8 @@ class ContentList extends Component {
   onChangeCategory = selectedKeys => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'content/changeCategory',
-      payload: selectedKeys,
+      type: "content/changeCategory",
+      payload: selectedKeys
     });
   };
 
@@ -114,8 +114,8 @@ class ContentList extends Component {
         current = {},
         attrs = [],
         rules = {},
-        indexs = [],
-      },
+        indexs = []
+      }
     } = this.props;
     return (
       <div>
@@ -125,7 +125,7 @@ class ContentList extends Component {
               <TreeSelect
                 treeDefaultExpandAll
                 placeholder="请选择栏目"
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
                 treeData={category}
                 onSelect={value => {
                   this.onChangeCategory(value);
@@ -134,7 +134,7 @@ class ContentList extends Component {
             </Col>
           </Row>
         </Can>
-        <Row style={{ minHeight: '70vh' }} type="flex">
+        <Row style={{ minHeight: "70vh" }} type="flex">
           <Col xs={0} xl={4} className={styles.category}>
             {this.state.categoryNodes.length > 0 ? (
               <Tree

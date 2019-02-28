@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Table, Form, Row, Col, Button, Input, Modal, Select } from 'antd';
-import name from 'components/name';
-import Action from 'components/action';
-import Can from 'components/can/index';
-import { connect } from 'dva';
+import React, { Component } from "react";
+import { Table, Form, Row, Col, Button, Input, Modal, Select } from "antd";
+import name from "components/name";
+import Action from "components/action";
+import Can from "components/can/index";
+import { connect } from "dva";
 
 @Form.create()
 class Edit extends Component {
@@ -23,22 +23,22 @@ class Edit extends Component {
       data = {},
       close,
       form: { getFieldDecorator },
-      models = [],
+      models = []
     } = this.props;
     const labelCol = { span: 5 };
     const wrapperCol = { span: 15 };
 
     return (
       <Modal
-        title={action === 'add' ? '添加' : '编辑'}
+        title={action === "add" ? "添加" : "编辑"}
         visible={opened}
         onCancel={close}
         onOk={this.onOk}
       >
         <Form>
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="ID">
-            {getFieldDecorator('id', {
-              initialValue: data.id,
+            {getFieldDecorator("id", {
+              initialValue: data.id
             })(<Input disabled />)}
           </Form.Item>
 
@@ -48,10 +48,10 @@ class Edit extends Component {
             extra="设置后无法修改"
             label="关键字"
           >
-            {getFieldDecorator('key', {
+            {getFieldDecorator("key", {
               initialValue: data.key,
-              rules: [{ required: action === 'add', message: '请输入关键字' }],
-            })(<Input disabled={action !== 'add'} />)}
+              rules: [{ required: action === "add", message: "请输入关键字" }]
+            })(<Input disabled={action !== "add"} />)}
           </Form.Item>
 
           <Form.Item
@@ -59,16 +59,18 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="绑定模型"
           >
-            {getFieldDecorator('model_id', {
+            {getFieldDecorator("model_id", {
               initialValue: data.model_id,
-              rules: [{ required: true, message: '请设置绑定的模型' }],
+              rules: [{ required: true, message: "请设置绑定的模型" }]
             })(
               <Select placeholder="请选择">
-                {models.filter(i => i.type === 1).map(i => (
-                  <Select.Option key={`model_id_${i.id}`} value={i.id}>
-                    {i.name}
-                  </Select.Option>
-                ))}
+                {models
+                  .filter(i => i.type === 1)
+                  .map(i => (
+                    <Select.Option key={`model_id_${i.id}`} value={i.id}>
+                      {i.name}
+                    </Select.Option>
+                  ))}
               </Select>
             )}
           </Form.Item>
@@ -78,9 +80,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="表单名称"
           >
-            {getFieldDecorator('name', {
+            {getFieldDecorator("name", {
               initialValue: data.name,
-              rules: [{ required: true, message: '请输入表单名称' }],
+              rules: [{ required: true, message: "请输入表单名称" }]
             })(<Input />)}
           </Form.Item>
         </Form>
@@ -91,15 +93,15 @@ class Edit extends Component {
 
 @connect(({ form, loading }) => ({ mform: form, loading: loading.models.form }))
 @Form.create()
-@name('表单管理')
+@name("表单管理")
 class FormPage extends Component {
   state = {
     expand: false,
     edit: {
-      action: 'add',
+      action: "add",
       data: {},
-      opened: false,
-    },
+      opened: false
+    }
   };
 
   componentDidMount() {
@@ -115,47 +117,47 @@ class FormPage extends Component {
     const { dispatch, form } = this.props;
     form.resetFields();
     dispatch({
-      type: 'form/list',
+      type: "form/list"
     });
     dispatch({
-      type: 'form/fetchProps',
+      type: "form/fetchProps"
     });
   };
 
   add = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'form/add',
+      type: "form/add",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-        dispatch({ type: 'admin/fetch' });
-      },
+        dispatch({ type: "admin/fetch" });
+      }
     });
   };
 
   edit = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'form/edit',
+      type: "form/edit",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-        dispatch({ type: 'admin/fetch' });
-      },
+        dispatch({ type: "admin/fetch" });
+      }
     });
   };
 
   delete = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'form/del',
+      type: "form/del",
       payload: id,
       cb: () => {
-        dispatch({ type: 'admin/fetch' });
-      },
+        dispatch({ type: "admin/fetch" });
+      }
     });
   };
 
@@ -169,12 +171,12 @@ class FormPage extends Component {
       <div>
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: "right" }}>
               <Can api="POST@/api/form">
                 <Button
                   type="primary"
                   onClick={() => {
-                    this.openModel('add', {});
+                    this.openModel("add", {});
                   }}
                 >
                   创建
@@ -217,42 +219,42 @@ class FormPage extends Component {
    */
   getColumns = () => [
     {
-      dataIndex: 'id',
+      dataIndex: "id",
       width: 100,
-      title: 'ID',
+      title: "ID"
     },
     {
-      dataIndex: 'key',
-      title: '关键字',
+      dataIndex: "key",
+      title: "关键字"
     },
     {
-      dataIndex: 'name',
-      title: '名称',
+      dataIndex: "name",
+      title: "名称"
     },
     {
-      title: '操作',
+      title: "操作",
       width: 180,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         return (
           <Action
-            can={{ edit: 'PUT@/api/form/:id', delete: 'DELETE@/api/form/:id' }}
+            can={{ edit: "PUT@/api/form/:id", delete: "DELETE@/api/form/:id" }}
             delete={() => {
               this.delete(record.id);
             }}
             edit={() => {
-              this.openModel('edit', record);
+              this.openModel("edit", record);
             }}
           />
         );
-      },
-    },
+      }
+    }
   ];
 
   render() {
     const {
       loading,
-      mform: { list = [], models = [] },
+      mform: { list = [], models = [] }
     } = this.props;
     return (
       <Can api="GET@/api/form" cannot={null}>

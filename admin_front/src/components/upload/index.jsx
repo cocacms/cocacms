@@ -1,19 +1,19 @@
-import React from 'react';
-import { Upload, Icon, Modal, message } from 'antd';
+import React from "react";
+import { Upload, Icon, Modal, message } from "antd";
 
-import host from '../../common/config';
-import './index.less';
+import host from "../../common/config";
+import "./index.less";
 
 export default class PicturesWall extends React.Component {
   state = {
     previewVisible: false,
-    previewImage: '',
+    previewImage: "",
     fileList: null,
     _fileList: [],
     data: {
-      key: '',
-      token: '',
-    },
+      key: "",
+      token: ""
+    }
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -23,8 +23,8 @@ export default class PicturesWall extends React.Component {
       fileList = value.map(i => ({
         uid: i,
         name: i,
-        status: 'done',
-        url: i,
+        status: "done",
+        url: i
       }));
     }
     return { _fileList: fileList };
@@ -33,7 +33,7 @@ export default class PicturesWall extends React.Component {
   handlePreview = file => {
     this.setState({
       previewImage: file.url || file.thumbUrl,
-      previewVisible: true,
+      previewVisible: true
     });
   };
 
@@ -45,16 +45,16 @@ export default class PicturesWall extends React.Component {
     const { onChange } = this.props;
     const data = [];
     const list = fileList.map(i => {
-      if (i.status === 'done' && i.url) {
+      if (i.status === "done" && i.url) {
         data.push(i.url);
         return i;
       }
 
-      if (i.status === 'done' && i.response && i.response.url) {
+      if (i.status === "done" && i.response && i.response.url) {
         data.push(i.response.url);
       }
 
-      if (i.status === 'error' && i.response && i.response.message) {
+      if (i.status === "error" && i.response && i.response.message) {
         message.error(`上传失败：${i.response.message}`);
       }
 
@@ -68,7 +68,7 @@ export default class PicturesWall extends React.Component {
 
   render() {
     const { previewVisible, previewImage, fileList, _fileList } = this.state;
-    const { max, accept = 'image/*', disabled = false } = this.props;
+    const { max, accept = "image/*", disabled = false } = this.props;
 
     const list = fileList === null ? _fileList : fileList;
 
@@ -87,8 +87,8 @@ export default class PicturesWall extends React.Component {
           listType="picture-card"
           fileList={list}
           headers={{
-            Accept: 'application/json',
-            Authorization: localStorage.token || sessionStorage.token,
+            Accept: "application/json",
+            Authorization: localStorage.token || sessionStorage.token
           }}
           onPreview={this.handlePreview}
           onChange={this.handleChange}
@@ -100,7 +100,7 @@ export default class PicturesWall extends React.Component {
           footer={null}
           onCancel={this.handleCancel}
         >
-          <img alt="priview" style={{ width: '100%' }} src={previewImage} />
+          <img alt="priview" style={{ width: "100%" }} src={previewImage} />
         </Modal>
       </div>
     );

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Helmet } from 'react-helmet';
+import React, { Component } from "react";
+import { Helmet } from "react-helmet";
 
-import styles from './login.less';
-import { config } from '../common/config';
+import styles from "./login.less";
+import { config } from "../common/config";
 class LoginLayout extends Component {
   state = {};
   render() {

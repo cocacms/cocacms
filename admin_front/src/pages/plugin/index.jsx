@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { Table, Form, Row, Col, Button, Popconfirm, Modal, Badge } from 'antd';
-import name from 'components/name';
-import Switch from 'components/switch';
-import Can from 'components/can/index';
-import { connect } from 'dva';
-import AutoSetting from '../setting/components/auto';
-import Link from 'umi/link';
+import React, { Component } from "react";
+import { Table, Form, Row, Col, Button, Popconfirm, Modal, Badge } from "antd";
+import name from "components/name";
+import Switch from "components/switch";
+import Can from "components/can/index";
+import { connect } from "dva";
+import AutoSetting from "../setting/components/auto";
+import Link from "umi/link";
 
 @connect(({ plugin, loading }) => ({ plugin, loading: loading.models.plugin }))
 @Form.create()
-@name('插件管理')
+@name("插件管理")
 class PluginPage extends Component {
   state = {
     edit: {
@@ -17,8 +17,8 @@ class PluginPage extends Component {
       visible: false,
       attrs: [],
       data: {},
-      keyName: 0,
-    },
+      keyName: 0
+    }
   };
 
   componentDidMount() {
@@ -34,57 +34,57 @@ class PluginPage extends Component {
     const { dispatch, form } = this.props;
     form.resetFields();
     dispatch({
-      type: 'plugin/list',
+      type: "plugin/list"
     });
   };
 
   reload = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'plugin/reload',
+      type: "plugin/reload"
     });
   };
 
   toggle = (id, enable) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'plugin/toggle',
+      type: "plugin/toggle",
       payload: {
         id,
-        enable,
-      },
+        enable
+      }
     });
   };
 
   submit = (setting, id) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'plugin/setting',
+      type: "plugin/setting",
       payload: {
         id,
-        setting,
+        setting
       },
-      cb: this.close,
+      cb: this.close
     });
   };
 
   install = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'plugin/install',
+      type: "plugin/install",
       payload: {
-        id,
-      },
+        id
+      }
     });
   };
 
   uninstall = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'plugin/uninstall',
+      type: "plugin/uninstall",
       payload: {
-        id,
-      },
+        id
+      }
     });
   };
 
@@ -98,7 +98,7 @@ class PluginPage extends Component {
       <div>
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: "right" }}>
               <Can api="GET@/api/plugin/load">
                 <Button onClick={this.reload} type="dashed" icon="reload">
                   重新导入
@@ -123,41 +123,41 @@ class PluginPage extends Component {
    */
   getColumns = () => [
     {
-      dataIndex: 'id',
+      dataIndex: "id",
       width: 100,
-      title: 'ID',
+      title: "ID"
     },
     {
-      dataIndex: 'dirname',
-      title: '包名',
+      dataIndex: "dirname",
+      title: "包名"
     },
     {
-      dataIndex: 'name',
-      title: '名称',
+      dataIndex: "name",
+      title: "名称"
     },
     {
-      dataIndex: 'type',
-      title: '类型',
+      dataIndex: "type",
+      title: "类型",
       render: (text, record) => {
         if (text === 2) {
-          return '上传插件';
+          return "上传插件";
         }
-        return '普通插件';
-      },
+        return "普通插件";
+      }
     },
     {
-      dataIndex: 'author',
-      title: '作者',
+      dataIndex: "author",
+      title: "作者"
     },
     {
-      dataIndex: 'mail',
-      title: '邮箱',
+      dataIndex: "mail",
+      title: "邮箱"
     },
     {
-      dataIndex: 'enable',
-      title: '启用',
+      dataIndex: "enable",
+      title: "启用",
       width: 100,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         return (
           <Switch
@@ -167,13 +167,13 @@ class PluginPage extends Component {
             }}
           />
         );
-      },
+      }
     },
     {
-      dataIndex: 'setting',
-      title: '配置',
+      dataIndex: "setting",
+      title: "配置",
       width: 100,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         if (record.type === 2) {
           return <Link to="/setting/uploadSetting">配置</Link>;
@@ -192,13 +192,13 @@ class PluginPage extends Component {
         }
 
         return <Badge status="default" text="未开启" />;
-      },
+      }
     },
     {
-      dataIndex: 'installed',
-      title: '安装/卸载',
+      dataIndex: "installed",
+      title: "安装/卸载",
       width: 180,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         if (text !== 1) {
           return (
@@ -225,8 +225,8 @@ class PluginPage extends Component {
             <a className="danger">卸载</a>
           </Popconfirm>
         );
-      },
-    },
+      }
+    }
   ];
 
   close = () => {
@@ -236,8 +236,8 @@ class PluginPage extends Component {
         visible: false,
         attrs: [],
         data: {},
-        keyName: 0,
-      },
+        keyName: 0
+      }
     });
   };
 
@@ -248,15 +248,15 @@ class PluginPage extends Component {
         visible: true,
         attrs: JSON.parse(record.config) || [],
         data: JSON.parse(record.setting) || {},
-        keyName: record.id,
-      },
+        keyName: record.id
+      }
     });
   };
 
   render() {
     const {
       loading,
-      plugin: { list = [] },
+      plugin: { list = [] }
     } = this.props;
     return (
       <Can api="GET@/api/plugin" cannot={null}>
@@ -276,8 +276,8 @@ class PluginPage extends Component {
           onCancel={this.close}
           footer={null}
           width="80%"
-          style={{ top: '5vh' }}
-          bodyStyle={{ maxHeight: '80vh', overflowY: 'auto' }}
+          style={{ top: "5vh" }}
+          bodyStyle={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <AutoSetting
             key={this.state.edit.key}

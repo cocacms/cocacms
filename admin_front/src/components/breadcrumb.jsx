@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Breadcrumb } from 'antd';
-import Link from 'umi/link';
-import { matchPath } from 'react-router';
+import React, { Component } from "react";
+import { Breadcrumb } from "antd";
+import Link from "umi/link";
+import { matchPath } from "react-router";
 
 const DEFAULT_MATCH_OPTIONS = { exact: true };
 const NO_BREADCRUMB = null;
@@ -29,7 +29,7 @@ const getBreadcrumb = ({
   excludePaths,
   location,
   pathSection,
-  routes,
+  routes
 }) => {
   let breadcrumb;
 
@@ -43,13 +43,13 @@ const getBreadcrumb = ({
   routes.some(({ breadcrumb: userProvidedBreadcrumb, matchOptions, path }) => {
     if (!path) {
       throw new Error(
-        'withBreadcrumbs: `path` must be provided in every route object'
+        "withBreadcrumbs: `path` must be provided in every route object"
       );
     }
 
     const match = matchPath(pathSection, {
       ...(matchOptions || DEFAULT_MATCH_OPTIONS),
-      path,
+      path
     });
 
     // if user passed breadcrumb: null OR custom match options to suppress a breadcrumb
@@ -109,18 +109,18 @@ const getBreadcrumbs = ({ routes, location, options = {} }) => {
   const { pathname } = location;
 
   pathname
-    .split('?')[0]
+    .split("?")[0]
     // remove trailing slash "/" from pathname
-    .replace(/\/$/, '')
+    .replace(/\/$/, "")
     // split pathname into sections
-    .split('/')
+    .split("/")
     // reduce over the sections and find matches from `routes` prop
     .reduce((previousSection, currentSection) => {
       // combine the last route section with the currentSection
       // ex `pathname = /1/2/3 results in match checks for
       // `/1`, `/1/2`, `/1/2/3`
       const pathSection = !currentSection
-        ? '/'
+        ? "/"
         : `${previousSection}/${currentSection}`;
 
       const breadcrumb = getBreadcrumb({
@@ -128,7 +128,7 @@ const getBreadcrumbs = ({ routes, location, options = {} }) => {
         location,
         pathSection,
         routes,
-        ...options,
+        ...options
       });
 
       // add the breadcrumb to the matches array
@@ -137,7 +137,7 @@ const getBreadcrumbs = ({ routes, location, options = {} }) => {
         matches.push(breadcrumb);
       }
 
-      return pathSection === '/' ? '' : pathSection;
+      return pathSection === "/" ? "" : pathSection;
     }, null);
 
   return matches;
@@ -153,7 +153,7 @@ class BreadCrumbs extends Component {
     const breadcrumbsData = getBreadcrumbs({
       routes: flattenRoutes(this.props.routes),
       location: this.props.location,
-      options: {},
+      options: {}
     });
 
     return <Breadcrumb style={this.props.style}>{breadcrumbsData}</Breadcrumb>;

@@ -1,37 +1,37 @@
-import React, { Component } from 'react';
-import { Icon, Spin } from 'antd';
-import TablePage from './components/table';
-import { connect } from 'dva';
-import name from 'components/name';
+import React, { Component } from "react";
+import { Icon, Spin } from "antd";
+import TablePage from "./components/table";
+import { connect } from "dva";
+import name from "components/name";
 
 let isMount = true;
 
 @connect(({ form }) => ({ form }))
-@name('数据汇总')
+@name("数据汇总")
 class Page extends Component {
   state = {
     reload: false,
-    key: '',
+    key: ""
   };
 
   componentDidMount() {
     isMount = true;
     const {
-      match: { params },
+      match: { params }
     } = this.props;
     this.init(params.key);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const {
-      match: { params },
+      match: { params }
     } = nextProps;
     const { key } = prevState;
     if (params.key) {
       if (key !== params.key && isMount) {
         return {
           key: params.key,
-          reload: true,
+          reload: true
         };
       }
     }
@@ -48,8 +48,8 @@ class Page extends Component {
   init = (key = false) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'form/fetchFormDataProps',
-      payload: key ? key : this.state.key,
+      type: "form/fetchFormDataProps",
+      payload: key ? key : this.state.key
     });
   };
 
@@ -57,19 +57,19 @@ class Page extends Component {
     isMount = false;
     const { dispatch } = this.props;
     dispatch({
-      type: 'form/save',
+      type: "form/save",
       payload: {
         attrs: [],
         rules: {},
         indexs: [],
-        current: {},
-      },
+        current: {}
+      }
     });
   }
 
   render() {
     const {
-      form: { attrs = [], rules = {}, indexs = [], current = {} },
+      form: { attrs = [], rules = {}, indexs = [], current = {} }
     } = this.props;
 
     return (
@@ -83,7 +83,7 @@ class Page extends Component {
             indexs={indexs}
           />
         ) : (
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: "center" }}>
             <Spin
               indicator={<Icon type="loading" style={{ fontSize: 24 }} spin />}
             />

@@ -1,11 +1,11 @@
-import request from '../utils/request';
-import host from '../common/config';
-import querystring from 'querystring';
+import request from "../utils/request";
+import host from "../common/config";
+import querystring from "querystring";
 
 export default function build(name) {
   return {
-    index: async (query, tag = '') => {
-      let requestQuery = '';
+    index: async (query, tag = "") => {
+      let requestQuery = "";
       if (query) {
         if (query.where && query.where.length > 0) {
           query.where = JSON.stringify(query.where);
@@ -21,32 +21,32 @@ export default function build(name) {
       return request(`${host}/api/${name}${tag}?${requestQuery}`);
     },
 
-    new: async (id, tag = '') => {
+    new: async (id, tag = "") => {
       return request(`${host}/api/${name}${tag}/new`);
     },
 
-    show: async (id, tag = '') => {
+    show: async (id, tag = "") => {
       return request(`${host}/api/${name}${tag}/${id}`);
     },
 
-    create: async (data, tag = '') => {
+    create: async (data, tag = "") => {
       return request(`${host}/api/${name}${tag}`, {
-        method: 'POST',
-        body: data,
+        method: "POST",
+        body: data
       });
     },
 
-    update: async (id, data, tag = '') => {
+    update: async (id, data, tag = "") => {
       return request(`${host}/api/${name}${tag}/${id}`, {
-        method: 'PUT',
-        body: data,
+        method: "PUT",
+        body: data
       });
     },
 
-    destory: async (id, tag = '') => {
+    destory: async (id, tag = "") => {
       return request(`${host}/api/${name}${tag}/${id}`, {
-        method: 'DELETE',
+        method: "DELETE"
       });
-    },
+    }
   };
 }

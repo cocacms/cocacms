@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Table,
   Form,
@@ -8,33 +8,33 @@ import {
   Input,
   Modal,
   Select,
-  TreeSelect,
-} from 'antd';
-import name from 'components/name';
-import Action from 'components/action';
-import Can from 'components/can/index';
-import { connect } from 'dva';
+  TreeSelect
+} from "antd";
+import name from "components/name";
+import Action from "components/action";
+import Can from "components/can/index";
+import { connect } from "dva";
 
 @Form.create()
 @connect(({ menu, category, loading }) => ({
   menu,
   category,
-  loading: loading.models.menu,
+  loading: loading.models.menu
 }))
 class Edit extends Component {
   state = {
-    type: null,
+    type: null
   };
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'menu/tree',
-      payload: {},
+      type: "menu/tree",
+      payload: {}
     });
 
     dispatch({
-      type: 'category/tree',
-      payload: {},
+      type: "category/tree",
+      payload: {}
     });
   }
 
@@ -54,35 +54,35 @@ class Edit extends Component {
       close,
       form: { getFieldDecorator },
       menu: { tree = [] },
-      category: { tree: ctree = [] },
+      category: { tree: ctree = [] }
     } = this.props;
     const labelCol = { span: 5 };
     const wrapperCol = { span: 15 };
     if (this.state.type === null && data.type) {
       this.setState({
-        type: data.type,
+        type: data.type
       });
     }
     return (
       <Modal
-        title={action === 'add' ? '添加' : '编辑'}
+        title={action === "add" ? "添加" : "编辑"}
         visible={opened}
         onCancel={close}
         onOk={this.onOk}
       >
         <Form>
-          {getFieldDecorator('id', {
-            initialValue: data.id,
+          {getFieldDecorator("id", {
+            initialValue: data.id
           })(<Input type="hidden" disabled />)}
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="父菜单">
-            {getFieldDecorator('pid', {
+            {getFieldDecorator("pid", {
               initialValue:
                 data.pid === undefined ? undefined : String(data.pid),
-              rules: [{ required: true, message: '请设置菜单父菜单' }],
+              rules: [{ required: true, message: "请设置菜单父菜单" }]
             })(
               <TreeSelect
-                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
                 treeData={tree}
                 treeNodeLabelProp="name"
                 treeNodeFilterProp="id"
@@ -97,9 +97,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="菜单名称"
           >
-            {getFieldDecorator('name', {
+            {getFieldDecorator("name", {
               initialValue: data.name,
-              rules: [{ required: true, message: '请设置菜单名称' }],
+              rules: [{ required: true, message: "请设置菜单名称" }]
             })(<Input />)}
           </Form.Item>
 
@@ -108,16 +108,16 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="菜单类型"
           >
-            {getFieldDecorator('type', {
+            {getFieldDecorator("type", {
               initialValue: data.type,
-              rules: [{ required: true, message: '请设置菜单类型' }],
+              rules: [{ required: true, message: "请设置菜单类型" }],
               getValueFromEvent: e => {
                 this.setState({
-                  type: e,
+                  type: e
                 });
 
                 return e;
-              },
+              }
             })(
               <Select placeholder="请选择">
                 <Select.Option value={1}>绑定栏目</Select.Option>
@@ -131,15 +131,15 @@ class Edit extends Component {
               wrapperCol={wrapperCol}
               label="绑定栏目"
             >
-              {getFieldDecorator('category_id', {
+              {getFieldDecorator("category_id", {
                 initialValue:
                   data.category_id === undefined
                     ? undefined
                     : String(data.category_id),
-                rules: [{ required: true, message: '请设置菜单绑定栏目' }],
+                rules: [{ required: true, message: "请设置菜单绑定栏目" }]
               })(
                 <TreeSelect
-                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                  dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
                   treeData={ctree}
                   treeNodeLabelProp="name"
                   treeNodeFilterProp="id"
@@ -156,9 +156,9 @@ class Edit extends Component {
               wrapperCol={wrapperCol}
               label="URL链接"
             >
-              {getFieldDecorator('url', {
-                rules: [{ required: true, message: '请设置菜单URL链接' }],
-                initialValue: data.url,
+              {getFieldDecorator("url", {
+                rules: [{ required: true, message: "请设置菜单URL链接" }],
+                initialValue: data.url
               })(<Input />)}
             </Form.Item>
           ) : null}
@@ -170,16 +170,16 @@ class Edit extends Component {
 
 @connect(({ menu, loading }) => ({ menu, loading }))
 @Form.create()
-@name('菜单管理')
+@name("菜单管理")
 class menuPage extends Component {
   state = {
     expand: false,
     edit: {
-      action: 'add',
+      action: "add",
       data: {},
       key: 1,
-      opened: false,
-    },
+      opened: false
+    }
   };
 
   componentDidMount() {
@@ -195,63 +195,63 @@ class menuPage extends Component {
     const { dispatch, form } = this.props;
     form.resetFields();
     dispatch({
-      type: 'menu/list',
-      payload: {},
+      type: "menu/list",
+      payload: {}
     });
     dispatch({
-      type: 'menu/fetchProps',
-      payload: {},
+      type: "menu/fetchProps",
+      payload: {}
     });
   };
 
   add = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'menu/add',
+      type: "menu/add",
       payload: {
         data,
-        pid: Number(data.pid),
+        pid: Number(data.pid)
       },
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   edit = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'menu/edit',
+      type: "menu/edit",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   delete = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'menu/del',
-      payload: id,
+      type: "menu/del",
+      payload: id
     });
   };
 
   moveUp = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'menu/moveUp',
-      payload: id,
+      type: "menu/moveUp",
+      payload: id
     });
   };
 
   moveDown = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'menu/moveDown',
-      payload: id,
+      type: "menu/moveDown",
+      payload: id
     });
   };
 
@@ -265,12 +265,12 @@ class menuPage extends Component {
       <div>
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: "right" }}>
               <Can api="POST@/api/menu">
                 <Button
                   type="primary"
                   onClick={() => {
-                    this.openModel('add', {});
+                    this.openModel("add", {});
                   }}
                 >
                   创建
@@ -295,7 +295,7 @@ class menuPage extends Component {
    */
   openModel = (action, record) => {
     this.setState({
-      edit: { action, opened: true, data: record, key: Math.random() },
+      edit: { action, opened: true, data: record, key: Math.random() }
     });
   };
 
@@ -310,7 +310,7 @@ class menuPage extends Component {
 
   isBottom = id => {
     const {
-      menu: { list = [] },
+      menu: { list = [] }
     } = this.props;
     const find = finddata => {
       for (let index = 0; index < finddata.length; index++) {
@@ -338,44 +338,44 @@ class menuPage extends Component {
    */
   getColumns = () => [
     {
-      dataIndex: 'name',
-      title: '名称',
+      dataIndex: "name",
+      title: "名称"
     },
     {
-      dataIndex: 'type',
-      align: 'center',
-      title: '类型',
+      dataIndex: "type",
+      align: "center",
+      title: "类型",
       render: text => {
         switch (
           text //1列表页 2单页 3表单页
         ) {
           case 1:
-            return '绑定栏目';
+            return "绑定栏目";
           case 2:
-            return 'URL';
+            return "URL";
           default:
-            return '-';
+            return "-";
         }
-      },
+      }
     },
     {
-      dataIndex: 'category_id',
-      align: 'center',
-      title: '绑定栏目ID',
+      dataIndex: "category_id",
+      align: "center",
+      title: "绑定栏目ID"
     },
     {
-      align: 'center',
-      dataIndex: 'url',
-      title: 'URL链接',
+      align: "center",
+      dataIndex: "url",
+      title: "URL链接"
     },
     {
-      title: '排序',
+      title: "排序",
       width: 100,
-      align: 'center',
+      align: "center",
       render: (text, record, index) => {
         return (
           <Action
-            can={{ edit: 'PUT@/api/menu/:id', delete: 'DELETE@/api/menu/:id' }}
+            can={{ edit: "PUT@/api/menu/:id", delete: "DELETE@/api/menu/:id" }}
             editable={false}
             deleteable={false}
           >
@@ -403,32 +403,32 @@ class menuPage extends Component {
             </Can>
           </Action>
         );
-      },
+      }
     },
     {
-      title: '操作',
+      title: "操作",
       width: 180,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         return (
           <Action
-            can={{ edit: 'PUT@/api/menu/:id', delete: 'DELETE@/api/menu/:id' }}
+            can={{ edit: "PUT@/api/menu/:id", delete: "DELETE@/api/menu/:id" }}
             delete={() => {
               this.delete(record.id);
             }}
             edit={() => {
-              this.openModel('edit', record);
+              this.openModel("edit", record);
             }}
           />
         );
-      },
-    },
+      }
+    }
   ];
 
   render() {
     const {
       loading: { effects: loading = {} },
-      menu: { list = [], models = [] },
+      menu: { list = [], models = [] }
     } = this.props;
     return (
       <Can api="GET@/api/menu" cannot={null}>
@@ -438,7 +438,7 @@ class menuPage extends Component {
           title={this.renderFilter}
           defaultExpandAllRows
           columns={this.getColumns()}
-          loading={loading['menu/list']}
+          loading={loading["menu/list"]}
           rowKey="id"
           dataSource={list}
           pagination={false}

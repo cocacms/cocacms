@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Table,
   Form,
@@ -14,12 +14,12 @@ import {
   Spin,
   Tooltip,
   Icon,
-  Tag,
-} from 'antd';
-import name from 'components/name';
-import Action from 'components/action';
-import Can from 'components/can/index';
-import { connect } from 'dva';
+  Tag
+} from "antd";
+import name from "components/name";
+import Action from "components/action";
+import Can from "components/can/index";
+import { connect } from "dva";
 
 const labelCol = { span: 5 };
 const wrapperCol = { span: 15 };
@@ -44,22 +44,22 @@ class Edit extends Component {
       opened,
       data = {},
       close,
-      form: { getFieldDecorator },
+      form: { getFieldDecorator }
     } = this.props;
 
     return (
       <Modal
-        title={action === 'add' ? '添加' : '编辑'}
+        title={action === "add" ? "添加" : "编辑"}
         visible={opened}
         onCancel={close}
         onOk={this.onOk}
         width="50%"
-        style={{ top: '5vh' }}
-        bodyStyle={{ maxHeight: '80vh', overflowY: 'auto' }}
+        style={{ top: "5vh" }}
+        bodyStyle={{ maxHeight: "80vh", overflowY: "auto" }}
       >
         <Form>
-          {getFieldDecorator('id', {
-            initialValue: data.id,
+          {getFieldDecorator("id", {
+            initialValue: data.id
           })(<Input type="hidden" />)}
 
           <Form.Item
@@ -68,10 +68,10 @@ class Edit extends Component {
             label="关键字"
             extra="设置后不可修改"
           >
-            {getFieldDecorator('key', {
+            {getFieldDecorator("key", {
               initialValue: data.key,
-              rules: [{ required: action === 'add', message: '请设置关键字' }],
-            })(<Input disabled={action !== 'add'} />)}
+              rules: [{ required: action === "add", message: "请设置关键字" }]
+            })(<Input disabled={action !== "add"} />)}
           </Form.Item>
 
           <Form.Item
@@ -79,9 +79,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="字段名称"
           >
-            {getFieldDecorator('name', {
+            {getFieldDecorator("name", {
               initialValue: data.name,
-              rules: [{ required: true, message: '请设置字段名称' }],
+              rules: [{ required: true, message: "请设置字段名称" }]
             })(<Input />)}
           </Form.Item>
 
@@ -90,9 +90,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="字段类型"
           >
-            {getFieldDecorator('type', {
+            {getFieldDecorator("type", {
               initialValue: data.type,
-              rules: [{ required: true, message: '请设置字段类型' }],
+              rules: [{ required: true, message: "请设置字段类型" }]
             })(
               <Select placeholder="请选择">
                 <Select.Option value="varchar">单行文本</Select.Option>
@@ -115,15 +115,15 @@ class Edit extends Component {
           </Form.Item>
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="长度">
-            {getFieldDecorator('len', {
+            {getFieldDecorator("len", {
               initialValue: data.len,
               rules: [
-                { required: true, message: '请设置字段长度' },
+                { required: true, message: "请设置字段长度" },
                 {
                   pattern: /^(([1-9][0-9]*)|(([1-9][0-9]*),([1-9][0-9]*)))$/,
-                  message: '请设置为%d或%d,%d格式',
-                },
-              ],
+                  message: "请设置为%d或%d,%d格式"
+                }
+              ]
             })(<Input />)}
           </Form.Item>
 
@@ -132,16 +132,16 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="是否必填"
           >
-            {getFieldDecorator('required', {
+            {getFieldDecorator("required", {
               initialValue: data.required === 1,
-              valuePropName: 'checked',
+              valuePropName: "checked"
             })(<Checkbox />)}
           </Form.Item>
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="只读">
-            {getFieldDecorator('onlyread', {
+            {getFieldDecorator("onlyread", {
               initialValue: data.onlyread === 1,
-              valuePropName: 'checked',
+              valuePropName: "checked"
             })(<Checkbox />)}
           </Form.Item>
 
@@ -150,9 +150,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="显示在列表"
           >
-            {getFieldDecorator('tableable', {
+            {getFieldDecorator("tableable", {
               initialValue: data.tableable === 1,
-              valuePropName: 'checked',
+              valuePropName: "checked"
             })(<Checkbox />)}
           </Form.Item>
 
@@ -161,9 +161,9 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="列表可排序"
           >
-            {getFieldDecorator('sortable', {
+            {getFieldDecorator("sortable", {
               initialValue: data.sortable === 1,
-              valuePropName: 'checked',
+              valuePropName: "checked"
             })(<Checkbox />)}
           </Form.Item>
 
@@ -182,8 +182,8 @@ class Edit extends Component {
               </span>
             }
           >
-            {getFieldDecorator('default', {
-              initialValue: data.default,
+            {getFieldDecorator("default", {
+              initialValue: data.default
             })(<Input />)}
           </Form.Item>
 
@@ -193,8 +193,8 @@ class Edit extends Component {
             label="选项参数"
             extra="格式为key=name 如：man=男 (一行一个参数)"
           >
-            {getFieldDecorator('options', {
-              initialValue: data.options,
+            {getFieldDecorator("options", {
+              initialValue: data.options
             })(<Input.TextArea autosize={{ minRows: 8 }} />)}
           </Form.Item>
 
@@ -214,8 +214,8 @@ class Edit extends Component {
               </span>
             }
           >
-            {getFieldDecorator('rules', {
-              initialValue: data.rules_str || '[]',
+            {getFieldDecorator("rules", {
+              initialValue: data.rules_str || "[]",
               rules: [
                 {
                   validator(rule, value, callback) {
@@ -224,14 +224,14 @@ class Edit extends Component {
                       try {
                         JSON.parse(value);
                       } catch (error) {
-                        errors.push('请输入JSON数组文本格式');
+                        errors.push("请输入JSON数组文本格式");
                       }
                     }
                     callback(errors);
                   },
-                  required: false,
-                },
-              ],
+                  required: false
+                }
+              ]
             })(<Input.TextArea autosize={{ minRows: 8 }} />)}
           </Form.Item>
 
@@ -241,8 +241,8 @@ class Edit extends Component {
             label="显示顺序"
             extra="从小到大排序"
           >
-            {getFieldDecorator('sort', {
-              initialValue: data.sort,
+            {getFieldDecorator("sort", {
+              initialValue: data.sort
             })(<InputNumber />)}
           </Form.Item>
         </Form>
@@ -254,19 +254,19 @@ class Edit extends Component {
 @Form.create()
 @connect(({ modelAttr, loading }) => ({
   modelAttr,
-  loading: loading.models.modelAttr,
+  loading: loading.models.modelAttr
 }))
 class KeyEdit extends Component {
   state = {
     keys: [],
-    fulltexts: [],
+    fulltexts: []
   };
 
   componentDidMount() {
     const { dispatch, id } = this.props;
     dispatch({
-      type: 'modelAttr/fetchIndexs',
-      payload: id,
+      type: "modelAttr/fetchIndexs",
+      payload: id
     });
   }
 
@@ -274,18 +274,18 @@ class KeyEdit extends Component {
     const {
       dispatch,
       id,
-      form: { getFieldValue },
+      form: { getFieldValue }
     } = this.props;
     const keys = getFieldValue(key);
     dispatch({
-      type: 'modelAttr/adjustIndexs',
+      type: "modelAttr/adjustIndexs",
       payload: {
         id,
         data: {
           keys,
-          keyType: key,
-        },
-      },
+          keyType: key
+        }
+      }
     });
   };
 
@@ -296,7 +296,7 @@ class KeyEdit extends Component {
       data = [],
       loading,
       modelAttr: { indexs = {} } = {},
-      form: { getFieldDecorator },
+      form: { getFieldDecorator }
     } = this.props;
 
     return (
@@ -319,30 +319,30 @@ class KeyEdit extends Component {
               wrapperCol={wrapperCol}
               label="普通索引"
             >
-              {getFieldDecorator('keys', {
-                initialValue: indexs.keys,
+              {getFieldDecorator("keys", {
+                initialValue: indexs.keys
               })(
                 <Select placeholder="请选择" mode="multiple">
                   <Select.Option value="site_id"> 站点id[内置] </Select.Option>
                   <Select.Option value="category_id">
-                    {' '}
-                    栏目id[内置]{' '}
+                    {" "}
+                    栏目id[内置]{" "}
                   </Select.Option>
                   {data.map(i => {
                     if (
                       ![
-                        'text',
-                        'richtext',
-                        'checkbox',
-                        'img',
-                        'file',
-                        'time',
+                        "text",
+                        "richtext",
+                        "checkbox",
+                        "img",
+                        "file",
+                        "time"
                       ].includes(i.type)
                     ) {
                       return (
                         <Select.Option value={i.key} key={i.key}>
-                          {' '}
-                          {i.name}{' '}
+                          {" "}
+                          {i.name}{" "}
                         </Select.Option>
                       );
                     }
@@ -356,7 +356,7 @@ class KeyEdit extends Component {
               <Button
                 type="primary"
                 onClick={() => {
-                  this.save('keys');
+                  this.save("keys");
                 }}
               >
                 保存索引
@@ -368,30 +368,30 @@ class KeyEdit extends Component {
               wrapperCol={wrapperCol}
               label="全文搜索"
             >
-              {getFieldDecorator('fulltexts', {
-                initialValue: indexs.fulltexts,
+              {getFieldDecorator("fulltexts", {
+                initialValue: indexs.fulltexts
               })(
                 <Select placeholder="请选择" mode="multiple">
                   {data.map(i => {
                     if (
                       ![
-                        'radio',
-                        'select',
-                        'time',
-                        'date',
-                        'datetime',
-                        'rate',
-                        'img',
-                        'file',
-                        'switch',
-                        'int',
-                        'decimal',
+                        "radio",
+                        "select",
+                        "time",
+                        "date",
+                        "datetime",
+                        "rate",
+                        "img",
+                        "file",
+                        "switch",
+                        "int",
+                        "decimal"
                       ].includes(i.type)
                     ) {
                       return (
                         <Select.Option value={i.key} key={i.key}>
-                          {' '}
-                          {i.name}{' '}
+                          {" "}
+                          {i.name}{" "}
                         </Select.Option>
                       );
                     }
@@ -405,7 +405,7 @@ class KeyEdit extends Component {
               <Button
                 type="primary"
                 onClick={() => {
-                  this.save('fulltexts');
+                  this.save("fulltexts");
                 }}
               >
                 保存全文搜索
@@ -420,31 +420,31 @@ class KeyEdit extends Component {
 
 @connect(({ modelAttr, loading }) => ({
   modelAttr,
-  loading: loading.models.modelAttr,
+  loading: loading.models.modelAttr
 }))
 @Form.create()
-@name('模型字段管理')
+@name("模型字段管理")
 class ModelPage extends Component {
   state = {
     expand: false,
     edit: {
-      action: 'add',
+      action: "add",
       data: {},
-      opened: false,
+      opened: false
     },
 
     keyEdit: {
-      opened: false,
-    },
+      opened: false
+    }
   };
 
   componentDidMount() {
     const { dispatch, match: { params = {} } = {} } = this.props;
     dispatch({
-      type: 'modelAttr/save',
+      type: "modelAttr/save",
       payload: {
-        _tag: `/${params.id}`,
-      },
+        _tag: `/${params.id}`
+      }
     });
     this.init();
   }
@@ -458,39 +458,39 @@ class ModelPage extends Component {
     const { dispatch, form } = this.props;
     form.resetFields();
     dispatch({
-      type: 'modelAttr/list',
+      type: "modelAttr/list"
     });
   };
 
   add = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'modelAttr/add',
+      type: "modelAttr/add",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   edit = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'modelAttr/edit',
+      type: "modelAttr/edit",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   delete = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'modelAttr/del',
-      payload: id,
+      type: "modelAttr/del",
+      payload: id
     });
   };
 
@@ -504,7 +504,7 @@ class ModelPage extends Component {
       <div>
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: "right" }}>
               <Can api="GET@/api/modelAttr/:model/indexs">
                 <Button
                   icon="tag-o"
@@ -521,7 +521,7 @@ class ModelPage extends Component {
                 <Button
                   type="primary"
                   onClick={() => {
-                    this.openModel('add', {});
+                    this.openModel("add", {});
                   }}
                 >
                   创建
@@ -550,10 +550,10 @@ class ModelPage extends Component {
 
   openKeyModel = () => {
     const {
-      modelAttr: { list = [] },
+      modelAttr: { list = [] }
     } = this.props;
     this.setState({
-      keyEdit: { opened: true, key: Math.random(), data: list },
+      keyEdit: { opened: true, key: Math.random(), data: list }
     });
   };
 
@@ -577,115 +577,115 @@ class ModelPage extends Component {
    */
   getColumns = () => [
     {
-      dataIndex: 'id',
+      dataIndex: "id",
       width: 100,
-      title: 'ID',
+      title: "ID"
     },
     {
-      dataIndex: 'key',
-      title: '关键字',
+      dataIndex: "key",
+      title: "关键字"
     },
     {
-      dataIndex: 'name',
-      title: '字段名称',
+      dataIndex: "name",
+      title: "字段名称"
     },
     {
-      dataIndex: 'type',
-      title: '类型',
+      dataIndex: "type",
+      title: "类型",
       render: text => {
         switch (text) {
-          case 'varchar':
-            return '单行文本';
-          case 'int':
-            return '整数';
-          case 'decimal':
-            return '小数';
-          case 'text':
-            return '多行文本';
-          case 'radio':
-            return '单选';
-          case 'select':
-            return '选择框';
-          case 'checkbox':
-            return '多选';
-          case 'time':
-            return '时间选择器';
-          case 'date':
-            return '日期选择器';
-          case 'datetime':
-            return '日期时间选择器';
-          case 'img':
-            return '图片';
-          case 'file':
-            return '文件';
-          case 'richtext':
-            return '富文本';
-          case 'rate':
-            return '评分';
-          case 'switch':
-            return '开关';
+          case "varchar":
+            return "单行文本";
+          case "int":
+            return "整数";
+          case "decimal":
+            return "小数";
+          case "text":
+            return "多行文本";
+          case "radio":
+            return "单选";
+          case "select":
+            return "选择框";
+          case "checkbox":
+            return "多选";
+          case "time":
+            return "时间选择器";
+          case "date":
+            return "日期选择器";
+          case "datetime":
+            return "日期时间选择器";
+          case "img":
+            return "图片";
+          case "file":
+            return "文件";
+          case "richtext":
+            return "富文本";
+          case "rate":
+            return "评分";
+          case "switch":
+            return "开关";
           default:
-            return '-';
+            return "-";
         }
-      },
+      }
     },
     {
-      dataIndex: 'required',
-      title: '是否必填',
+      dataIndex: "required",
+      title: "是否必填",
       render: text => {
-        return text === 1 ? '是' : '否';
-      },
+        return text === 1 ? "是" : "否";
+      }
     },
     {
-      dataIndex: 'onlyread',
-      title: '只读',
+      dataIndex: "onlyread",
+      title: "只读",
       render: text => {
-        return text === 1 ? '是' : '否';
-      },
+        return text === 1 ? "是" : "否";
+      }
     },
     {
-      dataIndex: 'tableable',
-      title: '列表显示',
+      dataIndex: "tableable",
+      title: "列表显示",
       render: text => {
-        return text === 1 ? '是' : '否';
-      },
+        return text === 1 ? "是" : "否";
+      }
     },
     {
-      dataIndex: 'default',
-      title: '默认值',
+      dataIndex: "default",
+      title: "默认值"
     },
     {
-      dataIndex: 'len',
-      title: '长度',
+      dataIndex: "len",
+      title: "长度"
     },
     {
-      title: '操作',
+      title: "操作",
       width: 180,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         return (
           <Action
             can={{
-              edit: 'PUT@/api/modelAttr/:model/:id',
-              delete: 'DELETE@/api/modelAttr/:model/:id',
+              edit: "PUT@/api/modelAttr/:model/:id",
+              delete: "DELETE@/api/modelAttr/:model/:id"
             }}
             delete={() => {
               this.delete(record.id);
             }}
             edit={() => {
-              this.openModel('edit', record);
+              this.openModel("edit", record);
             }}
           />
         );
-      },
-    },
+      }
+    }
   ];
 
   render() {
     const {
       loading,
       modelAttr: { list = [] },
-      match: { params = {} } = {},
+      match: { params = {} } = {}
     } = this.props;
     return (
       <Can api="GET@/api/modelAttr/:model" cannot={null}>

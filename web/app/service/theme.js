@@ -79,9 +79,12 @@ class ThemeService extends Service {
               { where: { package: config.package } }
             );
           } else {
-            await this.app.mysql.insert(this._table, Object.assign({}, config, {
-              dirname,
-            }));
+            await this.app.mysql.insert(
+              this._table,
+              Object.assign({}, config, {
+                dirname,
+              })
+            );
           }
         }
       }

@@ -1,4 +1,4 @@
-import fetch from 'dva/fetch';
+import fetch from "dva/fetch";
 
 function parseJSON(response) {
   return response.json();
@@ -28,15 +28,15 @@ export default function request(url, options = {}) {
     options.headers = {};
   }
 
-  options.headers.Accept = 'application/json';
+  options.headers.Accept = "application/json";
 
   if (Authorization) {
     options.headers.Authorization = Authorization;
   }
 
-  if (typeof options.body === 'object' && !(options.body instanceof FormData)) {
+  if (typeof options.body === "object" && !(options.body instanceof FormData)) {
     options.body = JSON.stringify(options.body);
-    options.headers['Content-Type'] = 'application/json';
+    options.headers["Content-Type"] = "application/json";
   }
 
   return fetch(url, options)

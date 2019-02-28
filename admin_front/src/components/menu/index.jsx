@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Menu, Icon } from 'antd';
-import router from 'umi/router';
-import styles from './index.less';
-import pathToRegexp from 'path-to-regexp';
+import React, { Component } from "react";
+import { Menu, Icon } from "antd";
+import router from "umi/router";
+import styles from "./index.less";
+import pathToRegexp from "path-to-regexp";
 
 const tree2flat = (data, parent = [], permission = []) => {
   let result = [];
@@ -34,7 +34,7 @@ const getCurrent = (pathname, permission = [], menudata) => {
   const data = tree2flat(menudata, [], permission); // 数转扁平 带权限验证
 
   const result = data.filter(i => {
-    if (typeof i.path === 'string') {
+    if (typeof i.path === "string") {
       return pathToRegexp(i.path).exec(pathname);
     } else if (i.path.reg) {
       return pathToRegexp(i.path.reg).exec(pathname);
@@ -51,7 +51,7 @@ class Menus extends Component {
   state = {
     selected: [],
     opened: [],
-    currentPath: '',
+    currentPath: ""
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -72,7 +72,7 @@ class Menus extends Component {
       }
 
       opened = current.filter(
-        i => typeof i === 'string' && i.indexOf('_sub_') === 0
+        i => typeof i === "string" && i.indexOf("_sub_") === 0
       ); // 取出展开项
 
       if (nextProps.small === true) {
@@ -82,17 +82,17 @@ class Menus extends Component {
 
       selected = current
         .map(i => {
-          if (typeof i !== 'string') {
+          if (typeof i !== "string") {
             return pathToRegexp.compile(i.reg)(i.params);
           }
           return i;
         })
-        .filter(i => i.indexOf('_sub_') === -1); // 取出非展开项 即选择的菜单
+        .filter(i => i.indexOf("_sub_") === -1); // 取出非展开项 即选择的菜单
 
       return {
         opened,
         selected,
-        currentPath,
+        currentPath
       };
     }
 
@@ -100,10 +100,10 @@ class Menus extends Component {
   }
 
   getIcon = icon => {
-    if (typeof icon === 'string' && icon.indexOf('http') === 0) {
+    if (typeof icon === "string" && icon.indexOf("http") === 0) {
       return <img src={icon} alt="icon" className={styles.icon} />;
     }
-    if (typeof icon === 'string') {
+    if (typeof icon === "string") {
       return <Icon type={icon} />;
     }
     return icon;
@@ -136,7 +136,7 @@ class Menus extends Component {
             {this.buildMenu(i.children)}
           </Menu.SubMenu>
         );
-      } else if (typeof i.path === 'string' && i.path.indexOf('/') === 0) {
+      } else if (typeof i.path === "string" && i.path.indexOf("/") === 0) {
         return (
           <Menu.Item key={i.path}>
             {this.getIcon(i.icon)}
@@ -144,8 +144,8 @@ class Menus extends Component {
           </Menu.Item>
         );
       } else if (
-        typeof i.path.reg === 'string' &&
-        i.path.reg.indexOf('/') === 0
+        typeof i.path.reg === "string" &&
+        i.path.reg.indexOf("/") === 0
       ) {
         return (
           <Menu.Item key={pathToRegexp.compile(i.path.reg)(i.path.params)}>
@@ -165,7 +165,7 @@ class Menus extends Component {
 
   onOpenChange = openKeys => {
     this.setState({
-      opened: openKeys,
+      opened: openKeys
     });
   };
 

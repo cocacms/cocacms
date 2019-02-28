@@ -58,9 +58,11 @@ class SiteController extends Controller {
    */
   async update() {
     const body = await this.validate();
-    this.ctx.body = await this.service.site.update(Object.assign({}, body, {
-      id: this.ctx.params.id,
-    }));
+    this.ctx.body = await this.service.site.update(
+      Object.assign({}, body, {
+        id: this.ctx.params.id,
+      })
+    );
   }
 
   /**

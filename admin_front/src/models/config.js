@@ -1,19 +1,19 @@
-import { message } from 'antd';
-import base from '../services/base';
+import { message } from "antd";
+import base from "../services/base";
 
-const configService = base('config');
-const modelService = base('model');
+const configService = base("config");
+const modelService = base("model");
 
 export default {
-  namespace: 'config',
+  namespace: "config",
 
   state: {
     models: [],
-    config: {},
+    config: {}
   },
 
   subscriptions: {
-    setup({ dispatch, history }) {},
+    setup({ dispatch, history }) {}
   },
 
   effects: {
@@ -22,14 +22,14 @@ export default {
       const { data: models } = yield call(modelService.index);
 
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
           config: data,
-          models,
-        },
+          models
+        }
       });
 
-      if (typeof cb === 'function') {
+      if (typeof cb === "function") {
         cb();
       }
     },
@@ -38,16 +38,16 @@ export default {
       const config = yield select(state => state.config.config);
       config[payload.scope] = payload.data;
       yield call(configService.create, config);
-      message.success('修改成功！');
+      message.success("修改成功！");
       yield put({
-        type: 'fetch',
+        type: "fetch"
       });
-    },
+    }
   },
 
   reducers: {
     save(state, action) {
       return { ...state, ...action.payload };
-    },
-  },
+    }
+  }
 };

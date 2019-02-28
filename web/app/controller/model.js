@@ -67,9 +67,11 @@ class CategoryController extends Controller {
   async update() {
     const body = await this.validate();
     delete body.key; // 不允许修改
-    this.ctx.body = await this.service.model.update(Object.assign({}, body, {
-      id: this.ctx.params.id,
-    }));
+    this.ctx.body = await this.service.model.update(
+      Object.assign({}, body, {
+        id: this.ctx.params.id,
+      })
+    );
   }
 
   /**

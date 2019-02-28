@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { message, Button, Popconfirm } from 'antd';
-import E from '@cocacms/wangeditor';
-import xss, { getDefaultWhiteList } from 'xss';
-import host from '../../common/config';
+import React, { Component } from "react";
+import { message, Button, Popconfirm } from "antd";
+import E from "@cocacms/wangeditor";
+import xss, { getDefaultWhiteList } from "xss";
+import host from "../../common/config";
 
 class RichEditor extends Component {
   componentDidMount() {
@@ -14,15 +14,15 @@ class RichEditor extends Component {
     editor.customConfig.uploadImgServer = `${host}/api/upload`;
     editor.customConfig.uploadImgMaxLength = 1;
     editor.customConfig.uploadImgHeaders = {
-      Accept: 'application/json',
-      Authorization: localStorage.token || sessionStorage.token,
+      Accept: "application/json",
+      Authorization: localStorage.token || sessionStorage.token
     };
 
     editor.customConfig.uploadImgHooks = {
       customInsert: (insertImg, result, editor) => {
         const url = result.url;
         insertImg(url);
-      },
+      }
     };
 
     editor.customConfig.customAlert = function(info) {
@@ -38,24 +38,24 @@ class RichEditor extends Component {
      */
 
     editor.customConfig.colors = [
-      '#000000',
-      '#333333',
-      '#666666',
-      '#999999',
-      '#cccccc',
-      '#ffffff',
-      '#61a951',
-      '#16a085',
-      '#07a9fe',
-      '#003ba5',
-      '#8e44ad',
-      '#f32784',
-      '#c0392b',
-      '#d35400',
-      '#f39c12',
-      '#fdda00',
-      '#7f8c8d',
-      '#2c3e50',
+      "#000000",
+      "#333333",
+      "#666666",
+      "#999999",
+      "#cccccc",
+      "#ffffff",
+      "#61a951",
+      "#16a085",
+      "#07a9fe",
+      "#003ba5",
+      "#8e44ad",
+      "#f32784",
+      "#c0392b",
+      "#d35400",
+      "#f39c12",
+      "#fdda00",
+      "#7f8c8d",
+      "#2c3e50"
     ];
 
     /**
@@ -63,24 +63,24 @@ class RichEditor extends Component {
      */
 
     editor.customConfig.menus = [
-      'head', // 标题
-      'bold', // 粗体
-      'fontSize', // 字号
-      'fontName', // 字体
-      'italic', // 斜体
-      'underline', // 下划线
-      'strikeThrough', // 删除线
-      'foreColor', // 文字颜色
-      'backColor', // 背景颜色
-      'hr', // 换行
-      'link', // 插入链接
-      'list', // 列表
-      'justify', // 对齐方式
-      'quote', // 引用
-      'image', // 插入图片
-      'video', // 插入视频
-      'undo', // 撤销
-      'redo', // 重复
+      "head", // 标题
+      "bold", // 粗体
+      "fontSize", // 字号
+      "fontName", // 字体
+      "italic", // 斜体
+      "underline", // 下划线
+      "strikeThrough", // 删除线
+      "foreColor", // 文字颜色
+      "backColor", // 背景颜色
+      "hr", // 换行
+      "link", // 插入链接
+      "list", // 列表
+      "justify", // 对齐方式
+      "quote", // 引用
+      "image", // 插入图片
+      "video", // 插入视频
+      "undo", // 撤销
+      "redo" // 重复
     ];
     editor.customConfig.debug = true;
     editor.customConfig.pasteFilterStyle = true; // 忽略粘贴样式
@@ -89,7 +89,7 @@ class RichEditor extends Component {
     this.defaultWhiteList = getDefaultWhiteList();
     for (const key in this.defaultWhiteList) {
       if (this.defaultWhiteList.hasOwnProperty(key)) {
-        this.defaultWhiteList[key].push('style');
+        this.defaultWhiteList[key].push("style");
       }
     }
 
@@ -97,7 +97,7 @@ class RichEditor extends Component {
       this.props.onChange(
         xss(html, {
           whiteList: this.defaultWhiteList,
-          css: true,
+          css: true
         })
       );
     };
@@ -105,21 +105,21 @@ class RichEditor extends Component {
     editor.customConfig.autoHeight = false;
 
     editor.create();
-    editor.txt.html(this.props.value ? this.props.value : '');
+    editor.txt.html(this.props.value ? this.props.value : "");
     this.editor = editor;
   }
 
   render() {
     return (
       <div>
-        <div ref="editorElem" style={{ textAlign: 'left' }} />
+        <div ref="editorElem" style={{ textAlign: "left" }} />
         <div>
           <Button
             type="primary"
             size="small"
             onClick={() => {
               localStorage.RichEditor = this.editor.txt.html();
-              message.success('保存草稿成功');
+              message.success("保存草稿成功");
             }}
           >
             保存草稿

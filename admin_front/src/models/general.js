@@ -4,26 +4,26 @@ import {
   update,
   destory,
   show,
-  switchChange,
-} from '../services/general';
+  switchChange
+} from "../services/general";
 
 export default {
-  namespace: 'general',
+  namespace: "general",
 
   state: {
-    modelKey: '',
+    modelKey: "",
     list: {},
-    type: 'g',
+    type: "g",
     query: {
       page: 1,
       currentPage: 1,
       pageSize: 20,
       where: [],
       order: [],
-      noMore: false,
+      noMore: false
     },
 
-    data: {},
+    data: {}
   },
 
   effects: {
@@ -32,8 +32,8 @@ export default {
       const _search = { ...search };
       _search.page = _search.currentPage;
       yield put({
-        type: 'list',
-        payload: _search,
+        type: "list",
+        payload: _search
       });
     },
 
@@ -51,11 +51,11 @@ export default {
       }
 
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
           list,
-          query,
-        },
+          query
+        }
       });
     },
 
@@ -67,7 +67,7 @@ export default {
         cb(data);
       }
       if (reload) {
-        yield put({ type: 'reload' });
+        yield put({ type: "reload" });
       }
     },
 
@@ -79,7 +79,7 @@ export default {
         cb(data);
       }
       if (reload) {
-        yield put({ type: 'reload' });
+        yield put({ type: "reload" });
       }
     },
 
@@ -90,7 +90,7 @@ export default {
       if (cb) {
         cb();
       }
-      yield put({ type: 'reload' });
+      yield put({ type: "reload" });
     },
 
     *switchChange({ payload, cb, reload = true }, { call, put, select }) {
@@ -107,7 +107,7 @@ export default {
         cb(data);
       }
       if (reload) {
-        yield put({ type: 'reload' });
+        yield put({ type: "reload" });
       }
     },
 
@@ -116,17 +116,17 @@ export default {
       const type = yield select(state => state.general.type);
       const { data } = yield call(show, payload, modelKey, type);
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
-          data,
-        },
+          data
+        }
       });
-    },
+    }
   },
 
   reducers: {
     save(state, action) {
       return { ...state, ...action.payload };
-    },
-  },
+    }
+  }
 };

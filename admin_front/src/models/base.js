@@ -1,8 +1,8 @@
-import base from '../services/base';
+import base from "../services/base";
 
 export default {
-  namespace: '__g__',
-  state: {},
+  namespace: "__g__",
+  state: {}
 };
 
 export const baseModel = function(serviceName, pager = true) {
@@ -10,7 +10,7 @@ export const baseModel = function(serviceName, pager = true) {
 
   return {
     state: {
-      _tag: '',
+      _tag: "",
       list: pager ? {} : [],
       show: {},
       query: {
@@ -19,8 +19,8 @@ export const baseModel = function(serviceName, pager = true) {
         pageSize: 20,
         where: [],
         order: [],
-        noMore: false,
-      },
+        noMore: false
+      }
     },
 
     effects: {
@@ -40,11 +40,11 @@ export const baseModel = function(serviceName, pager = true) {
         }
 
         yield put({
-          type: 'save',
+          type: "save",
           payload: {
             list,
-            query,
-          },
+            query
+          }
         });
       },
 
@@ -52,10 +52,10 @@ export const baseModel = function(serviceName, pager = true) {
         const _tag = yield select(state => state[serviceName]._tag);
         const { data: show } = yield call(service.show, payload, _tag);
         yield put({
-          type: 'save',
+          type: "save",
           payload: {
-            show,
-          },
+            show
+          }
         });
 
         if (cb) {
@@ -69,7 +69,7 @@ export const baseModel = function(serviceName, pager = true) {
         if (cb) {
           cb(data);
         }
-        yield put({ type: 'reload' });
+        yield put({ type: "reload" });
       },
 
       *edit({ payload, cb }, { call, put, select }) {
@@ -78,7 +78,7 @@ export const baseModel = function(serviceName, pager = true) {
         if (cb) {
           cb(data);
         }
-        yield put({ type: 'reload' });
+        yield put({ type: "reload" });
       },
 
       *del({ payload, cb }, { call, put, select }) {
@@ -87,7 +87,7 @@ export const baseModel = function(serviceName, pager = true) {
         if (cb) {
           cb();
         }
-        yield put({ type: 'reload' });
+        yield put({ type: "reload" });
       },
 
       *reload(_, { call, put, select }) {
@@ -95,16 +95,16 @@ export const baseModel = function(serviceName, pager = true) {
         const _search = { ...search };
         _search.page = _search.currentPage;
         yield put({
-          type: 'list',
-          payload: _search,
+          type: "list",
+          payload: _search
         });
-      },
+      }
     },
 
     reducers: {
       save(state, action) {
         return { ...state, ...action.payload };
-      },
-    },
+      }
+    }
   };
 };

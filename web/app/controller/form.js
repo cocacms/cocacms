@@ -61,8 +61,9 @@ class FormController extends Controller {
    */
   async update() {
     await this.validate();
-    this.ctx.body = await this.service.form.update(Object.assign({}, { id: this.ctx.params.id,
-    }, this.ctx.request.body));
+    this.ctx.body = await this.service.form.update(
+      Object.assign({}, { id: this.ctx.params.id }, this.ctx.request.body)
+    );
   }
 
   /**

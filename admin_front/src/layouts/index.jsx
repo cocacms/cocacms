@@ -1,34 +1,34 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Layout,
   Icon,
   Dropdown,
   Select,
   Menu as AntMenu,
-  LocaleProvider,
-} from 'antd';
-import { enquireScreen } from 'enquire-js';
-import PropTypes from 'prop-types';
-import DrawerMenu from 'rc-drawer';
-import Breadcrumb from 'components/breadcrumb';
-import { check } from 'components/can/index';
-import Menu from 'components/menu';
-import router from 'umi/router';
-import { connect } from 'dva';
-import { Helmet } from 'react-helmet';
-import 'rc-drawer/assets/index.css';
-import zh_CN from 'antd/lib/locale-provider/zh_CN';
+  LocaleProvider
+} from "antd";
+import { enquireScreen } from "enquire-js";
+import PropTypes from "prop-types";
+import DrawerMenu from "rc-drawer";
+import Breadcrumb from "components/breadcrumb";
+import { check } from "components/can/index";
+import Menu from "components/menu";
+import router from "umi/router";
+import { connect } from "dva";
+import { Helmet } from "react-helmet";
+import "rc-drawer/assets/index.css";
+import zh_CN from "antd/lib/locale-provider/zh_CN";
 
-import styles from './index.less';
-import { config } from '../common/config';
-import menusData from '../common/menu';
-import LoginLayout from './login';
+import styles from "./index.less";
+import { config } from "../common/config";
+import menusData from "../common/menu";
+import LoginLayout from "./login";
 
 const { Header, Content, Footer, Sider } = Layout;
 @connect(({ admin, form }) => ({ admin, mform: form }))
 class MainLayout extends Component {
   static childContextTypes = {
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool
   };
 
   state = {
@@ -36,14 +36,14 @@ class MainLayout extends Component {
     isMobile: false,
     menuform: [],
     reload: false,
-    pathname: '',
+    pathname: ""
   };
 
   componentDidMount() {
     enquireScreen(mobile => {
       this.setState({
         isMobile: mobile,
-        collapsed: mobile,
+        collapsed: mobile
       });
     });
 
@@ -55,21 +55,21 @@ class MainLayout extends Component {
     const { mform = [] } = nextProps;
     _.menuform = menusData(mform.list);
 
-    if (nextProps.location.pathname === '/login') {
+    if (nextProps.location.pathname === "/login") {
       return {
         ..._,
-        pathname: '/login',
+        pathname: "/login"
       };
     }
 
     if (
-      prevState.pathname === '/login' &&
-      nextProps.location.pathname !== '/login'
+      prevState.pathname === "/login" &&
+      nextProps.location.pathname !== "/login"
     ) {
       return {
         ..._,
         reload: true,
-        pathname: nextProps.location.pathname,
+        pathname: nextProps.location.pathname
       };
     }
 
@@ -88,17 +88,17 @@ class MainLayout extends Component {
   }
 
   init = () => {
-    if (this.props.location.pathname !== '/login') {
+    if (this.props.location.pathname !== "/login") {
       this.props.dispatch({
-        type: 'form/list',
+        type: "form/list"
       });
     }
 
     const Authorization = localStorage.token || sessionStorage.token;
 
-    if (this.props.location.pathname !== '/login' && !Authorization) {
+    if (this.props.location.pathname !== "/login" && !Authorization) {
       sessionStorage.prePath = this.props.location.pathname;
-      router.push('/login');
+      router.push("/login");
     }
 
     // 首次打开 且有token 没有获取过用户数据 获取用户数据
@@ -107,7 +107,7 @@ class MainLayout extends Component {
       (localStorage.token || sessionStorage.token)
     ) {
       this.props.dispatch({
-        type: 'admin/fetch',
+        type: "admin/fetch"
       });
     }
   };
@@ -118,37 +118,37 @@ class MainLayout extends Component {
 
   toggle = () => {
     this.setState({
-      collapsed: !this.state.collapsed,
+      collapsed: !this.state.collapsed
     });
   };
 
   changeCollapsed = tf => {
     this.setState({
-      collapsed: tf,
+      collapsed: tf
     });
   };
 
   changeSite = value => {
     this.props.dispatch({
-      type: 'admin/changeSite',
-      payload: value,
+      type: "admin/changeSite",
+      payload: value
     });
   };
 
   handleUserBar = ({ key }) => {
-    if (this[key] && typeof this[key] === 'function') {
+    if (this[key] && typeof this[key] === "function") {
       this[key]();
     }
   };
 
   logout = () => {
     this.props.dispatch({
-      type: 'admin/logout',
+      type: "admin/logout"
     });
   };
 
   password = () => {
-    router.push('/password');
+    router.push("/password");
   };
 
   renderMenu(collapsed) {
@@ -177,7 +177,7 @@ class MainLayout extends Component {
   }
   render() {
     const { admin, location, children } = this.props;
-    if (location.pathname === '/login') {
+    if (location.pathname === "/login") {
       return <LoginLayout>{children}</LoginLayout>;
     }
 
@@ -208,10 +208,10 @@ class MainLayout extends Component {
           )}
 
           <Layout>
-            <Header style={{ background: '#fff', padding: 0 }}>
+            <Header style={{ background: "#fff", padding: 0 }}>
               <Icon
                 className={styles.trigger}
-                type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+                type={this.state.collapsed ? "menu-unfold" : "menu-fold"}
                 onClick={this.toggle}
               />
 
@@ -234,7 +234,7 @@ class MainLayout extends Component {
                     <AntMenu onClick={this.handleUserBar}>
                       <AntMenu.Item
                         key="password"
-                        disabled={!check('PUT@/api/admin/password')}
+                        disabled={!check("PUT@/api/admin/password")}
                       >
                         重置密码
                       </AntMenu.Item>
@@ -243,10 +243,10 @@ class MainLayout extends Component {
                     </AntMenu>
                   }
                   placement="bottomRight"
-                  trigger={['hover', 'click']}
+                  trigger={["hover", "click"]}
                 >
                   <span className={styles.item}>
-                    {' '}
+                    {" "}
                     <Icon type="user" /> {admin.info.nickname}
                   </span>
                 </Dropdown>
@@ -254,23 +254,23 @@ class MainLayout extends Component {
             </Header>
 
             <Breadcrumb
-              style={{ margin: '24px 16px 0px 16px' }}
+              style={{ margin: "24px 16px 0px 16px" }}
               routes={this.props.route.routes}
               location={this.props.location}
             />
 
             <Content
               style={{
-                margin: '24px 16px',
+                margin: "24px 16px",
                 padding: 24,
-                background: '#fff',
-                minHeight: 280,
+                background: "#fff",
+                minHeight: 280
               }}
             >
               {children}
             </Content>
 
-            <Footer style={{ textAlign: 'center' }}>{config.copy}</Footer>
+            <Footer style={{ textAlign: "center" }}>{config.copy}</Footer>
           </Layout>
         </Layout>
       </LocaleProvider>

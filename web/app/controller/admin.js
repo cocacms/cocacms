@@ -127,9 +127,11 @@ class AdminController extends Controller {
 
     delete data.is_super;
 
-    this.ctx.body = await this.service.admin.update(Object.assign({}, this.ctx.request.body, {
-      id: this.ctx.params.id,
-    }));
+    this.ctx.body = await this.service.admin.update(
+      Object.assign({}, this.ctx.request.body, {
+        id: this.ctx.params.id,
+      })
+    );
   }
 
   /**

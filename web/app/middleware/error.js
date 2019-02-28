@@ -58,9 +58,12 @@ module.exports = () => {
         try {
           const template = `${themeDir}${error === 404 ? '404' : '500'}.nj`;
           if (fs.existsSync(template)) {
-            ctx.body = await ctx.renderView(template, Object.assign({}, hookData, {
-              message: loggerError(error, ctx),
-            }));
+            ctx.body = await ctx.renderView(
+              template,
+              Object.assign({}, hookData, {
+                message: loggerError(error, ctx),
+              })
+            );
           } else {
             ctx.body = `<h1>${loggerError(error, ctx)}</h1>`;
           }

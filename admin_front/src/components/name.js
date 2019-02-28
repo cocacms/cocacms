@@ -3,7 +3,7 @@ export default function(name, link = true, icon = null) {
     target.bradcrumb = {
       name,
       link,
-      icon,
+      icon
     };
   };
 }

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Alert } from 'antd';
+import React, { Component } from "react";
+import { Alert } from "antd";
 
 class DefaultNoMatch extends Component {
   state = {};

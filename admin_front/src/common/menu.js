@@ -1,4 +1,4 @@
-import { Icon } from 'antd';
+import { Icon } from "antd";
 
 /**
  * name：菜单名称
@@ -12,85 +12,85 @@ import { Icon } from 'antd';
 
 const menu = [
   {
-    name: '首页',
+    name: "首页",
     icon: <Icon type="home" />,
-    path: '/',
+    path: "/"
   },
   {
-    name: '内容管理',
+    name: "内容管理",
     icon: <Icon type="file-text" />,
-    path: '/content',
+    path: "/content"
   },
   {
-    name: '数据汇总',
+    name: "数据汇总",
     icon: <Icon type="line-chart" />,
-    path: '_form_data_',
-    children: [],
+    path: "_form_data_",
+    children: []
   },
   {
-    name: '栏目管理',
+    name: "栏目管理",
     icon: <Icon type="layout" />,
-    can: 'GET@/api/category',
-    path: '/category',
+    can: "GET@/api/category",
+    path: "/category"
   },
   {
-    name: '导航管理',
+    name: "导航管理",
     icon: <Icon type="profile" />,
-    can: 'GET@/api/menu',
-    path: '/menu',
+    can: "GET@/api/menu",
+    path: "/menu"
   },
   {
-    name: '管理与角色',
+    name: "管理与角色",
     icon: <Icon type="lock" />,
-    path: '_admin_auth',
+    path: "_admin_auth",
     children: [
       {
-        name: '管理员管理',
-        can: 'GET@/api/admin',
-        path: '/manager/admin',
+        name: "管理员管理",
+        can: "GET@/api/admin",
+        path: "/manager/admin"
       },
       {
-        name: '角色管理',
-        can: 'GET@/api/role',
-        path: '/manager/role',
-      },
-    ],
+        name: "角色管理",
+        can: "GET@/api/role",
+        path: "/manager/role"
+      }
+    ]
   },
   {
-    name: '配置',
+    name: "配置",
     icon: <Icon type="setting" />,
-    path: '_setting',
+    path: "_setting",
     children: [
       {
-        name: '系统配置',
-        can: 'GET@/api/config',
+        name: "系统配置",
+        can: "GET@/api/config",
         path: {
-          reg: '/setting/:activeKey?',
-          params: {},
-        },
+          reg: "/setting/:activeKey?",
+          params: {}
+        }
       },
       {
-        name: '模型配置',
-        can: 'GET@/api/model',
-        path: '/model',
+        name: "模型配置",
+        can: "GET@/api/model",
+        path: "/model"
       },
       {
-        name: '表单配置',
-        can: 'GET@/api/form',
-        path: '/form',
+        name: "表单配置",
+        can: "GET@/api/form",
+        path: "/form"
       },
       {
-        name: '站点管理',
-        can: 'GET@/api/site',
-        path: '/site',
+        name: "站点管理",
+        can: "GET@/api/site",
+        path: "/site"
       },
       {
-        name: '插件管理',
-        can: 'GET@/api/plugin',
-        path: '/plugin',
-      },
-    ],
-  },
+        name: "插件管理",
+        can: "GET@/api/plugin",
+        path: "/plugin"
+      }
+    ]
+  }
 ];
 
 export default function(forms = []) {
@@ -99,7 +99,7 @@ export default function(forms = []) {
     formChild.push({
       name: form.name,
       can: `GET@/api/f/${form.key}`,
-      path: `/form/${form.key}`,
+      path: `/form/${form.key}`
     });
   }
 
@@ -107,8 +107,8 @@ export default function(forms = []) {
     ...menu.slice(0, 2),
     {
       ...menu[2],
-      children: formChild,
+      children: formChild
     },
-    ...menu.slice(3),
+    ...menu.slice(3)
   ];
 }

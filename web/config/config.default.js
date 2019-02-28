@@ -6,7 +6,7 @@ module.exports = appInfo => {
   const config = {};
 
   // use for cookie sign key, should change to your own and keep security
-  config.keys = appInfo.name + ''; // 密码加密用到
+  config.keys = appInfo.name + 'PXOicl+XooUJ75W+2ssY6'; // 密码加密用到
 
   // add your config here
   config.middleware = ['error'];

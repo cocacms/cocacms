@@ -1,20 +1,20 @@
-import modelExtend from 'dva-model-extend';
-import { baseModel } from './base';
-import { create, moveUp, moveDown, bind } from '../services/category';
-import base from '../services/base';
+import modelExtend from "dva-model-extend";
+import { baseModel } from "./base";
+import { create, moveUp, moveDown, bind } from "../services/category";
+import base from "../services/base";
 
-const categoryService = base('category');
-const modelService = base('model');
+const categoryService = base("category");
+const modelService = base("model");
 
-export default modelExtend(baseModel('category', false), {
-  namespace: 'category',
+export default modelExtend(baseModel("category", false), {
+  namespace: "category",
   state: {
     tree: [],
     models: [],
-    treeFilterModel: [],
+    treeFilterModel: []
   },
   subscriptions: {
-    setup({ dispatch, history }) {},
+    setup({ dispatch, history }) {}
   },
   effects: {
     *add({ payload, cb }, { call, put, select }) {
@@ -22,7 +22,7 @@ export default modelExtend(baseModel('category', false), {
       if (cb) {
         cb();
       }
-      yield put({ type: 'reload' });
+      yield put({ type: "reload" });
     },
 
     *tree({ payload }, { call, put, select }) {
@@ -35,15 +35,15 @@ export default modelExtend(baseModel('category', false), {
           return {
             ...i,
             value: String(i.id),
-            label: i.name,
+            label: i.name
           };
         });
 
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
-          tree: builder(tree),
-        },
+          tree: builder(tree)
+        }
       });
     },
 
@@ -63,15 +63,15 @@ export default modelExtend(baseModel('category', false), {
           return {
             ...i,
             value: String(i.id),
-            label: i.name,
+            label: i.name
           };
         });
 
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
-          treeFilterModel: builder(tree),
-        },
+          treeFilterModel: builder(tree)
+        }
       });
     },
 
@@ -79,10 +79,10 @@ export default modelExtend(baseModel('category', false), {
       const { data: models } = yield call(modelService.index);
 
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
-          models,
-        },
+          models
+        }
       });
     },
 
@@ -91,7 +91,7 @@ export default modelExtend(baseModel('category', false), {
       if (cb) {
         cb();
       }
-      yield put({ type: 'reload' });
+      yield put({ type: "reload" });
     },
 
     *moveDown({ payload, cb }, { call, put, select }) {
@@ -99,7 +99,7 @@ export default modelExtend(baseModel('category', false), {
       if (cb) {
         cb();
       }
-      yield put({ type: 'reload' });
+      yield put({ type: "reload" });
     },
 
     *bind({ payload, cb }, { call, put, select }) {
@@ -108,6 +108,6 @@ export default modelExtend(baseModel('category', false), {
       if (cb) {
         cb();
       }
-    },
-  },
+    }
+  }
 });

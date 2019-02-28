@@ -1,19 +1,19 @@
-import modelExtend from 'dva-model-extend';
-import { baseModel } from './base';
-import { create, moveUp, moveDown } from '../services/menu';
-import base from '../services/base';
+import modelExtend from "dva-model-extend";
+import { baseModel } from "./base";
+import { create, moveUp, moveDown } from "../services/menu";
+import base from "../services/base";
 
-const menuService = base('menu');
-const modelService = base('model');
+const menuService = base("menu");
+const modelService = base("model");
 
-export default modelExtend(baseModel('menu', false), {
-  namespace: 'menu',
+export default modelExtend(baseModel("menu", false), {
+  namespace: "menu",
   state: {
     tree: [],
-    models: [],
+    models: []
   },
   subscriptions: {
-    setup({ dispatch, history }) {},
+    setup({ dispatch, history }) {}
   },
   effects: {
     *add({ payload, cb }, { call, put, select }) {
@@ -21,7 +21,7 @@ export default modelExtend(baseModel('menu', false), {
       if (cb) {
         cb();
       }
-      yield put({ type: 'reload' });
+      yield put({ type: "reload" });
     },
 
     *tree({ payload }, { call, put, select }) {
@@ -34,15 +34,15 @@ export default modelExtend(baseModel('menu', false), {
           return {
             ...i,
             value: String(i.id),
-            label: i.name,
+            label: i.name
           };
         });
 
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
-          tree: builder(tree),
-        },
+          tree: builder(tree)
+        }
       });
     },
 
@@ -50,10 +50,10 @@ export default modelExtend(baseModel('menu', false), {
       const { data: models } = yield call(modelService.index);
 
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
-          models,
-        },
+          models
+        }
       });
     },
 
@@ -62,7 +62,7 @@ export default modelExtend(baseModel('menu', false), {
       if (cb) {
         cb();
       }
-      yield put({ type: 'reload' });
+      yield put({ type: "reload" });
     },
 
     *moveDown({ payload, cb }, { call, put, select }) {
@@ -70,7 +70,7 @@ export default modelExtend(baseModel('menu', false), {
       if (cb) {
         cb();
       }
-      yield put({ type: 'reload' });
-    },
-  },
+      yield put({ type: "reload" });
+    }
+  }
 });

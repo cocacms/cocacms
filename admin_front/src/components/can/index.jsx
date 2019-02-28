@@ -1,6 +1,6 @@
-import React from 'react';
-import { connect } from 'dva';
-import DefaultNoMatch from './defaultNoMatch';
+import React from "react";
+import { connect } from "dva";
+import DefaultNoMatch from "./defaultNoMatch";
 
 export const CheckPermissions = (api, permissions, target, Exception) => {
   if (api === true) {
@@ -18,7 +18,7 @@ export const CheckPermissions = (api, permissions, target, Exception) => {
 export function check(api) {
   const state = window.g_app._store.getState();
   const {
-    admin: { permission = [] },
+    admin: { permission = [] }
   } = state;
 
   if (api === true) {
@@ -35,7 +35,7 @@ export function check(api) {
 class Can extends React.Component {
   render() {
     const { api = true, children, admin, cannot = false } = this.props;
-    const childrenRender = typeof children === 'undefined' ? null : children;
+    const childrenRender = typeof children === "undefined" ? null : children;
     return CheckPermissions(api, admin.permission, childrenRender, cannot);
   }
 }

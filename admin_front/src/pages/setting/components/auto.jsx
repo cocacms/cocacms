@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { connect } from 'dva';
-import { Form, Button } from 'antd';
-import Can from 'components/can/index';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "dva";
+import { Form, Button } from "antd";
+import Can from "components/can/index";
+import PropTypes from "prop-types";
 
-import { renderForm } from 'components/formItem';
-import { formItemLayout, tailFormItemLayout } from '../../../common/formCol';
+import { renderForm } from "components/formItem";
+import { formItemLayout, tailFormItemLayout } from "../../../common/formCol";
 
 @connect(({ config }) => ({ config }))
 @Form.create()
 class AutoSetting extends Component {
   static contextTypes = {
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool
   };
 
   onSubmit = e => {
@@ -28,9 +28,9 @@ class AutoSetting extends Component {
     const {
       form: { getFieldDecorator },
       config: { config },
-      keyName = 'defaults',
+      keyName = "defaults",
       attrs,
-      data = null,
+      data = null
     } = this.props;
     let _data = {};
     if (!data) {
@@ -39,10 +39,12 @@ class AutoSetting extends Component {
       _data = data;
     }
     const rules = {};
-    attrs.filter(i => i.rules && i.rules.length > 0).map(i => {
-      rules[i.key] = i.rules;
-      return i;
-    });
+    attrs
+      .filter(i => i.rules && i.rules.length > 0)
+      .map(i => {
+        rules[i.key] = i.rules;
+        return i;
+      });
 
     return renderForm(attrs, rules, _data, getFieldDecorator, formItemLayout);
   }
@@ -51,7 +53,7 @@ class AutoSetting extends Component {
     return (
       <Form
         className="page-form"
-        layout={this.context.isMobile ? 'vertical' : 'horizontal'}
+        layout={this.context.isMobile ? "vertical" : "horizontal"}
         onSubmit={this.onSubmit}
       >
         {this.renderConfig()}

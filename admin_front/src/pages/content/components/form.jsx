@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
-import { Form, Input, Button, Spin } from 'antd';
-import Can from 'components/can/index';
-import PropTypes from 'prop-types';
-import { formItemLayout, tailFormItemLayout } from '../../../common/formCol';
-import { renderForm } from 'components/formItem';
-import { connect } from 'dva';
+import React, { Component } from "react";
+import { Form, Input, Button, Spin } from "antd";
+import Can from "components/can/index";
+import PropTypes from "prop-types";
+import { formItemLayout, tailFormItemLayout } from "../../../common/formCol";
+import { renderForm } from "components/formItem";
+import { connect } from "dva";
 
 @Form.create()
 @connect(({ general, loading }) => ({
   general,
-  loading: loading.models.general,
+  loading: loading.models.general
 }))
 class DefaultSetting extends Component {
   state = {
     reload: false,
-    current: {},
+    current: {}
   };
 
   static contextTypes = {
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -28,7 +28,7 @@ class DefaultSetting extends Component {
       if (preCurrent.id !== current.id) {
         return {
           current,
-          reload: true,
+          reload: true
         };
       }
     }
@@ -50,23 +50,23 @@ class DefaultSetting extends Component {
   init = () => {
     const { dispatch, form, current } = this.props;
 
-    console.log('form loading data', current.name);
+    console.log("form loading data", current.name);
 
     dispatch({
-      type: 'general/save',
+      type: "general/save",
       payload: {
         modelKey: current.model.key,
-        type: 'g',
-        data: {},
-      },
+        type: "g",
+        data: {}
+      }
     });
 
     form.resetFields();
 
     if (current.bind) {
       dispatch({
-        type: 'general/show',
-        payload: current.bind,
+        type: "general/show",
+        payload: current.bind
       });
     }
   };
@@ -85,43 +85,43 @@ class DefaultSetting extends Component {
       if (fieldsValue.id) {
         // 更新
         dispatch({
-          type: 'general/edit',
+          type: "general/edit",
           payload: fieldsValue,
           reload: false,
           cb: () => {
             dispatch({
-              type: 'general/show',
-              payload: fieldsValue.id,
+              type: "general/show",
+              payload: fieldsValue.id
             });
-          },
+          }
         });
       } else {
         // 新增
         dispatch({
-          type: 'general/add',
+          type: "general/add",
           payload: fieldsValue,
           reload: false,
           cb: data => {
             dispatch({
-              type: 'category/bind',
+              type: "category/bind",
               payload: {
                 id: this.state.current.id,
-                bind: data.insertId,
+                bind: data.insertId
               },
               cb: () => {
-                console.log('reload data', data.insertId);
+                console.log("reload data", data.insertId);
 
                 dispatch({
-                  type: 'general/show',
-                  payload: data.insertId,
+                  type: "general/show",
+                  payload: data.insertId
                 });
 
                 dispatch({
-                  type: 'content/fetchCategory',
+                  type: "content/fetchCategory"
                 });
-              },
+              }
             });
-          },
+          }
         });
       }
     });
@@ -133,18 +133,18 @@ class DefaultSetting extends Component {
       rules,
       form: { getFieldDecorator },
       general: { data = {} },
-      loading,
+      loading
     } = this.props;
 
     return (
       <Spin spinning={loading ? true : false}>
         <Form
           className="page-form"
-          layout={this.context.isMobile ? 'vertical' : 'horizontal'}
+          layout={this.context.isMobile ? "vertical" : "horizontal"}
           onSubmit={this.onSubmit}
         >
-          {getFieldDecorator('id', {
-            initialValue: data.id,
+          {getFieldDecorator("id", {
+            initialValue: data.id
           })(<Input type="hidden" disabled />)}
 
           {renderForm(attrs, rules, data, getFieldDecorator, formItemLayout)}

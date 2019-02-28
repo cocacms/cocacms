@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Divider, Popconfirm } from 'antd';
-import Can from 'components/can';
+import React, { Component } from "react";
+import { Divider, Popconfirm } from "antd";
+import Can from "components/can";
 
 class Action extends Component {
   state = {};
@@ -10,7 +10,7 @@ class Action extends Component {
       editable = true,
       deleteable = true,
       children,
-      can: { edit: canedit = true, delete: candelete = true } = {},
+      can: { edit: canedit = true, delete: candelete = true } = {}
     } = this.props;
     let child = [];
     if (editable) {

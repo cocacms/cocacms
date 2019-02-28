@@ -1,28 +1,28 @@
-import React, { Component } from 'react';
-import { Table, Form, Row, Col, Button, Modal, Icon, Rate, Switch } from 'antd';
-import Can from 'components/can/index';
+import React, { Component } from "react";
+import { Table, Form, Row, Col, Button, Modal, Icon, Rate, Switch } from "antd";
+import Can from "components/can/index";
 
-import { connect } from 'dva';
-import { renderFilterForm, buildWhere, getColumns } from 'components/formItem';
+import { connect } from "dva";
+import { renderFilterForm, buildWhere, getColumns } from "components/formItem";
 
-import moment from 'moment';
+import moment from "moment";
 
 @connect(({ general, loading }) => ({
   general,
-  loading: loading.models.general,
+  loading: loading.models.general
 }))
 @Form.create()
 class TablePage extends Component {
   state = {
     current: {
-      model: {},
+      model: {}
     },
     reload: false,
     sortedInfo: {},
     show: {
       opened: false,
-      data: {},
-    },
+      data: {}
+    }
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -32,7 +32,7 @@ class TablePage extends Component {
       if (preCurrent.key !== current.key) {
         return {
           current,
-          reload: true,
+          reload: true
         };
       }
     }
@@ -67,13 +67,13 @@ class TablePage extends Component {
       }
 
       dispatch({
-        type: 'general/list',
+        type: "general/list",
         payload: {
           page,
           pageSize,
           where: [...buildWhere(fieldsValue, indexs)],
-          order: sorter,
-        },
+          order: sorter
+        }
       });
     });
   };
@@ -86,12 +86,12 @@ class TablePage extends Component {
   handleTableChange = (pagination, filters, sorter) => {
     const order = [];
     this.setState({
-      sortedInfo: sorter,
+      sortedInfo: sorter
     });
     if (sorter.columnKey) {
       order.push([
         sorter.columnKey,
-        sorter.order === 'ascend' ? 'asc' : 'desc',
+        sorter.order === "ascend" ? "asc" : "desc"
       ]);
     }
     this.handleSearch(null, pagination.current, pagination.pageSize, order);
@@ -109,48 +109,48 @@ class TablePage extends Component {
       return;
     }
 
-    console.log('form table loading data', current.name);
+    console.log("form table loading data", current.name);
 
     dispatch({
-      type: 'general/save',
+      type: "general/save",
       payload: {
         modelKey: current.key,
-        type: 'f',
-      },
+        type: "f"
+      }
     });
     form.resetFields();
     this.setState({
-      sortedInfo: {},
+      sortedInfo: {}
     });
 
     dispatch({
-      type: 'general/list',
+      type: "general/list",
       payload: {
         page: 1,
         pageSize: 20,
         where: [],
-        order: [],
-      },
+        order: []
+      }
     });
   };
 
   delete = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'general/del',
-      payload: id,
+      type: "general/del",
+      payload: id
     });
   };
 
   switchChange = (id, key, value) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'general/switchChange',
+      type: "general/switchChange",
       payload: {
         id,
         key,
-        value,
-      },
+        value
+      }
     });
   };
 
@@ -164,7 +164,7 @@ class TablePage extends Component {
     const {
       form: { getFieldDecorator },
       indexs = [],
-      attrs = [],
+      attrs = []
     } = this.props;
 
     let children = [];
@@ -172,12 +172,12 @@ class TablePage extends Component {
     const labelCol = {
       xs: { span: 12 },
       sm: { span: 7 },
-      xxl: { span: 4 },
+      xxl: { span: 4 }
     };
     const wrapperCol = {
       xs: { span: 12 },
       sm: { span: 17 },
-      xxl: { span: 18 },
+      xxl: { span: 18 }
     };
 
     children = renderFilterForm(
@@ -222,7 +222,7 @@ class TablePage extends Component {
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row gutter={24}>{this.getFields()}</Row>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: "right" }}>
               <Can api={`GET@/api/f/${current.key}`}>
                 <Button onClick={this.init} className="refresh-btn">
                   刷新
@@ -261,9 +261,9 @@ class TablePage extends Component {
     const {
       loading,
       general: {
-        list: { data = [], page: current = 1, total = 0, pageSize = 20 },
+        list: { data = [], page: current = 1, total = 0, pageSize = 20 }
       },
-      attrs,
+      attrs
     } = this.props;
 
     return (
@@ -277,7 +277,7 @@ class TablePage extends Component {
               can: { delete: `DELETE@/api/f/${this.state.current.key}/:id` },
               delete: id => {
                 this.delete(id);
-              },
+              }
             },
             this.state.sortedInfo,
             this.switchChange,
@@ -302,7 +302,7 @@ class TablePage extends Component {
             showSizeChanger: true,
             current,
             total,
-            pageSize,
+            pageSize
           }}
           onChange={this.handleTableChange}
         />
@@ -315,7 +315,7 @@ class TablePage extends Component {
           }}
         >
           {attrs.map(att => {
-            if (['radio', 'select'].includes(att.type)) {
+            if (["radio", "select"].includes(att.type)) {
               for (const option of att.optionsArray) {
                 if (option.value === String(this.state.show.data[att.key])) {
                   return (
@@ -327,7 +327,7 @@ class TablePage extends Component {
               }
             }
 
-            if (['checkbox'].includes(att.type)) {
+            if (["checkbox"].includes(att.type)) {
               const strs = [];
               for (const option of att.optionsArray) {
                 if (
@@ -339,13 +339,13 @@ class TablePage extends Component {
               }
               return (
                 <p key={att.key}>
-                  {att.name}：{strs.length === 0 ? '-' : strs.join(', ')}
+                  {att.name}：{strs.length === 0 ? "-" : strs.join(", ")}
                 </p>
               );
             }
 
             if (
-              ['img'].includes(att.type) &&
+              ["img"].includes(att.type) &&
               Array.isArray(this.state.show.data[att.key])
             ) {
               return (
@@ -364,39 +364,39 @@ class TablePage extends Component {
             }
 
             if (
-              ['file'].includes(att.type) &&
+              ["file"].includes(att.type) &&
               Array.isArray(this.state.show.data[att.key])
             ) {
               return this.state.show.data[att.key].map(i => (
                 <p key={`${att.key}-${i}`}>
                   <a href={i} target="black">
-                    <Icon type="file" /> {i.split('/')[i.split('/').length - 1]}
+                    <Icon type="file" /> {i.split("/")[i.split("/").length - 1]}
                   </a>
                 </p>
               ));
             }
 
-            if (['time', 'date', 'datetime'].includes(att.type)) {
+            if (["time", "date", "datetime"].includes(att.type)) {
               const formats = {
-                time: 'HH:mm:ss',
-                date: 'YYYY-MM-DD',
-                datetime: 'YYYY-MM-DD HH:mm:ss',
+                time: "HH:mm:ss",
+                date: "YYYY-MM-DD",
+                datetime: "YYYY-MM-DD HH:mm:ss"
               };
               return (
                 <p key={att.key}>
                   {att.name}：
                   {moment(this.state.show.data[att.key], [
                     moment.ISO_8601,
-                    'YYYY-MM-DD HH:mm:ss',
-                    'YYYY-MM-DD',
-                    'HH:mm:ss',
+                    "YYYY-MM-DD HH:mm:ss",
+                    "YYYY-MM-DD",
+                    "HH:mm:ss"
                   ]).format(formats[att.type])}
                 </p>
               );
             }
 
             // rate
-            if (['rate'].includes(att.type)) {
+            if (["rate"].includes(att.type)) {
               return (
                 <p key={att.key}>
                   {att.name}：
@@ -410,21 +410,21 @@ class TablePage extends Component {
             }
 
             // richtext
-            if (['richtext'].includes(att.type)) {
+            if (["richtext"].includes(att.type)) {
               return (
                 <p key={att.key}>
                   {att.name}：
                   <div
                     key={att.key}
                     dangerouslySetInnerHTML={{
-                      __html: this.state.show.data[att.key],
+                      __html: this.state.show.data[att.key]
                     }}
                   />
                 </p>
               );
             }
 
-            if (['switch'].includes(att.type)) {
+            if (["switch"].includes(att.type)) {
               return (
                 <p key={att.key}>
                   {att.name}：

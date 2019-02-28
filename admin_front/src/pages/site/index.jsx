@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { Table, Form, Row, Col, Button, Input, Modal } from 'antd';
-import name from 'components/name';
-import Action from 'components/action';
-import Can from 'components/can/index';
-import { connect } from 'dva';
+import React, { Component } from "react";
+import { Table, Form, Row, Col, Button, Input, Modal } from "antd";
+import name from "components/name";
+import Action from "components/action";
+import Can from "components/can/index";
+import { connect } from "dva";
 
 @Form.create()
 class Edit extends Component {
@@ -22,22 +22,22 @@ class Edit extends Component {
       opened,
       data = {},
       close,
-      form: { getFieldDecorator },
+      form: { getFieldDecorator }
     } = this.props;
     const labelCol = { span: 5 };
     const wrapperCol = { span: 15 };
 
     return (
       <Modal
-        title={action === 'add' ? '添加' : '编辑'}
+        title={action === "add" ? "添加" : "编辑"}
         visible={opened}
         onCancel={close}
         onOk={this.onOk}
       >
         <Form>
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="ID">
-            {getFieldDecorator('id', {
-              initialValue: data.id,
+            {getFieldDecorator("id", {
+              initialValue: data.id
             })(<Input disabled />)}
           </Form.Item>
 
@@ -46,16 +46,16 @@ class Edit extends Component {
             wrapperCol={wrapperCol}
             label="站点名称"
           >
-            {getFieldDecorator('name', {
+            {getFieldDecorator("name", {
               initialValue: data.name,
-              rules: [{ required: true, message: '请输入站点名称' }],
+              rules: [{ required: true, message: "请输入站点名称" }]
             })(<Input />)}
           </Form.Item>
 
           <Form.Item labelCol={labelCol} wrapperCol={wrapperCol} label="语言包">
-            {getFieldDecorator('locale', {
+            {getFieldDecorator("locale", {
               initialValue: data.locale,
-              rules: [{ required: true, message: '请输入语言包' }],
+              rules: [{ required: true, message: "请输入语言包" }]
             })(<Input />)}
           </Form.Item>
         </Form>
@@ -66,15 +66,15 @@ class Edit extends Component {
 
 @connect(({ site, loading }) => ({ site, loading: loading.models.site }))
 @Form.create()
-@name('站点管理')
+@name("站点管理")
 class SitePage extends Component {
   state = {
     expand: false,
     edit: {
-      action: 'add',
+      action: "add",
       data: {},
-      opened: false,
-    },
+      opened: false
+    }
   };
 
   componentDidMount() {
@@ -90,39 +90,39 @@ class SitePage extends Component {
     const { dispatch, form } = this.props;
     form.resetFields();
     dispatch({
-      type: 'site/list',
+      type: "site/list"
     });
   };
 
   add = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'site/add',
+      type: "site/add",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   edit = (data, reset) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'site/edit',
+      type: "site/edit",
       payload: data,
       cb: () => {
         this.closeModel();
         reset();
-      },
+      }
     });
   };
 
   delete = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'site/del',
-      payload: id,
+      type: "site/del",
+      payload: id
     });
   };
 
@@ -136,12 +136,12 @@ class SitePage extends Component {
       <div>
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: "right" }}>
               <Can api="POST@/api/site">
                 <Button
                   type="primary"
                   onClick={() => {
-                    this.openModel('add', {});
+                    this.openModel("add", {});
                   }}
                 >
                   创建
@@ -184,42 +184,42 @@ class SitePage extends Component {
    */
   getColumns = () => [
     {
-      dataIndex: 'id',
+      dataIndex: "id",
       width: 100,
-      title: 'ID',
+      title: "ID"
     },
     {
-      dataIndex: 'name',
-      title: '站点名称',
+      dataIndex: "name",
+      title: "站点名称"
     },
     {
-      dataIndex: 'locale',
-      title: '语言包',
+      dataIndex: "locale",
+      title: "语言包"
     },
     {
-      title: '操作',
+      title: "操作",
       width: 180,
-      align: 'center',
+      align: "center",
       render: (text, record) => {
         return (
           <Action
-            can={{ edit: 'PUT@/api/site/:id', delete: 'DELETE@/api/site/:id' }}
+            can={{ edit: "PUT@/api/site/:id", delete: "DELETE@/api/site/:id" }}
             delete={() => {
               this.delete(record.id);
             }}
             edit={() => {
-              this.openModel('edit', record);
+              this.openModel("edit", record);
             }}
           />
         );
-      },
-    },
+      }
+    }
   ];
 
   render() {
     const {
       loading,
-      site: { list = [] },
+      site: { list = [] }
     } = this.props;
     return (
       <Can api="GET@/api/site" cannot={null}>

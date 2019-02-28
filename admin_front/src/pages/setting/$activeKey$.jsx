@@ -1,36 +1,36 @@
-import React, { Component } from 'react';
-import { connect } from 'dva';
-import { Tabs, Spin } from 'antd';
-import name from 'components/name';
-import Can from 'components/can/index';
+import React, { Component } from "react";
+import { connect } from "dva";
+import { Tabs, Spin } from "antd";
+import name from "components/name";
+import Can from "components/can/index";
 
-import AutoSetting from './components/auto';
-import UploadSetting from './components/upload';
-import ThemeSetting from './components/theme';
+import AutoSetting from "./components/auto";
+import UploadSetting from "./components/upload";
+import ThemeSetting from "./components/theme";
 
 const TabPane = Tabs.TabPane;
 
 @connect(({ config, loading }) => ({ config, loading: loading.models.config }))
-@name('系统配置')
+@name("系统配置")
 class SettingPage extends Component {
   state = {
-    activeKey: 'uploadSetting',
+    activeKey: "uploadSetting",
     settings: [],
-    isMobile: false,
+    isMobile: false
   };
 
   componentDidMount() {
     this.props.dispatch({
-      type: 'config/fetch',
+      type: "config/fetch",
       cb: () => {
         this.loadSetting();
-      },
+      }
     });
   }
 
   async loadSetting() {
     const {
-      config: { models = [] },
+      config: { models = [] }
     } = this.props;
     const configList = models.filter(
       i => i.type === 2 && Array.isArray(i.attrs) && i.attrs.length > 0
@@ -45,16 +45,16 @@ class SettingPage extends Component {
       activeKey: activeKey
         ? activeKey
         : settings.length > 0
-          ? settings[0].key
-          : 'uploadSetting',
-      settings,
+        ? settings[0].key
+        : "uploadSetting",
+      settings
     });
   }
 
   submit = (data, scope) => {
     this.props.dispatch({
-      type: 'config/set',
-      payload: { data, scope },
+      type: "config/set",
+      payload: { data, scope }
     });
   };
 

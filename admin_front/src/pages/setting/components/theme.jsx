@@ -1,25 +1,25 @@
-import React, { Component } from 'react';
-import { connect } from 'dva';
-import { Form, Select, Button, message, Icon } from 'antd';
-import Can from 'components/can/index';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "dva";
+import { Form, Select, Button, message, Icon } from "antd";
+import Can from "components/can/index";
+import PropTypes from "prop-types";
 
-import { formItemLayout, tailFormItemLayout } from '../../../common/formCol';
+import { formItemLayout, tailFormItemLayout } from "../../../common/formCol";
 
 @connect(({ theme }) => ({ theme }))
 class ThemeSetting extends Component {
   static contextTypes = {
-    isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool
   };
 
   state = {
-    value: null,
+    value: null
   };
 
   static getDerivedStateFromProps(nextProps, preState) {
     if (preState.value === null) {
       const {
-        theme: { list = [] },
+        theme: { list = [] }
       } = nextProps;
 
       const defaults = list.filter(i => i.use === 1);
@@ -29,7 +29,7 @@ class ThemeSetting extends Component {
       }
 
       return {
-        value: defaultvalue,
+        value: defaultvalue
       };
     }
   }
@@ -37,7 +37,7 @@ class ThemeSetting extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'theme/list',
+      type: "theme/list"
     });
   }
 
@@ -45,10 +45,10 @@ class ThemeSetting extends Component {
     const { dispatch } = this.props;
     if (this.state.value !== null) {
       dispatch({
-        type: 'theme/edit',
+        type: "theme/edit",
         payload: {
-          id: this.state.value,
-        },
+          id: this.state.value
+        }
       });
     }
   };
@@ -56,29 +56,29 @@ class ThemeSetting extends Component {
   reload = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'theme/add',
+      type: "theme/add",
       payload: {},
       cb: () => {
-        message.success('重新导入成功');
-      },
+        message.success("重新导入成功");
+      }
     });
   };
 
   handleChange = value => {
     this.setState({
-      value,
+      value
     });
   };
 
   render() {
     const {
-      theme: { list = [] },
+      theme: { list = [] }
     } = this.props;
 
     return (
       <Form
         className="page-form"
-        layout={this.context.isMobile ? 'vertical' : 'horizontal'}
+        layout={this.context.isMobile ? "vertical" : "horizontal"}
         onSubmit={this.onSubmit}
       >
         <Form.Item
@@ -89,7 +89,7 @@ class ThemeSetting extends Component {
               <Can api="POST@/api/theme">
                 <Icon
                   type="reload"
-                  style={{ marginLeft: 5, cursor: 'pointer' }}
+                  style={{ marginLeft: 5, cursor: "pointer" }}
                   onClick={this.reload}
                 />
               </Can>

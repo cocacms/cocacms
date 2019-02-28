@@ -1,21 +1,21 @@
-import base from '../services/base';
-import { rules } from '../services/general';
-import { indexs } from '../services/modelAttr';
+import base from "../services/base";
+import { rules } from "../services/general";
+import { indexs } from "../services/modelAttr";
 
-const categoryService = base('category');
-const modelAttrService = base('modelAttr');
+const categoryService = base("category");
+const modelAttrService = base("modelAttr");
 
 export default {
-  namespace: 'content',
+  namespace: "content",
 
   state: {
     category: [],
     current: {
-      model: {},
+      model: {}
     },
     attrs: [],
     rules: {},
-    indexs: [],
+    indexs: []
   },
 
   effects: {
@@ -30,15 +30,15 @@ export default {
           return {
             ...i,
             value: String(i.id),
-            label: i.name,
+            label: i.name
           };
         });
 
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
-          category: builder(category),
-        },
+          category: builder(category)
+        }
       });
     },
 
@@ -70,15 +70,15 @@ export default {
       if (current.model_id === null || !current.model) {
         current.type = -1;
         yield put({
-          type: 'save',
+          type: "save",
           payload: {
             current: {
               ...current,
-              model: {},
+              model: {}
             },
             attrs: [],
-            rules: {},
-          },
+            rules: {}
+          }
         });
         return;
       }
@@ -91,23 +91,23 @@ export default {
       const { data: ruleData } = yield call(rules, current.model.key);
       const { data: indexsData } = yield call(indexs, current.model_id);
       yield put({
-        type: 'save',
+        type: "save",
         payload: {
           current,
           attrs,
           rules: ruleData,
           indexs: [
-            ...indexsData.keys.map(i => ({ type: 'key', key: i })),
-            ...indexsData.fulltexts.map(i => ({ type: 'fulltext', key: i })),
-          ],
-        },
+            ...indexsData.keys.map(i => ({ type: "key", key: i })),
+            ...indexsData.fulltexts.map(i => ({ type: "fulltext", key: i }))
+          ]
+        }
       });
-    },
+    }
   },
 
   reducers: {
     save(state, action) {
       return { ...state, ...action.payload };
-    },
-  },
+    }
+  }
 };

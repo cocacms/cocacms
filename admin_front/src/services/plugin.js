@@ -1,5 +1,5 @@
-import request from '../utils/request';
-import host from '../common/config';
+import request from "../utils/request";
+import host from "../common/config";
 
 export async function reload() {
   return await request(`${host}/api/plugin/load`);
@@ -7,32 +7,32 @@ export async function reload() {
 
 export async function toggle(id, enable) {
   return await request(`${host}/api/plugin`, {
-    method: 'POST',
+    method: "POST",
     body: {
       id,
-      enable,
-    },
+      enable
+    }
   });
 }
 
 export async function setting(id, setting) {
   return await request(`${host}/api/plugin/setting`, {
-    method: 'POST',
+    method: "POST",
     body: {
       id,
-      setting,
-    },
+      setting
+    }
   });
 }
 
 export async function install(id) {
   return await request(`${host}/api/plugin/${id}`, {
-    method: 'POST',
+    method: "POST"
   });
 }
 
 export async function uninstall(id) {
   return await request(`${host}/api/plugin/${id}`, {
-    method: 'DELETE',
+    method: "DELETE"
   });
 }
