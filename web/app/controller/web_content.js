@@ -23,6 +23,7 @@ class WebContentController extends Controller {
     // 栏目类型：1列表页 2单页 3表单页 4调整链接
     const categorys = await this.service.category.index(
       category.id,
+      [],
       false,
       true
     );
@@ -100,6 +101,7 @@ class WebContentController extends Controller {
     }
     const categorys = await this.service.category.index(
       category.id,
+      [],
       false,
       true
     );

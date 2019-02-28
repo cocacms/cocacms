@@ -452,12 +452,22 @@ class BaseService extends Service {
    * @param {any} relation 目标表
    * @param {string} [primaryKey='id'] 原表主键
    * @param {any} [relationKey=null] 目标表外键
+   * @param {any} [rename=null] 重命名
    * @return {any} 处理结果
    * @memberof BaseService
    */
-  async one2one(data, relation, primaryKey = 'id', relationKey = null) {
+  async one2one(
+    data,
+    relation,
+    primaryKey = 'id',
+    relationKey = null,
+    rename = null
+  ) {
     if (!relationKey) {
       relationKey = `${relation}_id`;
+    }
+    if (!rename) {
+      rename = relation;
     }
     const primaryKeys = [];
     for (const iterator of data) {
@@ -474,7 +484,7 @@ class BaseService extends Service {
     for (const iterator of data) {
       for (const relationIterator of relationData) {
         if (iterator[primaryKey] === relationIterator[relationKey]) {
-          iterator[relation] = relationIterator;
+          iterator[rename] = relationIterator;
           break;
         }
       }

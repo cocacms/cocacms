@@ -10,43 +10,6 @@ const Controller = require('./base');
  */
 class GeneralController extends Controller {
   /**
-   * 初始化
-   *
-   * @memberof GeneralController
-   */
-  async init() {
-    if (this.ctx.params.model) {
-      // 模型
-      const model = await this.service.model.single([
-        ['key', this.ctx.params.model],
-      ]);
-      if (model === null) {
-        this.error('表单不存在！');
-      }
-      const modelName = this.ctx.params.model;
-      this.service.base._table = `${this.config.model.prefix}${modelName}`;
-      return;
-    }
-
-    if (this.ctx.params.form) {
-      // 表单
-      const form = await this.service.form.single([
-        ['key', this.ctx.params.form],
-      ]);
-      if (form === null) {
-        this.error('表单不存在！');
-      }
-
-      const model = await this.service.model.show(form.model_id);
-      if (model === null) {
-        this.error('模型不存在！');
-      }
-      const modelName = model.key;
-      this.service.base._table = `${this.config.model.prefix}${modelName}`;
-    }
-  }
-
-  /**
    * 自动表单验证
    *
    * @return {object} 输入数据
@@ -89,17 +52,19 @@ class GeneralController extends Controller {
   }
 
   /**
-   * 列表
+   * 栏目
    *
+   * @return {object} where数据
    * @memberof GeneralController
    */
-  async index() {
-    await this.init();
+  async buildCategoryWhere() {
+    let category_id_where = -1;
+    let where;
     try {
-      this.ctx.query.where = JSON.parse(this.ctx.query.where);
-      if (this.ctx.query.where) {
-        const category_id_where = [];
-        this.ctx.query.where = this.ctx.query.where.filter(search => {
+      where = JSON.parse(this.ctx.query.where);
+      if (where instanceof Array) {
+        // 过滤 并提取catgory_id
+        where = where.filter(search => {
           const _search = {};
           if (Array.isArray(search)) {
             _search.key = search[0];
@@ -113,38 +78,49 @@ class GeneralController extends Controller {
           }
 
           if (_search.key === 'category_id' && !Array.isArray(_search.value)) {
-            // 获取子栏目的，且model id匹配的
-            category_id_where.push('category_id');
-            category_id_where.push(_search.value);
+            category_id_where = Number(_search.value);
             return false;
           }
 
           return true;
         });
-
-        if (category_id_where.length >= 2) {
-          const categorys = await this.service.category.index(
-            category_id_where[1],
-            false,
-            true
-          );
-          if (categorys && categorys.length > 0) {
-            this.ctx.query.where.push([
-              'category_id',
-              'in',
-              categorys.map(i => i.id),
-            ]);
-          }
-        }
       }
     } catch (error) {
-      this.ctx.query.where = [];
+      where = [];
+    }
+
+    const categorys = await this.service.category.index(
+      category_id_where,
+      [],
+      false,
+      true
+    );
+
+    if (categorys && categorys.length > 0) {
+      where.push(['category_id', 'in', categorys.map(i => i.id)]);
+    }
+
+    return where;
+  }
+
+  /**
+   * 列表
+   *
+   * @memberof GeneralController
+   */
+  async index() {
+    await this.init();
+
+    let where = [];
+
+    if (this._type === 'model') {
+      where = await this.buildCategoryWhere();
     }
 
     const result = await this.service.base.index(
       this.ctx.query.page,
       this.ctx.query.pageSize,
-      this.ctx.query.where,
+      where,
       this.ctx.query.field,
       this.ctx.query.order
     );

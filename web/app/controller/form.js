@@ -42,6 +42,12 @@ class FormController extends Controller {
       [],
       false
     );
+    this.ctx.body = await this.service.form.one2one(
+      this.ctx.body,
+      'model',
+      'model_id',
+      'id'
+    );
   }
 
   /**

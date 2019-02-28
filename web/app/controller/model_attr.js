@@ -82,7 +82,6 @@ class ModelAttrController extends Controller {
    * @memberof ModelAttrController
    */
   async index() {
-    await this.service.modelAttr.model(this.ctx.params.model);
     await this.service.modelAttr.tablePreCheck();
     this.ctx.body = await this.service.modelAttr.getAttrByModalId(
       this.ctx.params.model
@@ -95,7 +94,6 @@ class ModelAttrController extends Controller {
    * @memberof ModelAttrController
    */
   async indexs() {
-    await this.service.modelAttr.model(this.ctx.params.model);
     this.ctx.body = await this.service.modelAttr.indexs();
   }
 
@@ -106,7 +104,6 @@ class ModelAttrController extends Controller {
    */
   async create() {
     const body = await this.validate();
-    await this.service.modelAttr.model(this.ctx.params.model);
     this.ctx.body = await this.service.modelAttr.create(body);
   }
 
@@ -117,7 +114,6 @@ class ModelAttrController extends Controller {
    */
   async update() {
     const body = await this.validate();
-    await this.service.modelAttr.model(this.ctx.params.model);
     this.ctx.body = await this.service.modelAttr.update(
       this.ctx.params.id,
       body
@@ -130,7 +126,6 @@ class ModelAttrController extends Controller {
    * @memberof ModelAttrController
    */
   async destroy() {
-    await this.service.modelAttr.model(this.ctx.params.model);
     this.ctx.body = await this.service.modelAttr.destroy(this.ctx.params.id);
   }
 
@@ -156,7 +151,6 @@ class ModelAttrController extends Controller {
       keyType: { required: true, message: '请设置索引类型' },
     });
 
-    await this.service.modelAttr.model(this.ctx.params.model);
     this.ctx.body = await this.service.modelAttr.adjustIndex(
       body.keys,
       body.keyType

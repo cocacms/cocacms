@@ -47,25 +47,28 @@ class NodeService extends BaseService {
 
   /**
    * 获取节点树
-   * @param {int} pid 父id
+   * @param {int} pid pid
+   * @param {any} where 条件
    * @param {boolean} buildTree 构建树
    * @param {boolean} withMe 带上自己节点
    *
    * @return {array} 树
    */
-  async index(pid = -1, buildTree = true, withMe = false) {
+  async index(pid = -1, where = [], buildTree = true, withMe = false) {
     await this.preCheck();
     const hasSite = await this.columnExist('site_id');
-    const where = { is_del: 0 };
-    if (pid > 0) {
-      where.id = pid;
+    const parentWhere = { is_del: 0 };
+    if (pid < 0) {
+      parentWhere.pid = -1;
     } else {
-      where.pid = pid;
-      if (hasSite) {
-        where.site_id = this.ctx.site.id;
-      }
+      parentWhere.id = pid;
     }
-    const parentNode = await this.app.mysql.get(this._table, where);
+
+    if (hasSite) {
+      parentWhere.site_id = this.ctx.site.id;
+    }
+
+    const parentNode = await this.app.mysql.get(this._table, parentWhere);
     if (parentNode === null) {
       this.error(`不存在的节点ID: ${pid}`);
     }
@@ -78,13 +81,18 @@ class NodeService extends BaseService {
       gt = '>=';
     }
 
+    const wheres = ['1 = 1'];
+    const values = [];
+
+    this.ctx.whereBuilder(where, null, wheres, values);
+
     const datas = await this.app.mysql.query(
       `SELECT * FROM ${
         this._table
       } WHERE lft ${gt} ? AND lft ${lt} ? AND is_del = 0 ${
         hasSite ? 'AND site_id = ' + this.ctx.site.id : ''
-      } ORDER BY lft`,
-      [parentNode.lft, parentNode.rgt]
+      } AND ${wheres.join(' AND ')} ORDER BY lft`,
+      [parentNode.lft, parentNode.rgt, ...values]
     );
 
     if (!buildTree) {

@@ -40,6 +40,39 @@ class CategoryService extends Service {
     }
     return await this.index(pid, buildTree, withMe);
   }
+
+  /**
+   * 获取节点树
+   * @param {int} pid pid
+   * @param {any} where 条件
+   * @param {boolean} buildTree 构建树
+   * @param {boolean} withMe 带上自己节点
+   *
+   * @return {array} 树
+   */
+  async index(pid = -1, where = [], buildTree = true, withMe = false) {
+    let result = await super.index(pid, where, false, withMe);
+    result = await this.service.category.one2one(
+      result,
+      'model',
+      'model_id',
+      'id'
+    );
+
+    result = await this.service.category.one2one(
+      result,
+      'form',
+      'form_id',
+      'id',
+      'form'
+    );
+
+    if (buildTree) {
+      result = this.toTree(result);
+    }
+
+    return result;
+  }
 }
 
 module.exports = CategoryService;

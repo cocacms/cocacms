@@ -43,7 +43,8 @@ class MenuController extends Controller {
   async index() {
     const result = await this.service.menu.index(
       -1,
-      this.ctx.query.flat === '1',
+      [],
+      !(this.ctx.query.flat === '1'),
       this.ctx.query.root === '1'
     );
     this.ctx.body = this.service.category.toTree(result);

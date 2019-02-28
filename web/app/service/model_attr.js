@@ -24,10 +24,15 @@ class ModelAttrService extends Service {
       this.error('模型不存在');
     }
     await this.modelName(model.key);
+    await this.modelType(model.type);
   }
 
   async modelName(name) {
     this._modelName = `${this.config.model.prefix}${name}`;
+  }
+
+  async modelType(type) {
+    this._modelType = type;
   }
 
   /**
@@ -41,14 +46,15 @@ class ModelAttrService extends Service {
     const exist = await this.app.mysql.query('SHOW TABLES LIKE ?', [
       this._modelName,
     ]);
+    const parent_key = this._modelType === 1 ? 'form_model_id' : 'category_id';
     if (exist.length === 0 && create === true) {
       await this.app.mysql.query(
         `CREATE TABLE IF NOT EXISTS \`${this._modelName}\` (
         \`id\` INT(11) NOT NULL AUTO_INCREMENT,
         \`site_id\` INT(11) NOT NULL,
-        \`category_id\` INT(11) NULL DEFAULT NULL,
+        \`${parent_key}\` INT(11) NULL DEFAULT NULL,
         PRIMARY KEY (\`id\`),
-        INDEX \`${this.index_key_name}\` (\`site_id\`, \`category_id\`)
+        INDEX \`${this.index_key_name}\` (\`site_id\`, \`${parent_key}\`)
       )
       ENGINE=InnoDB`,
         [this._modelName]

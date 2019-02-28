@@ -69,75 +69,89 @@ module.exports = app => {
   /**
    * 模型字段管理
    */
-  subRouter.get(
-    '模型字段列表',
-    '/modelAttr/:model',
-    controller.modelAttr.index
+  const modelAttrRouter = router.namespace(
+    '/api/modelAttr',
+    middleware.auth(app.config.auth),
+    middleware.modelAttr()
   );
-  subRouter.get(
+
+  modelAttrRouter.get('模型字段列表', '/:model', controller.modelAttr.index);
+  modelAttrRouter.get(
     '模型索引列表',
-    '/modelAttr/:model/indexs',
+    '/:model/indexs',
     controller.modelAttr.indexs
   );
-  subRouter.post(
-    '创建模型字段',
-    '/modelAttr/:model',
-    controller.modelAttr.create
-  );
-  subRouter.put(
+  modelAttrRouter.post('创建模型字段', '/:model', controller.modelAttr.create);
+  modelAttrRouter.put(
     '编辑模型索引',
-    '/modelAttr/:model/indexs',
+    '/:model/indexs',
     controller.modelAttr.adjustIndex
   );
-  subRouter.put(
+  modelAttrRouter.put(
     '编辑模型字段',
-    '/modelAttr/:model/:id',
+    '/:model/:id',
     controller.modelAttr.update
   );
-  subRouter.delete(
+  modelAttrRouter.delete(
     '删除模型字段',
-    '/modelAttr/:model/:id',
+    '/:model/:id',
     controller.modelAttr.destroy
   );
 
   /**
    * 通用模型
    */
-  subRouter.get('获取{model}列表', '/g/:model', controller.general.index);
+  subRouter.get('获取{model}列表', '/g/:model', controller.generalModel.index);
   subRouter.get(
     '获取{model}验证规则',
     '/g/:model/rules',
-    controller.general.rules
+    controller.generalModel.rules
   );
-  subRouter.get('获取{model}详情', '/g/:model/:id', controller.general.show);
-  subRouter.post('创建{model}', '/g/:model', controller.general.create);
-  subRouter.put('编辑{model}数据', '/g/:model/:id', controller.general.update);
+  subRouter.get(
+    '获取{model}详情',
+    '/g/:model/:id',
+    controller.generalModel.show
+  );
+  subRouter.post('创建{model}', '/g/:model', controller.generalModel.create);
+  subRouter.put(
+    '编辑{model}数据',
+    '/g/:model/:id',
+    controller.generalModel.update
+  );
   subRouter.put(
     '更新{model}字段',
     '/g/:model/:id/one',
-    controller.general.updateOne
+    controller.generalModel.updateOne
   );
-  subRouter.delete('删除{model}', '/g/:model/:id', controller.general.destroy);
+  subRouter.delete(
+    '删除{model}',
+    '/g/:model/:id',
+    controller.generalModel.destroy
+  );
 
   /**
    * 表单
    */
 
-  subRouter.get('获取{form}列表', '/f/:form', controller.general.index);
+  subRouter.get('获取{form}列表', '/f/:form', controller.generalForm.index);
   subRouter.get(
     '获取{form}验证规则',
     '/f/:form/rules',
-    controller.general.rules
+    controller.generalForm.rules
   );
-  subRouter.get('获取{form}详情', '/f/:form/:id', controller.general.show);
-  // subRouter.post('创建{form}', '/f/:form', controller.general.create);
-  // subRouter.put('编辑{form}数据', '/f/:form/:id', controller.general.update);
+  subRouter.get('获取{form}详情', '/f/:form/:id', controller.generalForm.show);
+  // subRouter.post('创建{form}', '/f/:form', controller.generalForm.create);
+  // subRouter.put('编辑{form}数据', '/f/:form/:id', controller.generalForm.update);
   subRouter.put(
     '更新{form}字段',
     '/f/:form/:id/one',
-    controller.general.updateOne
+    controller.generalForm.updateOne
   );
-  subRouter.delete('删除{form}', '/f/:form/:id', controller.general.destroy);
+  subRouter.delete(
+    '删除{form}',
+    '/f/:form/:id',
+    controller.generalForm.destroy
+  );
 
   /**
    * 配置

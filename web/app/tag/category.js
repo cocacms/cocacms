@@ -58,7 +58,12 @@ class CategoryExtension {
       const ret = [];
       let result = [];
       if (args.id) {
-        result = await ctx.service.category.index(args.id, false, args.withMe);
+        result = await ctx.service.category.index(
+          args.id,
+          [],
+          false,
+          args.withMe
+        );
       } else if (args.key) {
         result = await ctx.service.category.key(args.key, false, args.withMe);
       }

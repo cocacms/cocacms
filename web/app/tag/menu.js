@@ -42,7 +42,7 @@ class MenuExtension {
 
     try {
       const ret = [];
-      let menus = await ctx.service.menu.index(args.id, false, args.withMe);
+      let menus = await ctx.service.menu.index(args.id, [], false, args.withMe);
 
       for (const menu of menus) {
         if (menu.type === 2) {

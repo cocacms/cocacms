@@ -37,30 +37,14 @@ class CategoryController extends Controller {
    * @memberof CategoryController
    */
   async index() {
-    let result = await this.service.category.index(
+    const result = await this.service.category.index(
       -1,
-      this.ctx.query.flat === '1',
+      this.ctx.query.where,
+      !(this.ctx.query.flat === '1'),
       this.ctx.query.root === '1'
     );
-    result = await this.service.category.one2one(
-      result,
-      'model',
-      'model_id',
-      'id'
-    );
-    result = result.map(i => {
-      try {
-        i.pic = JSON.parse(i.pic);
-        if (!i.pic) {
-          i.pic = [];
-        }
-      } catch (error) {
-        i.pic = [];
-      }
 
-      return i;
-    });
-    this.ctx.body = this.service.category.toTree(result);
+    this.ctx.body = result;
   }
 
   /**
@@ -120,7 +104,7 @@ class CategoryController extends Controller {
    * @param {int} model_id 模块id
    */
   async setChild(id, model_id) {
-    const childs = await this.service.category.index(id, false);
+    const childs = await this.service.category.index(id, [], false);
     for (const child of childs) {
       if (child.model_id === null) {
         await this.service.category.update(child.id, {
