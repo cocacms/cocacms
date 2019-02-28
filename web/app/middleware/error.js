@@ -20,6 +20,8 @@ const loggerError = (err, ctx) => {
 
   if (!(err instanceof ctx.app.exception.runnerExection)) {
     ctx.logger.warn(err);
+  } else {
+    ctx.logger.debug(err);
   }
 
   return message;

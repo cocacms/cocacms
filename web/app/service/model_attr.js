@@ -301,15 +301,15 @@ class ModelAttrService extends Service {
       keyType === 'keys' ? this.index_key_name : this.index_fulltext_name;
     const fulltext = keyType === 'keys' ? '' : 'FULLTEXT';
     const ngram = keyType === 'keys' ? '' : 'WITH PARSER ngram';
-    const dropSql = await this.buildDropSql(index_name);
     try {
-      return await this.app.mysql.query(
-        `ALTER TABLE \`${
-          this._modelName
-        }\` ${dropSql} ADD ${fulltext} INDEX \`${index_name}\` (${keys.join(
-          ', '
-        )}) ${ngram}`
-      );
+      const dropSql = await this.buildDropSql(index_name);
+      let sql = `ALTER TABLE \`${this._modelName}\` ${dropSql}`;
+      if (keys.length > 0) {
+        sql += ` ${
+          dropSql.length > 0 ? ',' : ''
+        }ADD ${fulltext} INDEX \`${index_name}\` (${keys.join(', ')}) ${ngram}`;
+      }
+      return await this.app.mysql.query(sql);
     } catch (error) {
       this.translateError(error);
     }
@@ -327,7 +327,7 @@ class ModelAttrService extends Service {
       `SHOW INDEX FROM \`${this._modelName}\``
     );
     return data.filter(i => i.Key_name === name).length > 0
-      ? `DROP INDEX \`${name}\`,`
+      ? `DROP INDEX \`${name}\``
       : '';
   }
 
