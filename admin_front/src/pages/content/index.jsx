@@ -1,6 +1,8 @@
+/**
+ * title: 内容管理
+ */
 import React, { Component } from "react";
 import { Row, Col, TreeSelect, Tree, Alert } from "antd";
-import name from "components/name";
 import Can from "components/can";
 import { connect } from "dva";
 
@@ -10,8 +12,7 @@ import TablePage from "./components/table";
 
 const TreeNode = Tree.TreeNode;
 
-let isMount = true;
-@name("内容管理")
+// let isMount = true;
 @connect(({ content }) => ({ content }))
 class ContentList extends Component {
   state = {
@@ -19,7 +20,7 @@ class ContentList extends Component {
   };
 
   componentDidMount() {
-    isMount = true;
+    // isMount = true;
     const { dispatch } = this.props;
     dispatch({
       type: "content/fetchCategory"
@@ -27,7 +28,7 @@ class ContentList extends Component {
   }
 
   componentWillUnmount() {
-    isMount = false;
+    // isMount = false;
     const { dispatch } = this.props;
     dispatch({
       type: "content/save",
@@ -43,31 +44,18 @@ class ContentList extends Component {
     });
   }
 
-  static getDerivedStateFromProps(props) {
-    if (!isMount) {
-      return null;
-    }
-
-    const renderTreeNodes = data => {
-      return data.map(item => {
-        if (item.children) {
-          return (
-            <TreeNode key={item.value} title={item.label} dataRef={item}>
-              {renderTreeNodes(item.children)}
-            </TreeNode>
-          );
-        }
-        return <TreeNode key={item.value} title={item.label} />;
-      });
-    };
-
-    const {
-      content: { category = [] }
-    } = props;
-    const categoryNodes = renderTreeNodes(category);
-
-    return { categoryNodes };
-  }
+  renderTreeNodes = data => {
+    return data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode key={item.value} title={item.label} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.value} title={item.label} />;
+    });
+  };
 
   onChangeCategory = selectedKeys => {
     const { dispatch } = this.props;
@@ -79,7 +67,16 @@ class ContentList extends Component {
 
   renderContent = (current, attrs, rules, indexs) => {
     //1列表页 2单页 3表单页
-    if (current.type === 1) {
+
+    if (
+      current.type === 3 &&
+      current.children instanceof Array &&
+      current.children.length > 0
+    ) {
+      return <Alert message="请选择子活动" type="warning" showIcon />;
+    }
+
+    if (current.type === 1 || current.type === 3) {
       return (
         <TablePage
           current={current}
@@ -90,7 +87,7 @@ class ContentList extends Component {
       );
     }
 
-    if (current.type === 2 || current.type === 2) {
+    if (current.type === 2) {
       return <FormPage current={current} attrs={attrs} rules={rules} />;
     }
 
@@ -136,7 +133,7 @@ class ContentList extends Component {
         </Can>
         <Row style={{ minHeight: "70vh" }} type="flex">
           <Col xs={0} xl={4} className={styles.category}>
-            {this.state.categoryNodes.length > 0 ? (
+            {category.length > 0 ? (
               <Tree
                 showLine
                 defaultExpandAll
@@ -144,7 +141,7 @@ class ContentList extends Component {
                   this.onChangeCategory(value[0]);
                 }}
               >
-                {this.state.categoryNodes}
+                {this.renderTreeNodes(category)}
               </Tree>
             ) : (
               <span>无栏目</span>

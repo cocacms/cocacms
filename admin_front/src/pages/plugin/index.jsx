@@ -1,6 +1,8 @@
+/**
+ * title: 插件管理
+ */
 import React, { Component } from "react";
 import { Table, Form, Row, Col, Button, Popconfirm, Modal, Badge } from "antd";
-import name from "components/name";
 import Switch from "components/switch";
 import Can from "components/can/index";
 import { connect } from "dva";
@@ -9,7 +11,6 @@ import Link from "umi/link";
 
 @connect(({ plugin, loading }) => ({ plugin, loading: loading.models.plugin }))
 @Form.create()
-@name("插件管理")
 class PluginPage extends Component {
   state = {
     edit: {

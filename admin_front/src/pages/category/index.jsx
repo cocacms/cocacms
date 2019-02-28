@@ -1,3 +1,6 @@
+/**
+ * title: 栏目管理
+ */
 import React, { Component } from "react";
 import {
   Table,
@@ -11,7 +14,7 @@ import {
   TreeSelect,
   Tag
 } from "antd";
-import name from "components/name";
+// import name from "components/name";
 import Action from "components/action";
 import Can from "components/can/index";
 import Upload from "components/upload";
@@ -47,8 +50,9 @@ class Edit extends Component {
       opened,
       data = {},
       close,
-      form: { getFieldDecorator, setFieldsValue },
+      form: { getFieldDecorator, setFieldsValue, getFieldValue },
       models = [],
+      mform = [],
       category: { tree = [] }
     } = this.props;
     const labelCol = { span: 5 };
@@ -87,6 +91,10 @@ class Edit extends Component {
                       model_id: node.props.model_id
                     });
                     setFieldsValue({
+                      form_id: node.props.form_id
+                    });
+
+                    setFieldsValue({
                       template_list: node.props.template_list
                     });
                     setFieldsValue({
@@ -107,7 +115,10 @@ class Edit extends Component {
             label="栏目关键字"
           >
             {getFieldDecorator("key", {
-              initialValue: data.key,
+              initialValue:
+                action === "add"
+                  ? `key_${parseInt(Math.random() * 10000, 10)}`
+                  : data.key,
               rules: [{ required: true, message: "请设置栏目关键字" }]
             })(<Input />)}
           </Form.Item>
@@ -135,7 +146,7 @@ class Edit extends Component {
               <Select placeholder="请选择">
                 <Select.Option value={1}>列表页</Select.Option>
                 <Select.Option value={2}>单页</Select.Option>
-                {/* <Select.Option value={3}>表单页</Select.Option> */}
+                <Select.Option value={3}>表单页</Select.Option>
                 <Select.Option value={4}>外链</Select.Option>
               </Select>
             )}
@@ -154,9 +165,45 @@ class Edit extends Component {
             })(
               <Select placeholder="请选择">
                 {models
-                  .filter(i => i.type === 0)
+                  .filter(i => {
+                    const type = getFieldValue("type");
+                    if (type === 4 || type === 3) {
+                      return i.type === -1;
+                    }
+                    return i.type === 0;
+                  })
                   .map(i => (
                     <Select.Option key={`model_id_${i.id}`} value={i.id}>
+                      {i.name}
+                    </Select.Option>
+                  ))}
+              </Select>
+            )}
+          </Form.Item>
+
+          <Form.Item
+            labelCol={labelCol}
+            wrapperCol={wrapperCol}
+            label="绑定表单"
+            extra={
+              <Tag color="gold">* 绑定表单会同步设置到未设置表单的子栏目</Tag>
+            }
+          >
+            {getFieldDecorator("form_id", {
+              initialValue: data.form_id
+            })(
+              <Select placeholder="请选择">
+                {mform
+                  .filter(i => {
+                    const type = getFieldValue("type");
+                    if (type === 3) {
+                      return true;
+                    }
+
+                    return false;
+                  })
+                  .map(i => (
+                    <Select.Option key={`form_id_${i.id}`} value={i.id}>
                       {i.name}
                     </Select.Option>
                   ))}
@@ -237,9 +284,8 @@ class Edit extends Component {
   }
 }
 
-@connect(({ category, loading }) => ({ category, loading }))
+@connect(({ category, form, loading }) => ({ category, mform: form, loading }))
 @Form.create()
-@name("栏目管理")
 class CategoryPage extends Component {
   state = {
     expand: false,
@@ -266,6 +312,9 @@ class CategoryPage extends Component {
     dispatch({
       type: "category/list",
       payload: {}
+    });
+    dispatch({
+      type: "form/list"
     });
     dispatch({
       type: "category/fetchProps",
@@ -517,7 +566,8 @@ class CategoryPage extends Component {
   render() {
     const {
       loading: { effects: loading = {} },
-      category: { list = [], models = [] }
+      category: { list = [], models = [] },
+      mform: { list: mform = [] }
     } = this.props;
 
     return (
@@ -539,6 +589,7 @@ class CategoryPage extends Component {
         <Edit
           {...this.state.edit}
           models={models}
+          mform={mform}
           close={this.closeModel}
           add={this.add}
           edit={this.edit}

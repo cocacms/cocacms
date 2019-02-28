@@ -18,6 +18,7 @@ import { connect } from "dva";
 import { Helmet } from "react-helmet";
 import "rc-drawer/assets/index.css";
 import zh_CN from "antd/lib/locale-provider/zh_CN";
+import withRouter from "umi/withRouter";
 
 import styles from "./index.less";
 import { config } from "../common/config";
@@ -25,6 +26,8 @@ import menusData from "../common/menu";
 import LoginLayout from "./login";
 
 const { Header, Content, Footer, Sider } = Layout;
+
+@withRouter
 @connect(({ admin, form }) => ({ admin, mform: form }))
 class MainLayout extends Component {
   static childContextTypes = {
@@ -255,8 +258,8 @@ class MainLayout extends Component {
 
             <Breadcrumb
               style={{ margin: "24px 16px 0px 16px" }}
-              routes={this.props.route.routes}
               location={this.props.location}
+              routes={this.props.route.routes}
             />
 
             <Content

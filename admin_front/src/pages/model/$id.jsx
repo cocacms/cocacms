@@ -1,3 +1,6 @@
+/**
+ * title: 模型字段管理
+ */
 import React, { Component } from "react";
 import {
   Table,
@@ -16,7 +19,6 @@ import {
   Icon,
   Tag
 } from "antd";
-import name from "components/name";
 import Action from "components/action";
 import Can from "components/can/index";
 import { connect } from "dva";
@@ -423,7 +425,6 @@ class KeyEdit extends Component {
   loading: loading.models.modelAttr
 }))
 @Form.create()
-@name("模型字段管理")
 class ModelPage extends Component {
   state = {
     expand: false,

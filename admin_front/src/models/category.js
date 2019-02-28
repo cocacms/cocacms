@@ -2,6 +2,7 @@ import modelExtend from "dva-model-extend";
 import { baseModel } from "./base";
 import { create, moveUp, moveDown, bind } from "../services/category";
 import base from "../services/base";
+import builder from "../common/treebuilder";
 
 const categoryService = base("category");
 const modelService = base("model");
@@ -27,18 +28,6 @@ export default modelExtend(baseModel("category", false), {
 
     *tree({ payload }, { call, put, select }) {
       const { data: tree } = yield call(categoryService.index, { root: 1 });
-      const builder = data =>
-        data.map(i => {
-          if (i.children && i.children.length > 0) {
-            i.children = builder(i.children);
-          }
-          return {
-            ...i,
-            value: String(i.id),
-            label: i.name
-          };
-        });
-
       yield put({
         type: "save",
         payload: {
@@ -49,28 +38,16 @@ export default modelExtend(baseModel("category", false), {
 
     *treeFilterModel({ payload }, { call, put, select }) {
       const { data: tree } = yield call(categoryService.index);
-      const builder = data =>
-        data.map(i => {
-          if ((i.model_id === payload || payload === true) && i.type === 1) {
-            i.disabled = false;
-          } else {
-            i.disabled = true;
-          }
-          if (i.children && i.children.length > 0) {
-            i.children = builder(i.children);
-          }
-
-          return {
-            ...i,
-            value: String(i.id),
-            label: i.name
-          };
-        });
-
       yield put({
         type: "save",
         payload: {
-          treeFilterModel: builder(tree)
+          treeFilterModel: builder(tree, i => {
+            if ((i.model_id === payload || payload === true) && i.type === 1) {
+              i.disabled = false;
+            } else {
+              i.disabled = true;
+            }
+          })
         }
       });
     },

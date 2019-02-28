@@ -1,3 +1,6 @@
+/**
+ * title: 管理员管理
+ */
 import React, { Component } from "react";
 import {
   Table,
@@ -10,7 +13,6 @@ import {
   Spin,
   Checkbox
 } from "antd";
-import name from "components/name";
 import Action from "components/action";
 import Can from "components/can/index";
 import { connect } from "dva";
@@ -157,7 +159,6 @@ class RoleEdit extends Component {
 
 @connect(({ admin, loading }) => ({ admin, loading: loading.models.admin }))
 @Form.create()
-@name("管理员管理")
 class AdminPage extends Component {
   state = {
     expand: false,

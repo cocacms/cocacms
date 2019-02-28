@@ -1,60 +1,56 @@
+/**
+ * title: 数据汇总
+ */
 import React, { Component } from "react";
 import { Icon, Spin } from "antd";
-import TablePage from "./components/table";
 import { connect } from "dva";
-import name from "components/name";
 
-let isMount = true;
+import TablePage from "./components/table";
 
 @connect(({ form }) => ({ form }))
-@name("数据汇总")
 class Page extends Component {
   state = {
-    reload: false,
-    key: ""
+    key: null
   };
 
   componentDidMount() {
-    isMount = true;
-    const {
-      match: { params }
-    } = this.props;
-    this.init(params.key);
+    this.init(this.props.match.params.key);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const {
-      match: { params }
-    } = nextProps;
-    const { key } = prevState;
-    if (params.key) {
-      if (key !== params.key && isMount) {
-        return {
-          key: params.key,
-          reload: true
-        };
-      }
+    if (prevState.key !== nextProps.match.params.key) {
+      return { key: nextProps.match.params.key };
     }
     return null;
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.reload) {
-      this.init();
-      isMount && this.setState({ reload: false });
+    if (prevState.key !== this.state.key) {
+      this.init(this.state.key);
     }
   }
 
-  init = (key = false) => {
+  init = async key => {
+    console.log("init data ", key);
     const { dispatch } = this.props;
-    dispatch({
+    const data = await dispatch({
+      type: "form/fetchForm",
+      payload: key
+    });
+    await dispatch({
       type: "form/fetchFormDataProps",
-      payload: key ? key : this.state.key
+      payload: data
+    });
+  };
+
+  onChangeCategory = value => {
+    this.setState({
+      where: { form_model_id: value }
     });
   };
 
   componentWillUnmount() {
-    isMount = false;
+    // isMount = false;
     const { dispatch } = this.props;
     dispatch({
       type: "form/save",
@@ -69,7 +65,7 @@ class Page extends Component {
 
   render() {
     const {
-      form: { attrs = [], rules = {}, indexs = [], current = {} }
+      form: { attrs = [], rules = {}, indexs = [], current = {}, category = [] }
     } = this.props;
 
     return (
@@ -81,6 +77,7 @@ class Page extends Component {
             attrs={attrs}
             rules={rules}
             indexs={indexs}
+            category={category}
           />
         ) : (
           <div style={{ textAlign: "center" }}>

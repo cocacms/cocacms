@@ -2,6 +2,7 @@ import modelExtend from "dva-model-extend";
 import { baseModel } from "./base";
 import { create, moveUp, moveDown } from "../services/menu";
 import base from "../services/base";
+import builder from "../common/treebuilder";
 
 const menuService = base("menu");
 const modelService = base("model");
@@ -26,17 +27,6 @@ export default modelExtend(baseModel("menu", false), {
 
     *tree({ payload }, { call, put, select }) {
       const { data: tree } = yield call(menuService.index, { root: 1 });
-      const builder = data =>
-        data.map(i => {
-          if (i.children && i.children.length > 0) {
-            i.children = builder(i.children);
-          }
-          return {
-            ...i,
-            value: String(i.id),
-            label: i.name
-          };
-        });
 
       yield put({
         type: "save",

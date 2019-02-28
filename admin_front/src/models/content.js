@@ -1,6 +1,7 @@
 import base from "../services/base";
 import { rules } from "../services/general";
 import { indexs } from "../services/modelAttr";
+import builder from "../common/treebuilder";
 
 const categoryService = base("category");
 const modelAttrService = base("modelAttr");
@@ -21,18 +22,6 @@ export default {
   effects: {
     *fetchCategory({ payload, cb }, { call, put, select }) {
       const { data: category } = yield call(categoryService.index);
-
-      const builder = data =>
-        data.map(i => {
-          if (i.children && i.children.length > 0) {
-            i.children = builder(i.children);
-          }
-          return {
-            ...i,
-            value: String(i.id),
-            label: i.name
-          };
-        });
 
       yield put({
         type: "save",
@@ -70,23 +59,31 @@ export default {
       if (current.model_id === null || !current.model) {
         current.type = -1;
         yield put({
-          type: "save",
-          payload: {
-            current: {
-              ...current,
-              model: {}
-            },
-            attrs: [],
-            rules: {}
-          }
+          type: "model_undefined",
+          payload: current
         });
         return;
+      }
+
+      let model_id = current.model_id;
+      if (current.type === 3) {
+        // 未绑定模型栏目不显示
+        if (current.form_id === null || !current.form) {
+          current.type = -1;
+          yield put({
+            type: "model_undefined",
+            payload: current
+          });
+          return;
+        }
+
+        model_id = current.form.model_id;
       }
 
       const { data: attrs } = yield call(
         modelAttrService.index,
         {},
-        `/${current.model_id}`
+        `/${model_id}`
       );
       const { data: ruleData } = yield call(rules, current.model.key);
       const { data: indexsData } = yield call(indexs, current.model_id);
@@ -108,6 +105,20 @@ export default {
   reducers: {
     save(state, action) {
       return { ...state, ...action.payload };
+    },
+
+    model_undefined(state, action) {
+      return {
+        ...state,
+        ...{
+          current: {
+            ...action.payload,
+            model: {}
+          },
+          attrs: [],
+          rules: {}
+        }
+      };
     }
   }
 };

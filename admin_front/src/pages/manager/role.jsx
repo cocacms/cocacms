@@ -1,3 +1,6 @@
+/**
+ * title: 角色管理
+ */
 import React, { Component } from "react";
 import {
   Table,
@@ -11,7 +14,6 @@ import {
   Checkbox,
   Divider
 } from "antd";
-import name from "components/name";
 import Action from "components/action";
 import Can from "components/can/index";
 import { connect } from "dva";
@@ -216,7 +218,6 @@ class PermissionEdit extends Component {
   loading: loading.models.role
 }))
 @Form.create()
-@name("角色管理")
 class RolePage extends Component {
   state = {
     expand: false,

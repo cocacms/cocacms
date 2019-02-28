@@ -1,9 +1,10 @@
+/**
+ * title: 系统配置
+ */
 import React, { Component } from "react";
 import { connect } from "dva";
 import { Tabs, Spin } from "antd";
-import name from "components/name";
 import Can from "components/can/index";
-
 import AutoSetting from "./components/auto";
 import UploadSetting from "./components/upload";
 import ThemeSetting from "./components/theme";
@@ -11,7 +12,6 @@ import ThemeSetting from "./components/theme";
 const TabPane = Tabs.TabPane;
 
 @connect(({ config, loading }) => ({ config, loading: loading.models.config }))
-@name("系统配置")
 class SettingPage extends Component {
   state = {
     activeKey: "uploadSetting",

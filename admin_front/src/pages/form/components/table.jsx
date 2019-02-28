@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { Table, Form, Row, Col, Button, Modal, Icon, Rate, Switch } from "antd";
+import { Table, Form, Row, Col, Button, Modal, Select } from "antd";
 import Can from "components/can/index";
 
 import { connect } from "dva";
 import { renderFilterForm, buildWhere, getColumns } from "components/formItem";
 
-import moment from "moment";
+import attHandle from "./att";
 
 @connect(({ general, loading }) => ({
   general,
@@ -164,7 +164,8 @@ class TablePage extends Component {
     const {
       form: { getFieldDecorator },
       indexs = [],
-      attrs = []
+      attrs = [],
+      category = []
     } = this.props;
 
     let children = [];
@@ -189,22 +190,36 @@ class TablePage extends Component {
       children
     );
 
-    if (children.length > 0) {
-      children.push(
-        <Col sm={12} xs={24} lg={{ span: 8 }} key="s-submit">
-          <Form.Item wrapperCol={{ span: 24 }}>
-            <Can api={`GET@/api/f/${this.state.current.key}`}>
-              <Button type="primary" htmlType="submit">
-                搜索
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.init}>
-                重置
-              </Button>
-            </Can>
-          </Form.Item>
-        </Col>
-      );
-    }
+    children.push(
+      <Col sm={12} xs={24} lg={{ span: 8 }} key="form_model_id">
+        <Form.Item label="分类" labelCol={labelCol} wrapperCol={wrapperCol}>
+          {getFieldDecorator("form_model_id")(
+            <Select placeholder="请选择" style={{ width: "100%" }}>
+              {category.map(i => (
+                <Select.Option value={i.id} key={i.id}>
+                  {i.title || "-"}
+                </Select.Option>
+              ))}
+            </Select>
+          )}
+        </Form.Item>
+      </Col>
+    );
+
+    children.push(
+      <Col sm={12} xs={24} lg={{ span: 8 }} key="s-submit">
+        <Form.Item wrapperCol={{ span: 24 }}>
+          <Can api={`GET@/api/f/${this.state.current.key}`}>
+            <Button type="primary" htmlType="submit">
+              搜索
+            </Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.init}>
+              重置
+            </Button>
+          </Can>
+        </Form.Item>
+      </Col>
+    );
 
     return children;
   }
@@ -215,21 +230,10 @@ class TablePage extends Component {
    * @memberof TablePage
    */
   renderFilter = () => {
-    const { current } = this.props;
-
     return (
       <div>
         <Form className="table-search-form" onSubmit={this.handleSearch}>
           <Row gutter={24}>{this.getFields()}</Row>
-          <Row>
-            <Col span={24} style={{ textAlign: "right" }}>
-              <Can api={`GET@/api/f/${current.key}`}>
-                <Button onClick={this.init} className="refresh-btn">
-                  刷新
-                </Button>
-              </Can>
-            </Col>
-          </Row>
         </Form>
       </div>
     );
@@ -314,134 +318,7 @@ class TablePage extends Component {
             this.setState({ show: { opened: false, data: {} } });
           }}
         >
-          {attrs.map(att => {
-            if (["radio", "select"].includes(att.type)) {
-              for (const option of att.optionsArray) {
-                if (option.value === String(this.state.show.data[att.key])) {
-                  return (
-                    <p key={att.key}>
-                      {att.name}：{option.label}
-                    </p>
-                  );
-                }
-              }
-            }
-
-            if (["checkbox"].includes(att.type)) {
-              const strs = [];
-              for (const option of att.optionsArray) {
-                if (
-                  Array.isArray(this.state.show.data[att.key]) &&
-                  this.state.show.data[att.key].includes(option.value)
-                ) {
-                  strs.push(option.label);
-                }
-              }
-              return (
-                <p key={att.key}>
-                  {att.name}：{strs.length === 0 ? "-" : strs.join(", ")}
-                </p>
-              );
-            }
-
-            if (
-              ["img"].includes(att.type) &&
-              Array.isArray(this.state.show.data[att.key])
-            ) {
-              return (
-                <p key={att.key}>
-                  {att.name}：
-                  {this.state.show.data[att.key].map(i => (
-                    <img
-                      key={`${att.key}-${i}`}
-                      src={i}
-                      alt=""
-                      style={{ maxWidth: 400, maxHeight: 400, marginRight: 5 }}
-                    />
-                  ))}
-                </p>
-              );
-            }
-
-            if (
-              ["file"].includes(att.type) &&
-              Array.isArray(this.state.show.data[att.key])
-            ) {
-              return this.state.show.data[att.key].map(i => (
-                <p key={`${att.key}-${i}`}>
-                  <a href={i} target="black">
-                    <Icon type="file" /> {i.split("/")[i.split("/").length - 1]}
-                  </a>
-                </p>
-              ));
-            }
-
-            if (["time", "date", "datetime"].includes(att.type)) {
-              const formats = {
-                time: "HH:mm:ss",
-                date: "YYYY-MM-DD",
-                datetime: "YYYY-MM-DD HH:mm:ss"
-              };
-              return (
-                <p key={att.key}>
-                  {att.name}：
-                  {moment(this.state.show.data[att.key], [
-                    moment.ISO_8601,
-                    "YYYY-MM-DD HH:mm:ss",
-                    "YYYY-MM-DD",
-                    "HH:mm:ss"
-                  ]).format(formats[att.type])}
-                </p>
-              );
-            }
-
-            // rate
-            if (["rate"].includes(att.type)) {
-              return (
-                <p key={att.key}>
-                  {att.name}：
-                  <Rate
-                    allowHalf
-                    value={this.state.show.data[att.key]}
-                    disabled
-                  />
-                </p>
-              );
-            }
-
-            // richtext
-            if (["richtext"].includes(att.type)) {
-              return (
-                <p key={att.key}>
-                  {att.name}：
-                  <div
-                    key={att.key}
-                    dangerouslySetInnerHTML={{
-                      __html: this.state.show.data[att.key]
-                    }}
-                  />
-                </p>
-              );
-            }
-
-            if (["switch"].includes(att.type)) {
-              return (
-                <p key={att.key}>
-                  {att.name}：
-                  <Switch
-                    key={att.key}
-                    checked={this.state.show.data[att.key] === 1}
-                  />
-                </p>
-              );
-            }
-
-            return (
-              <p key={att.key}>
-                {att.name}：{this.state.show.data[att.key]}
-              </p>
-            );
-          })}
+          {attrs.map(att => attHandle(this.state.show.data, att))}
         </Modal>
       </Can>
     );

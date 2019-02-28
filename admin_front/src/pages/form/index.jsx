@@ -1,6 +1,8 @@
+/**
+ * title: 表单管理
+ */
 import React, { Component } from "react";
-import { Table, Form, Row, Col, Button, Input, Modal, Select } from "antd";
-import name from "components/name";
+import { Table, Form, Row, Col, Button, Input, Modal, Select, Tag } from "antd";
 import Action from "components/action";
 import Can from "components/can/index";
 import { connect } from "dva";
@@ -57,17 +59,39 @@ class Edit extends Component {
           <Form.Item
             labelCol={labelCol}
             wrapperCol={wrapperCol}
-            label="绑定模型"
+            label="介绍模型"
+            extra={<Tag color="red">* 介绍模型必须存在title属性！</Tag>}
           >
             {getFieldDecorator("model_id", {
               initialValue: data.model_id,
-              rules: [{ required: true, message: "请设置绑定的模型" }]
+              rules: [{ required: true, message: "请设置绑定的介绍模型" }]
+            })(
+              <Select placeholder="请选择">
+                {models
+                  .filter(i => i.type === 0)
+                  .map(i => (
+                    <Select.Option key={`model_id_${i.id}`} value={i.id}>
+                      {i.name}
+                    </Select.Option>
+                  ))}
+              </Select>
+            )}
+          </Form.Item>
+
+          <Form.Item
+            labelCol={labelCol}
+            wrapperCol={wrapperCol}
+            label="表单模型"
+          >
+            {getFieldDecorator("form_id", {
+              initialValue: data.form_id,
+              rules: [{ required: true, message: "请设置绑定的表单模型" }]
             })(
               <Select placeholder="请选择">
                 {models
                   .filter(i => i.type === 1)
                   .map(i => (
-                    <Select.Option key={`model_id_${i.id}`} value={i.id}>
+                    <Select.Option key={`form_id_${i.id}`} value={i.id}>
                       {i.name}
                     </Select.Option>
                   ))}
@@ -93,7 +117,6 @@ class Edit extends Component {
 
 @connect(({ form, loading }) => ({ mform: form, loading: loading.models.form }))
 @Form.create()
-@name("表单管理")
 class FormPage extends Component {
   state = {
     expand: false,

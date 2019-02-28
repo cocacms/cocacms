@@ -1,6 +1,8 @@
+/**
+ * title: 站点管理
+ */
 import React, { Component } from "react";
 import { Table, Form, Row, Col, Button, Input, Modal } from "antd";
-import name from "components/name";
 import Action from "components/action";
 import Can from "components/can/index";
 import { connect } from "dva";
@@ -66,7 +68,6 @@ class Edit extends Component {
 
 @connect(({ site, loading }) => ({ site, loading: loading.models.site }))
 @Form.create()
-@name("站点管理")
 class SitePage extends Component {
   state = {
     expand: false,

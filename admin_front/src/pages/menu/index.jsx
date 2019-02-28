@@ -1,3 +1,6 @@
+/**
+ * title: 菜单管理
+ */
 import React, { Component } from "react";
 import {
   Table,
@@ -10,7 +13,6 @@ import {
   Select,
   TreeSelect
 } from "antd";
-import name from "components/name";
 import Action from "components/action";
 import Can from "components/can/index";
 import { connect } from "dva";
@@ -170,7 +172,6 @@ class Edit extends Component {
 
 @connect(({ menu, loading }) => ({ menu, loading }))
 @Form.create()
-@name("菜单管理")
 class menuPage extends Component {
   state = {
     expand: false,

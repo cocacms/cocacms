@@ -1,7 +1,9 @@
+/**
+ * title: 重置密码
+ */
 import React, { Component } from "react";
 import { connect } from "dva";
 import { Form, Input, Button } from "antd";
-import name from "components/name";
 import Can from "components/can/index";
 
 const formItemLayout = {
@@ -24,7 +26,6 @@ const submitFormLayout = {
 };
 
 @connect(({ config, loading }) => ({ config, loading: loading.models.config }))
-@name("重置密码")
 @Form.create()
 class SettingPage extends Component {
   state = {};
