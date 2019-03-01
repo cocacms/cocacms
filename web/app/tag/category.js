@@ -1,6 +1,6 @@
 'use strict';
 
-const { asyncBuilder } = require('./util');
+const { asyncBuilder } = require('./_util');
 
 class CategoryExtension {
   constructor() {

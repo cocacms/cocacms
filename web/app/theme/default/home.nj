@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>{{ config.defaults.title }}</title>
-  <link rel="icon" href="{{ config.defaults.logo }}" type="image/x-icon" />
-  <link rel="shortcut icon" href="{{ config.defaults.logo }}" type="image/x-icon"/>
-  <link rel="stylesheet" href="{% static 'css/923ED5D9D7A9576A2.css' %}">
-  <link rel="stylesheet" href="{% static 'css/app.css' %}">
-  <style>
-    .typed-cursor {
-      font-size: 48px;
-    }
-  </style>
-</head>
-<body>
-  <h1>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ config.defaults.title }}</title>
+    <link rel="icon" href="{{ config.defaults.logo }}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{{ config.defaults.logo }}" type="image/x-icon"/>
+    <link rel="stylesheet" href="{% static 'css/923ED5D9D7A9576A2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <style>
+      .typed-cursor {
+        font-size: 48px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
       <span class="typing"></span>
-  </h1>
-  {% hook 'appLoaded' %}
-  <script src="{% static 'js/typed.min.js' %}"></script>
-  <script>
-    var typed = new Typed('.typing', {
-      strings: ["Hi! Nice to see you.", "Coca, a easy cms.", "It's coming soon..."],
-      typeSpeed: 70
-    });
-  </script>
-</body>
+    </h1>
+    {% hook 'appLoaded' %}
+    <script src="{% static 'js/typed.min.js' %}"></script>
+    <script>
+      var typed = new Typed('.typing', {
+        strings: [
+          "Hi! Nice to see you.", "Coca, a easy cms.", "It's coming soon...", "{{__('test')}}"
+        ],
+        typeSpeed: 70
+      });
+    </script>
+  </body>
 </html>

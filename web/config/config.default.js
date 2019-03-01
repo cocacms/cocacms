@@ -96,10 +96,7 @@ module.exports = appInfo => {
   // 主题模板配置
 
   config.view = {
-    root: [
-      path.join(appInfo.baseDir, 'app/view'),
-      path.join(appInfo.baseDir, 'app/theme'),
-    ].join(','),
+    root: path.join(appInfo.baseDir, 'app/theme'),
     mapping: {
       '.nj': 'nunjucks',
     },

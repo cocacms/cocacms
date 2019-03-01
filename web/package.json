@@ -4,7 +4,7 @@
   "description": "a easy cms",
   "private": true,
   "dependencies": {
-    "@cocacms/cocacms": "^1.0.0",
+    "@cocacms/cocacms": "*",
     "egg-view-nunjucks": "^2.2.0",
     "humanize-bytes": "^1.0.1",
     "jsonwebtoken": "^8.2.1",

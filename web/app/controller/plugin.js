@@ -14,14 +14,7 @@ class PluginController extends Controller {
    * @memberof PluginController
    */
   async index() {
-    this.ctx.body = await this.service.plugin.index(
-      null,
-      null,
-      [],
-      '*',
-      [['id', 'asc']],
-      false
-    );
+    this.ctx.body = await this.service.plugin.index();
   }
 
   /**
@@ -40,17 +33,17 @@ class PluginController extends Controller {
    */
   async updateEnable() {
     const data = await this.ctx.validate({
-      id: [{ required: true, message: '请输入ID' }],
+      name: [{ required: true, message: '请输入包名' }],
       enable: [{ required: true, message: '请输入状态' }],
     });
 
-    const target = await this.service.plugin.show(data.id);
-    if (target.installed !== 1) this.error('请先安装插件');
-    this.ctx.body = await this.service.plugin.update({
-      id: data.id,
-      enable: data.enable,
-    });
-    this.ctx.reloadPlugin();
+    const target = await this.service.plugin.show(data.name);
+    if (target.install !== true) this.error('请先安装插件');
+    this.ctx.body = await this.service.plugin.update(
+      data.name,
+      'enable',
+      data.enable
+    );
   }
 
   /**
@@ -60,7 +53,7 @@ class PluginController extends Controller {
    */
   async updateSetting() {
     const data = await this.ctx.validate({
-      id: [{ required: true, message: '请输入ID' }],
+      name: [{ required: true, message: '请输入包名' }],
       setting: [
         {
           required: true,
@@ -70,22 +63,22 @@ class PluginController extends Controller {
       ],
     });
 
-    const target = await this.service.plugin.show(data.id);
-    if (target.installed !== 1) this.error('请先安装插件');
-    if (target.enable !== 1) this.error('请先启用插件');
-    this.ctx.body = await this.service.plugin.update({
-      id: data.id,
-      setting: JSON.stringify(data.setting) || {},
-    });
-    this.ctx.reloadPlugin();
+    const target = await this.service.plugin.show(data.name);
+    if (target.install !== true) this.error('请先安装插件');
+    if (target.enable !== true) this.error('请先启用插件');
+    this.ctx.body = await this.service.plugin.update(
+      data.name,
+      'setting',
+      data.setting
+    );
   }
 
   async install() {
-    this.ctx.body = await this.service.plugin.install(this.ctx.params.id);
+    this.ctx.body = await this.service.plugin.install(this.ctx.params.name);
   }
 
   async uninstall() {
-    this.ctx.body = await this.service.plugin.uninstall(this.ctx.params.id);
+    this.ctx.body = await this.service.plugin.uninstall(this.ctx.params.name);
   }
 }
 

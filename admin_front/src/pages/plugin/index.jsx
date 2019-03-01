@@ -46,45 +46,45 @@ class PluginPage extends Component {
     });
   };
 
-  toggle = (id, enable) => {
+  toggle = (name, enable) => {
     const { dispatch } = this.props;
     dispatch({
       type: "plugin/toggle",
       payload: {
-        id,
+        name,
         enable
       }
     });
   };
 
-  submit = (setting, id) => {
+  submit = (setting, name) => {
     const { dispatch } = this.props;
     dispatch({
       type: "plugin/setting",
       payload: {
-        id,
+        name,
         setting
       },
       cb: this.close
     });
   };
 
-  install = id => {
+  install = name => {
     const { dispatch } = this.props;
     dispatch({
       type: "plugin/install",
       payload: {
-        id
+        name
       }
     });
   };
 
-  uninstall = id => {
+  uninstall = name => {
     const { dispatch } = this.props;
     dispatch({
       type: "plugin/uninstall",
       payload: {
-        id
+        name
       }
     });
   };
@@ -124,20 +124,15 @@ class PluginPage extends Component {
    */
   getColumns = () => [
     {
-      dataIndex: "id",
-      width: 100,
-      title: "ID"
-    },
-    {
-      dataIndex: "dirname",
+      dataIndex: "name",
       title: "包名"
     },
     {
-      dataIndex: "name",
+      dataIndex: "config.name",
       title: "名称"
     },
     {
-      dataIndex: "type",
+      dataIndex: "config.type",
       title: "类型",
       render: (text, record) => {
         if (text === 2) {
@@ -147,11 +142,11 @@ class PluginPage extends Component {
       }
     },
     {
-      dataIndex: "author",
+      dataIndex: "config.author",
       title: "作者"
     },
     {
-      dataIndex: "mail",
+      dataIndex: "config.mail",
       title: "邮箱"
     },
     {
@@ -162,9 +157,9 @@ class PluginPage extends Component {
       render: (text, record) => {
         return (
           <Switch
-            value={text}
+            value={text ? 1 : 0}
             onChange={newText => {
-              this.toggle(record.id, newText);
+              this.toggle(record.name, newText);
             }}
           />
         );
@@ -180,7 +175,7 @@ class PluginPage extends Component {
           return <Link to="/setting/uploadSetting">配置</Link>;
         }
 
-        if (record.enable === 1) {
+        if (record.enable === true) {
           return (
             <a
               onClick={() => {
@@ -196,16 +191,16 @@ class PluginPage extends Component {
       }
     },
     {
-      dataIndex: "installed",
+      dataIndex: "install",
       title: "安装/卸载",
       width: 180,
       align: "center",
       render: (text, record) => {
-        if (text !== 1) {
+        if (text !== true) {
           return (
             <a
               onClick={() => {
-                this.install(record.id);
+                this.install(record.name);
               }}
             >
               安装
@@ -220,7 +215,7 @@ class PluginPage extends Component {
             okType="danger"
             placement="topRight"
             onConfirm={() => {
-              this.uninstall(record.id);
+              this.uninstall(record.name);
             }}
           >
             <a className="danger">卸载</a>
@@ -237,7 +232,7 @@ class PluginPage extends Component {
         visible: false,
         attrs: [],
         data: {},
-        keyName: 0
+        keyName: ""
       }
     });
   };
@@ -247,9 +242,9 @@ class PluginPage extends Component {
       edit: {
         key: `plugin-setting-${record.id}`,
         visible: true,
-        attrs: JSON.parse(record.config) || [],
-        data: JSON.parse(record.setting) || {},
-        keyName: record.id
+        attrs: record.config.config || [],
+        data: record.setting,
+        keyName: record.name
       }
     });
   };
@@ -265,7 +260,7 @@ class PluginPage extends Component {
           title={this.renderFilter}
           columns={this.getColumns()}
           loading={loading}
-          rowKey="id"
+          rowKey="name"
           dataSource={list}
           scroll={{ x: 980 }}
           pagination={false}

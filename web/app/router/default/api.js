@@ -177,7 +177,7 @@ module.exports = app => {
     '/plugin/setting',
     controller.plugin.updateSetting
   );
-  subRouter.post('安装插件', '/plugin/:id', controller.plugin.install);
-  subRouter.delete('卸载插件', '/plugin/:id', controller.plugin.uninstall);
+  subRouter.post('安装插件', '/plugin/:name', controller.plugin.install);
+  subRouter.delete('卸载插件', '/plugin/:name', controller.plugin.uninstall);
   subRouter.get('插件列表', '/plugin', controller.plugin.index);
 };

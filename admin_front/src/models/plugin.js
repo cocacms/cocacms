@@ -20,25 +20,25 @@ export default modelExtend(baseModel("plugin", false), {
     },
 
     *toggle({ payload, cb }, { call, put, select }) {
-      yield call(toggle, payload.id, payload.enable);
+      yield call(toggle, payload.name, payload.enable === 1);
       yield put({ type: "list" });
       if (typeof cb === "function") cb();
     },
 
     *setting({ payload, cb }, { call, put, select }) {
-      yield call(setting, payload.id, payload.setting);
+      yield call(setting, payload.name, payload.setting);
       yield put({ type: "list" });
       if (typeof cb === "function") cb();
     },
 
     *install({ payload, cb }, { call, put, select }) {
-      yield call(install, payload.id);
+      yield call(install, payload.name);
       yield put({ type: "list" });
       if (typeof cb === "function") cb();
     },
 
     *uninstall({ payload, cb }, { call, put, select }) {
-      yield call(uninstall, payload.id);
+      yield call(uninstall, payload.name);
       yield put({ type: "list" });
       if (typeof cb === "function") cb();
     }
