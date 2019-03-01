@@ -181,15 +181,6 @@ class TablePage extends Component {
       xxl: { span: 18 }
     };
 
-    children = renderFilterForm(
-      attrs,
-      indexs,
-      labelCol,
-      wrapperCol,
-      getFieldDecorator,
-      children
-    );
-
     children.push(
       <Col sm={12} xs={24} lg={{ span: 8 }} key="form_model_id">
         <Form.Item label="分类" labelCol={labelCol} wrapperCol={wrapperCol}>
@@ -204,6 +195,15 @@ class TablePage extends Component {
           )}
         </Form.Item>
       </Col>
+    );
+
+    children = renderFilterForm(
+      attrs,
+      indexs,
+      labelCol,
+      wrapperCol,
+      getFieldDecorator,
+      children
     );
 
     children.push(
