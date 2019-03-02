@@ -354,7 +354,7 @@ class TablePage extends Component {
    * @memberof TablePage
    */
   renderFilter = () => {
-    const { current } = this.props;
+    const { current, otherHandler = null } = this.props;
 
     return (
       <div>
@@ -362,6 +362,7 @@ class TablePage extends Component {
           <Row gutter={24}>{this.getFields()}</Row>
           <Row>
             <Col span={24} style={{ textAlign: "right" }}>
+              {otherHandler}
               <Can api={`POST@/api/g/${current.model.key}`}>
                 <Button
                   type="primary"
@@ -417,6 +418,7 @@ class TablePage extends Component {
       <Can api={`GET@/api/g/${currentCategory.model.key}`} cannot={null}>
         <Table
           title={this.renderFilter}
+          rowSelection={this.props.rowSelection}
           columns={getColumns(
             attrs,
             this.props.hasOwnProperty("actionProps")
