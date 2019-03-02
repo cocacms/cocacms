@@ -28,7 +28,6 @@ class GeneralController extends Controller {
     }
 
     const modelName = model.key;
-    this._type = 'form';
     this.service.base._table = `${this.config.model.prefix}${modelName}`;
   }
 }

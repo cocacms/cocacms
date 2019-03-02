@@ -419,21 +419,27 @@ class TablePage extends Component {
           title={this.renderFilter}
           columns={getColumns(
             attrs,
-            {
-              can: {
-                edit: `PUT@/api/g/${currentCategory.model.key}/:id`,
-                delete: `DELETE@/api/g/${currentCategory.model.key}/:id`
-              },
-              delete: id => {
-                this.delete(id);
-              },
-              edit: record => {
-                this.openModel("edit", record);
-              }
-            },
+            this.props.hasOwnProperty("actionProps")
+              ? this.props.actionProps
+              : {
+                  can: {
+                    edit: `PUT@/api/g/${currentCategory.model.key}/:id`,
+                    delete: `DELETE@/api/g/${currentCategory.model.key}/:id`
+                  },
+                  delete: id => {
+                    this.delete(id);
+                  },
+                  edit: record => {
+                    this.openModel("edit", record);
+                  }
+                },
             this.state.sortedInfo,
             this.switchChange,
-            true
+            this.props.hasOwnProperty("showCategory")
+              ? this.props.showCategory
+              : true,
+
+            this.props.hasOwnProperty("actions") ? this.props.actions : null
           )}
           loading={loading}
           rowKey="id"

@@ -51,44 +51,52 @@ class GeneralController extends Controller {
     return body;
   }
 
-  /**
-   * 栏目
-   *
-   * @return {object} where数据
-   * @memberof GeneralController
-   */
-  async buildCategoryWhere() {
-    let category_id_where = -1;
-    let where;
-    try {
-      where = JSON.parse(this.ctx.query.where);
-      if (where instanceof Array) {
-        // 过滤 并提取catgory_id
-        where = where.filter(search => {
-          const _search = {};
-          if (Array.isArray(search)) {
-            _search.key = search[0];
-            if (search.length === 3) {
-              _search.condition = search[1];
-            }
-            _search.value = search[search.length - 1];
-          }
-          if (!search.condition) {
-            _search.condition = '=';
-          }
+  filterCategoryWhere(where) {
+    if (where instanceof Array) {
+      // 过滤 并提取catgory_id
+      where = where.filter(search => {
+        const _search = {};
+        if (Array.isArray(search)) {
+          _search.key = search[0];
+        }
 
-          if (_search.key === 'category_id' && !Array.isArray(_search.value)) {
-            category_id_where = Number(_search.value);
-            return false;
-          }
+        if (_search.key === 'category_id') {
+          return false;
+        }
 
-          return true;
-        });
-      }
-    } catch (error) {
-      where = [];
+        return true;
+      });
     }
 
+    return where;
+  }
+
+  async buildCategoryWhere(where) {
+    let category_id_where = -1;
+
+    if (where instanceof Array) {
+      // 过滤 并提取catgory_id
+      where = where.filter(search => {
+        const _search = {};
+        if (Array.isArray(search)) {
+          _search.key = search[0];
+          if (search.length === 3) {
+            _search.condition = search[1];
+          }
+          _search.value = search[search.length - 1];
+        }
+        if (!search.condition) {
+          _search.condition = '=';
+        }
+
+        if (_search.key === 'category_id' && !Array.isArray(_search.value)) {
+          category_id_where = Number(_search.value);
+          return false;
+        }
+
+        return true;
+      });
+    }
     const categorys = await this.service.category.index(
       category_id_where,
       [],
@@ -111,10 +119,18 @@ class GeneralController extends Controller {
   async index() {
     await this.init();
 
-    let where = [];
+    let where;
+    try {
+      where = JSON.parse(this.ctx.query.where);
+    } catch (error) {
+      where = [];
+    }
 
-    if (this._type === 'model') {
-      where = await this.buildCategoryWhere();
+    const hasCategory = await this.service.base.columnExist('catgory_id');
+    if (hasCategory) {
+      where = await this.buildCategoryWhere(where);
+    } else {
+      where = this.filterCategoryWhere(where);
     }
 
     const result = await this.service.base.index(

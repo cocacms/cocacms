@@ -22,7 +22,6 @@ class GeneralController extends Controller {
       this.error('模型不存在！');
     }
     const modelName = model.key;
-    this._type = 'model';
     this.service.base._table = `${this.config.model.prefix}${modelName}`;
   }
 }
