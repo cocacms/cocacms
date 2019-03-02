@@ -126,7 +126,7 @@ class GeneralController extends Controller {
       where = [];
     }
 
-    const hasCategory = await this.service.base.columnExist('catgory_id');
+    const hasCategory = await this.service.base.columnExist('category_id');
     if (hasCategory) {
       where = await this.buildCategoryWhere(where);
     } else {
