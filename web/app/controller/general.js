@@ -101,6 +101,9 @@ class GeneralController extends Controller {
         return true;
       });
     }
+    if (category_id_where === -1) {
+      return where;
+    }
     const categorys = await this.service.category.index(
       category_id_where,
       [],
