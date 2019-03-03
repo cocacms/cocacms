@@ -33,13 +33,13 @@ class UploadService extends Service {
 
     const filename = `${this.ctx.helper.UUID()}${extname}`;
     if (
-      !this.ctx.plugin[type] ||
-      typeof this.ctx.plugin[type].upload !== 'function'
+      !this.app.cocaPlugin.caller[type] ||
+      typeof this.app.cocaPlugin.caller[type].upload !== 'function'
     ) {
       return await this.local(config, stream, filename);
     }
 
-    return await this.ctx.plugin[type].upload(config, stream, filename);
+    return await this.app.cocaPlugin.caller[type].upload(config, stream, filename);
   }
 
   /**
