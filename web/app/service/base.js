@@ -238,8 +238,12 @@ class BaseService extends Service {
    */
   async columnExist(fieldName, _table = false) {
     const has = await this.app.mysql.query(
-      'select * from INFORMATION_SCHEMA.COLUMNS where table_name = ? and column_name = ?',
-      [_table ? _table : this._table, fieldName]
+      'select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = ? and COLUMN_NAME = ? and TABLE_SCHEMA = ?',
+      [
+        _table ? _table : this._table,
+        fieldName,
+        this.config.mysql.client.database,
+      ]
     );
     return has.length > 0;
   }
