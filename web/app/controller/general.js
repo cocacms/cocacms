@@ -89,7 +89,11 @@ class GeneralController extends Controller {
           _search.condition = '=';
         }
 
-        if (_search.key === 'category_id' && !Array.isArray(_search.value)) {
+        if (
+          _search.key === 'category_id' &&
+          !Array.isArray(_search.value) &&
+          _search.value
+        ) {
           category_id_where = Number(_search.value);
           return false;
         }
