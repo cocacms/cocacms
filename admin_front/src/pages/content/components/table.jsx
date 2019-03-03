@@ -169,21 +169,22 @@ class TablePage extends Component {
     if (e) {
       e.preventDefault();
     }
-    const { form, dispatch, current, indexs } = this.props;
+    const { form, dispatch, current, indexs, showCategory = true } = this.props;
     form.validateFieldsAndScroll((err, fieldsValue) => {
       if (err) {
         return;
       }
 
+      const where = buildWhere(fieldsValue, indexs);
+      if (showCategory) {
+        where.push(["category_id", current.id])
+      }
       dispatch({
         type: "general/list",
         payload: {
           page,
           pageSize,
-          where: [
-            ["category_id", current.id],
-            ...buildWhere(fieldsValue, indexs)
-          ],
+          where,
           order: sorter
         }
       });
