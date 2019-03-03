@@ -70,6 +70,7 @@ class Edit extends Component {
       category: { treeFilterModel = [] },
       current = {},
       attrs,
+      showCategory = true,
       rules
     } = this.props;
 
@@ -88,24 +89,26 @@ class Edit extends Component {
             initialValue: data.id
           })(<Input type="hidden" disabled />)}
 
-          <Form.Item {...formItemLayout} label="所属栏目">
-            {getFieldDecorator("category_id", {
-              initialValue:
-                data.category_id === undefined
-                  ? String(current.id)
-                  : String(data.category_id),
-              rules: [{ required: true, message: "请设置所属栏目" }]
-            })(
-              <TreeSelect
-                dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
-                treeData={treeFilterModel}
-                treeNodeLabelProp="name"
-                treeNodeFilterProp="id"
-                placeholder="请选择"
-                treeDefaultExpandAll
-              />
-            )}
-          </Form.Item>
+          {showCategory && (
+            <Form.Item {...formItemLayout} label="所属栏目">
+              {getFieldDecorator("category_id", {
+                initialValue:
+                  data.category_id === undefined
+                    ? String(current.id)
+                    : String(data.category_id),
+                rules: [{ required: true, message: "请设置所属栏目" }]
+              })(
+                <TreeSelect
+                  dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+                  treeData={treeFilterModel}
+                  treeNodeLabelProp="name"
+                  treeNodeFilterProp="id"
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                />
+              )}
+            </Form.Item>
+          )}
 
           {renderForm(attrs, rules, data, getFieldDecorator, formItemLayout)}
         </Form>
@@ -177,7 +180,7 @@ class TablePage extends Component {
 
       const where = buildWhere(fieldsValue, indexs);
       if (showCategory) {
-        where.push(["category_id", current.id])
+        where.push(["category_id", current.id]);
       }
       dispatch({
         type: "general/list",
@@ -216,7 +219,7 @@ class TablePage extends Component {
    * @memberof TablePage
    */
   init = () => {
-    const { dispatch, form, current } = this.props;
+    const { dispatch, form, current, showCategory = true } = this.props;
 
     console.log("table loading data", current.name);
 
@@ -236,7 +239,7 @@ class TablePage extends Component {
       payload: {
         page: 1,
         pageSize: 20,
-        where: [["category_id", current.id]],
+        where: showCategory ? [["category_id", current.id]] : [],
         order: []
       }
     });
@@ -412,7 +415,8 @@ class TablePage extends Component {
       },
       attrs = [],
       rules = {},
-      current: currentCategory = {}
+      current: currentCategory = {},
+      showCategory = true
     } = this.props;
 
     return (
@@ -466,6 +470,7 @@ class TablePage extends Component {
           current={currentCategory}
           attrs={attrs}
           rules={rules}
+          showCategory={showCategory}
         />
       </Can>
     );

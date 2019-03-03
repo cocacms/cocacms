@@ -39,7 +39,11 @@ class UploadService extends Service {
       return await this.local(config, stream, filename);
     }
 
-    return await this.app.cocaPlugin.caller[type].upload(config, stream, filename);
+    return await this.app.cocaPlugin.caller[type].upload(
+      config,
+      stream,
+      filename
+    );
   }
 
   /**
