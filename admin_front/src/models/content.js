@@ -66,9 +66,10 @@ export default {
       }
 
       let model_id = current.model_id;
+      let model_key = current.model.key;
       if (current.type === 3) {
-        // 未绑定模型栏目不显示
         if (current.form_id === null || !current.form) {
+          // 表单未绑定模型栏目不显示
           current.type = -1;
           yield put({
             type: "model_undefined",
@@ -78,19 +79,36 @@ export default {
         }
 
         model_id = current.form.model_id;
+        model_key = current.form.key;
       }
 
-      const { data: attrs } = yield call(
-        modelAttrService.index,
-        {},
-        `/${model_id}`
-      );
-      const { data: ruleData } = yield call(rules, current.model.key);
-      const { data: indexsData } = yield call(indexs, current.model_id);
       yield put({
         type: "save",
         payload: {
-          current,
+          current
+        }
+      });
+
+      yield put({
+        type: "loadContent",
+        payload: {
+          model_id,
+          model_key
+        }
+      });
+    },
+
+    *loadContent({ payload }, { call, put, select }) {
+      const { data: ruleData } = yield call(rules, payload.model_key);
+      const { data: indexsData } = yield call(indexs, payload.model_id);
+      const { data: attrs } = yield call(
+        modelAttrService.index,
+        {},
+        `/${payload.model_id}`
+      );
+      yield put({
+        type: "save",
+        payload: {
           attrs,
           rules: ruleData,
           indexs: [
