@@ -49,11 +49,11 @@ class DefaultSetting extends Component {
       plugin: { list = [] }
     } = this.props;
     const type = getFieldValue("type");
-    const hasPlugin = list.filter(i => i.enable === 1 && i.dirname === type);
+    const hasPlugin = list.filter(i => i.enable === 1 && i.name === type);
     if (hasPlugin.length === 0) return null;
     const plugin = hasPlugin[0];
     if (!plugin.config) return null;
-    const attrs = JSON.parse(plugin.config);
+    const attrs = plugin.config.config;
     const rules = {};
     attrs
       .filter(i => i.rules && i.rules.length > 0)
@@ -95,10 +95,10 @@ class DefaultSetting extends Component {
             <Select placeholder="请选择">
               <Option value="local">本地存储</Option>
               {list
-                .filter(i => i.type === 2 && i.enable === 1)
+                .filter(i => i.enable === 1 && i.config && i.config.type === 2)
                 .map(i => {
                   return (
-                    <Option key={`_upload_plugin_${i.id}`} value={i.dirname}>
+                    <Option key={`_upload_plugin_${i.id}`} value={i.name}>
                       {i.name}
                     </Option>
                   );
